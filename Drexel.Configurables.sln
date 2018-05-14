@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.External.Tests", "Drexel.Configurables.External.Tests\Drexel.Configurables.External.Tests.csproj", "{7BAF2B47-C599-45D7-AE51-FFD92C1DD7C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables", "Drexel.Configurables\Drexel.Configurables.csproj", "{6104CAC4-075A-4F89-8C64-B91B536888A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Contracts", "Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{16BEC067-8E98-468C-895D-9C71DDEC402C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.External", "Drexel.Configurables.External\Drexel.Configurables.External.csproj", "{10C29687-EF10-485E-9809-B629A561EDEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Tests", "Drexel.Configurables.Tests\Drexel.Configurables.Tests.csproj", "{CDCC2528-2933-4996-B7B1-4EB1480416E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BAF2B47-C599-45D7-AE51-FFD92C1DD7C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BAF2B47-C599-45D7-AE51-FFD92C1DD7C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BAF2B47-C599-45D7-AE51-FFD92C1DD7C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BAF2B47-C599-45D7-AE51-FFD92C1DD7C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6104CAC4-075A-4F89-8C64-B91B536888A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6104CAC4-075A-4F89-8C64-B91B536888A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6104CAC4-075A-4F89-8C64-B91B536888A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6104CAC4-075A-4F89-8C64-B91B536888A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16BEC067-8E98-468C-895D-9C71DDEC402C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16BEC067-8E98-468C-895D-9C71DDEC402C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16BEC067-8E98-468C-895D-9C71DDEC402C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16BEC067-8E98-468C-895D-9C71DDEC402C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10C29687-EF10-485E-9809-B629A561EDEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10C29687-EF10-485E-9809-B629A561EDEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10C29687-EF10-485E-9809-B629A561EDEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10C29687-EF10-485E-9809-B629A561EDEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCC2528-2933-4996-B7B1-4EB1480416E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCC2528-2933-4996-B7B1-4EB1480416E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCC2528-2933-4996-B7B1-4EB1480416E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCC2528-2933-4996-B7B1-4EB1480416E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C77AC3CA-EE04-4B78-9AFA-57E6E77454C8}
+	EndGlobalSection
+EndGlobal
