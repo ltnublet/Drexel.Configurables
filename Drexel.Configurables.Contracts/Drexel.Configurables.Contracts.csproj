@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionInfo.cs" />
     <Compile Include="ConfigurationRequirementType.cs" />
     <Compile Include="IBinding.cs" />
     <Compile Include="IBoundConfiguration.cs" />

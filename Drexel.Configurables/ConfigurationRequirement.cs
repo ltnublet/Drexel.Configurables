@@ -43,15 +43,16 @@ namespace Drexel.Configurables
         /// <param name="ofType">
         /// The <see cref="ConfigurationRequirementType"/> of the <see cref="ConfigurationRequirement"/>.
         /// </param>
-        /// <param name="isCollection">
-        /// Indicates whether this <see cref="ConfigurationRequirement"/> is for a single instance of the type
-        /// indicated by <paramref name="ofType"/>, or a collection.
-        /// </param>
         /// <param name="isOptional">
         /// Indicates whether this <see cref="ConfigurationRequirement"/> is optional.
         /// </param>
         /// <param name="validator">
         /// Validates <see cref="object"/>s to determine if they satisfy the <see cref="ConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
         /// </param>
         /// <param name="dependsOn">
         /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
@@ -65,9 +66,9 @@ namespace Drexel.Configurables
             string name,
             string description,
             ConfigurationRequirementType ofType,
-            bool isCollection,
             bool isOptional,
             Validator validator,
+            CollectionInfo collectionInfo = null,
             IEnumerable<IConfigurationRequirement> dependsOn = null,
             IEnumerable<IConfigurationRequirement> exclusiveWith = null)
         {
@@ -76,8 +77,8 @@ namespace Drexel.Configurables
             this.Name = name;
             this.Description = description;
             this.OfType = ofType;
-            this.IsCollection = isCollection;
             this.IsOptional = isOptional;
+            this.CollectionInfo = collectionInfo;
             this.DependsOn = dependsOn ?? new IConfigurationRequirement[0];
             this.ExclusiveWith = exclusiveWith ?? new IConfigurationRequirement[0];
 
@@ -101,11 +102,11 @@ namespace Drexel.Configurables
         public IEnumerable<IConfigurationRequirement> ExclusiveWith { get; private set; }
 
         /// <summary>
-        /// <see langword="true"/> if this requirement requires a collection of
-        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; <see langword="false"/> if this
-        /// requirement requires a single instance of <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>.
+        /// <see langword="null"/> if this requirement expects a single instance of
+        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; else, the constraints of the required
+        /// collection are described by the <see cref="CollectionInfo"/>.
         /// </summary>
-        public bool IsCollection { get; private set; }
+        public CollectionInfo CollectionInfo { get; private set; }
 
         /// <summary>
         /// <see langword="true"/> if this requirement is optional; <see langword="false"/> if this requirement is
@@ -134,8 +135,10 @@ namespace Drexel.Configurables
         /// <param name="description">
         /// The description of the <see cref="ConfigurationRequirement"/>.
         /// </param>
-        /// <param name="isOptional">
-        /// Indicates whether the <see cref="ConfigurationRequirement"/> is optional.
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
         /// </param>
         /// <param name="dependsOn">
         /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
@@ -152,7 +155,7 @@ namespace Drexel.Configurables
         public static IConfigurationRequirement String(
             string name,
             string description,
-            bool isOptional,
+            CollectionInfo collectionInfo = null,
             IEnumerable<IConfigurationRequirement> dependsOn = null,
             IEnumerable<IConfigurationRequirement> exclusiveWith = null)
         {
@@ -161,7 +164,6 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.String,
                 false,
-                isOptional,
                 instance =>
                 {
                     if (instance == null)
@@ -179,6 +181,7 @@ namespace Drexel.Configurables
 
                     return null;
                 },
+                collectionInfo,
                 dependsOn,
                 exclusiveWith);
         }
@@ -193,8 +196,10 @@ namespace Drexel.Configurables
         /// <param name="description">
         /// The description of the <see cref="ConfigurationRequirement"/>.
         /// </param>
-        /// <param name="isOptional">
-        /// Indicates whether the <see cref="ConfigurationRequirement"/> is optional.
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
         /// </param>
         /// <param name="dependsOn">
         /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
@@ -211,7 +216,7 @@ namespace Drexel.Configurables
         public static IConfigurationRequirement Path(
             string name,
             string description,
-            bool isOptional,
+            CollectionInfo collectionInfo = null,
             IEnumerable<IConfigurationRequirement> dependsOn = null,
             IEnumerable<IConfigurationRequirement> exclusiveWith = null)
         {
@@ -220,7 +225,6 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.Path,
                 false,
-                isOptional,
                 instance =>
                 {
                     if (instance == null)
@@ -238,6 +242,7 @@ namespace Drexel.Configurables
 
                     return null;
                 },
+                collectionInfo,
                 dependsOn,
                 exclusiveWith);
         }
@@ -252,8 +257,10 @@ namespace Drexel.Configurables
         /// <param name="description">
         /// The description of the <see cref="ConfigurationRequirement"/>.
         /// </param>
-        /// <param name="isOptional">
-        /// Indicates whether the <see cref="ConfigurationRequirement"/> is optional.
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
         /// </param>
         /// <param name="dependsOn">
         /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
@@ -270,7 +277,7 @@ namespace Drexel.Configurables
         public static IConfigurationRequirement Int64(
             string name,
             string description,
-            bool isOptional,
+            CollectionInfo collectionInfo = null,
             IEnumerable<IConfigurationRequirement> dependsOn = null,
             IEnumerable<IConfigurationRequirement> exclusiveWith = null)
         {
@@ -279,7 +286,6 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.Int64,
                 false,
-                isOptional,
                 instance =>
                 {
                     if (instance == null)
@@ -297,6 +303,7 @@ namespace Drexel.Configurables
 
                     return null;
                 },
+                collectionInfo,
                 dependsOn,
                 exclusiveWith);
         }
@@ -335,6 +342,8 @@ namespace Drexel.Configurables
         /// </returns>
         public override string ToString()
         {
+            const string newline = "\r\n";
+
             string JsonEscape(string toEscape)
             {
                 StringBuilder builder = new StringBuilder();
@@ -371,28 +380,65 @@ namespace Drexel.Configurables
 
                 return builder.ToString();
             }
+            void AppendValue(StringBuilder builder, string name, string value)
+            {
+                builder.Append('"');
+                builder.Append(name);
+                builder.Append("\": ");
+                builder.Append('"');
+                builder.Append(value);
+                builder.Append('"');
+            }
 
             const string @null = "<null>";
 
             if (this.cachedToString == null)
             {
-                this.cachedToString = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{{ \"{0}\": \"{1}\", \"{2}\": \"{3}\", \"{4}\": \"{5}\", \"{6}\": \"{7}\", \"{8}\": \"{9}\", \"{10}\": [{11}], \"{12}\": [{13}] }}",
-                    nameof(this.Name),
-                    JsonEscape(this.Name),
-                    nameof(this.OfType),
-                    JsonEscape(this.OfType.ToString()),
-                    nameof(this.IsCollection),
-                    JsonEscape(this.IsCollection.ToString()),
-                    nameof(this.IsOptional),
-                    JsonEscape(this.IsOptional.ToString()),
-                    nameof(this.Description),
-                    JsonEscape(this.Description),
+                StringBuilder builder = new StringBuilder();
+                builder.Append('{');
+
+                builder.Append(newline);
+                AppendValue(builder, nameof(this.Name), JsonEscape(this.Name));
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(builder, nameof(this.OfType), JsonEscape(this.OfType.ToString()));
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(builder, nameof(this.IsOptional), this.IsOptional.ToString());
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(builder, nameof(this.Description), JsonEscape(this.Description));
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(
+                    builder,
+                    nameof(this.CollectionInfo),
+                    this.CollectionInfo == null
+                        ? "null"
+                        : string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{{ \"{0}\": \"{1}\", \"{2}\": \"{3}\" }}",
+                            nameof(this.CollectionInfo.MaximumCount),
+                            this.CollectionInfo.MaximumCount,
+                            nameof(this.CollectionInfo.MinimumCount),
+                            this.CollectionInfo.MinimumCount));
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(
+                    builder,
                     nameof(this.DependsOn),
-                    JsonEscape(string.Join(", ", this.DependsOn.Select(x => "\"" + (x?.Name ?? @null) + "\""))),
+                    JsonEscape(string.Join(", ", this.DependsOn.Select(x => "\"" + (x?.Name ?? @null) + "\""))));
+                builder.Append(',');
+                builder.Append(newline);
+                AppendValue(
+                    builder,
                     nameof(this.ExclusiveWith),
                     JsonEscape(string.Join(", ", this.ExclusiveWith.Select(x => "\"" + (x?.Name ?? @null) + "\""))));
+                builder.Append(newline);
+
+                builder.Append('}');
+
+                cachedToString = builder.ToString();
             }
 
             return this.cachedToString;

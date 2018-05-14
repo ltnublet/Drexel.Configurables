@@ -55,6 +55,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj">
+      <Project>{16BEC067-8E98-468C-895D-9C71DDEC402C}</Project>
+      <Name>Drexel.Configurables.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj">
       <Project>{6104cac4-075a-4f89-8c64-b91b536888a0}</Project>
       <Name>Drexel.Configurables</Name>

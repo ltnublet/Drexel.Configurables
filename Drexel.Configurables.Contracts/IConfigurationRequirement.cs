@@ -24,11 +24,11 @@ namespace Drexel.Configurables.Contracts
         IEnumerable<IConfigurationRequirement> ExclusiveWith { get; }
 
         /// <summary>
-        /// <see langword="true"/> if this requirement requires a collection of
-        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; <see langword="false"/> if this
-        /// requirement requires a single instance of <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>.
+        /// <see langword="null"/> if this requirement expects a single instance of
+        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; else, the constraints of the required
+        /// collection are described by the <see cref="CollectionInfo"/>.
         /// </summary>
-        bool IsCollection { get; }
+        CollectionInfo CollectionInfo { get; }
 
         /// <summary>
         /// <see langword="true"/> if this requirement is optional; <see langword="false"/> if this requirement is
