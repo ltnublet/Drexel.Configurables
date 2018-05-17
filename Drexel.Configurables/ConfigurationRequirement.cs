@@ -173,7 +173,7 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.String,
                 false,
-                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.String),
+                ConfigurationRequirement.CreateSimpleValidator(ConfigurationRequirementType.String),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
@@ -218,7 +218,7 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.FilePath,
                 false,
-                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.FilePath),
+                ConfigurationRequirement.CreateSimpleValidator(ConfigurationRequirementType.FilePath),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
@@ -263,10 +263,35 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.Int64,
                 false,
-                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.Int64),
+                ConfigurationRequirement.CreateSimpleValidator(ConfigurationRequirementType.Int64),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Validator"/> which performs a simple validation for the specified
+        /// <see cref="ConfigurationRequirementType"/> <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">
+        /// The <see cref="ConfigurationRequirementType"/> to perform validation using.
+        /// </param>
+        /// <param name="additionalValidation">
+        /// A <see cref="Validator"/> which accepts the instance <see cref="object"/> being validated. This
+        /// <paramref name="additionalValidation"/> will only be invoked if the <see cref="object"/> passes the
+        /// default validation logic.
+        /// validation.
+        /// </param>
+        /// <returns></returns>
+        public static Validator CreateSimpleValidator(
+            ConfigurationRequirementType type,
+            Validator additionalValidation = null)
+        {
+            return (info, instance) => ConfigurationRequirement.SimpleValidator(
+                type,
+                info,
+                instance,
+                additionalValidation);
         }
 
         /// <summary>
@@ -491,65 +516,90 @@ namespace Drexel.Configurables
             return this.cachedToString;
         }
 
-        [DebuggerHidden]
-        private static Validator GenerateValidator(ConfigurationRequirementType type)
+        /// <summary>
+        /// This method is only internal so that unit tests can reach it. Do not call it directly.
+        /// </summary>
+        /// <param name="type">
+        /// This field intentionally left blank.
+        /// </param>
+        /// <param name="info">
+        /// This field also intentionally left blank.
+        /// </param>
+        /// <param name="instance">
+        /// This field also also intentionally left blank.
+        /// </param>
+        /// <param name="additionalValidation">
+        /// This field also also also intentionally left blank.
+        /// </param>
+        /// <returns>
+        /// This field intentionally left blank.
+        /// </returns>
+        internal static Exception SimpleValidator(
+            ConfigurationRequirementType type,
+            CollectionInfo info,
+            object instance,
+            Validator additionalValidation = null)
         {
-            return (info, instance) =>
+            if (instance == null)
             {
-                if (instance == null)
+                return new ArgumentNullException(nameof(instance));
+            }
+            else if (info == null)
+            {
+                if (!type.Type.IsAssignableFrom(instance.GetType()))
                 {
-                    return new ArgumentNullException(nameof(instance));
+                    return new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            ConfigurationRequirement.SuppliedObjectIsOfWrongType,
+                            type.Type.ToString()),
+                        nameof(instance));
                 }
-                else if (info == null)
+            }
+            else if (info != null)
+            {
+                if (!(instance is IEnumerable enumerable))
                 {
-                    if (!type.Type.IsAssignableFrom(instance.GetType()))
-                    {
-                        return new ArgumentException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedObjectIsOfWrongType,
-                                type.Type.ToString()),
-                            nameof(instance));
-                    }
-                }
-                else if (info != null)
-                {
-                    if (!(instance is IEnumerable enumerable))
-                    {
-                        return new ArgumentException(
-                            ConfigurationRequirement.SuppliedObjectIsNotIEnumerable,
-                            nameof(instance));
-                    }
-
-                    object[] array = enumerable.Cast<object>().ToArray();
-                    if (array.Length < info.MinimumCount
-                        || info.MaximumCount.HasValue ? array.Length > info.MaximumCount.Value : false)
-                    {
-                        return new ArgumentException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedCollectionOfInvalidSize,
-                                array.Length,
-                                info.MinimumCount,
-                                info.MaximumCount.HasValue
-                                    ? info.MaximumCount.Value.ToString(CultureInfo.InvariantCulture)
-                                    : "null"),
-                            nameof(instance));
-                    }
-
-                    if (array.Length > 0 && !type.Type.IsAssignableFrom(array[0].GetType()))
-                    {
-                        return new ArgumentException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedCollectionContainsObjectsOfWrongType,
-                                type.Type.ToString()),
-                            nameof(instance));
-                    }
+                    return new ArgumentException(
+                        ConfigurationRequirement.SuppliedObjectIsNotIEnumerable,
+                        nameof(instance));
                 }
 
-                return null;
-            };
+                object[] array = enumerable.Cast<object>().ToArray();
+                if (array.Length < info.MinimumCount
+                    || (info.MaximumCount.HasValue ? array.Length > info.MaximumCount.Value : false))
+                {
+                    return new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            ConfigurationRequirement.SuppliedCollectionOfInvalidSize,
+                            array.Length,
+                            info.MinimumCount,
+                            info.MaximumCount.HasValue
+                                ? info.MaximumCount.Value.ToString(CultureInfo.InvariantCulture)
+                                : "null"),
+                        nameof(instance));
+                }
+
+                if (array.Length > 0 && !type.Type.IsAssignableFrom(array[0].GetType()))
+                {
+                    return new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            ConfigurationRequirement.SuppliedCollectionContainsObjectsOfWrongType,
+                            type.Type.ToString()),
+                        nameof(instance));
+                }
+            }
+
+            try
+            {
+                return additionalValidation?.Invoke(info, instance);
+            }
+            catch (Exception e)
+            {
+                return e;
+            }
         }
 
         [DebuggerHidden]

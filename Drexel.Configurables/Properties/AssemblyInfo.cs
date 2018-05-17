@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Drexel Configurables Library")]
@@ -13,3 +14,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("0.1.*")]
 
 [assembly: Guid("6104cac4-075a-4f89-8c64-b91b536888a0")]
+
+[assembly: InternalsVisibleTo("Drexel.Configurables.Tests")]
