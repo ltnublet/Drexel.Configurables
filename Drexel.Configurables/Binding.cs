@@ -1,4 +1,5 @@
-﻿using Drexel.Configurables.Contracts;
+﻿using System;
+using Drexel.Configurables.Contracts;
 
 namespace Drexel.Configurables
 {
@@ -18,7 +19,7 @@ namespace Drexel.Configurables
         /// </param>
         public Binding(IConfigurationRequirement requirement, object bound)
         {
-            this.Requirement = requirement;
+            this.Requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
             this.Bound = bound;
         }
 

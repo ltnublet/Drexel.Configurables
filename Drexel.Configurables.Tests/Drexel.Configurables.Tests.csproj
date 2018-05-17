@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertUtil.cs" />
+    <Compile Include="BindingTests.cs" />
     <Compile Include="JsonCompare.cs" />
     <Compile Include="ConfigurationRequirementTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
