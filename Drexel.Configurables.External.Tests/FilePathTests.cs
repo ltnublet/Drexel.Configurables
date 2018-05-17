@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Drexel.Configurables.External.Tests.Mocks;
+using Drexel.Configurables.External.Shared.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.External.Tests

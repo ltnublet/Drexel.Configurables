@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,6 +12,9 @@ namespace Drexel.Configurables
     /// <summary>
     /// Validates a supplied <see cref="object"/>.
     /// </summary>
+    /// <param name="collectionInfo">
+    /// The <see cref="CollectionInfo"/> associated with this validation.
+    /// </param>
     /// <param name="instance">
     /// The <see cref="object"/> to validate.
     /// </param>
@@ -18,14 +22,19 @@ namespace Drexel.Configurables
     /// <see langword="null"/> if the object passed validation; else, an <see cref="Exception"/> describing why the
     /// supplied <paramref name="instance"/> failed validation.
     /// </returns>
-    public delegate Exception Validator(object instance);
+    public delegate Exception Validator(CollectionInfo collectionInfo, object instance);
 
     /// <summary>
     /// A simple <see cref="IConfigurationRequirement"/> implementation.
     /// </summary>
     public class ConfigurationRequirement : IConfigurationRequirement
     {
+        private const string SuppliedCollectionOfInvalidSize =
+            "Supplied object is a collection of invalid size. Number of items: '{0}'. Minimum: '{1}'. Maximum: '{2}'.";
+        private const string SuppliedCollectionContainsObjectsOfWrongType =
+            "Supplied collection contains object(s) of wrong type. Expected type: '{0}'.";
         private const string SuppliedObjectIsOfWrongType = "Supplied object is of wrong type. Expected type: '{0}'.";
+        private const string SuppliedObjectIsNotIEnumerable = "Supplied object is not an IEnumerable.";
         private const string StringMustBeNonWhitespace = "String must not be whitespace.";
 
         private Validator validator;
@@ -164,23 +173,7 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.String,
                 false,
-                instance =>
-                {
-                    if (instance == null)
-                    {
-                        return new ArgumentNullException(nameof(instance));
-                    }
-                    else if (!ConfigurationRequirementType.String.Type.IsAssignableFrom(instance.GetType()))
-                    {
-                        return new InvalidCastException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedObjectIsOfWrongType,
-                                ConfigurationRequirementType.String.Type.ToString()));
-                    }
-
-                    return null;
-                },
+                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.String),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
@@ -188,7 +181,7 @@ namespace Drexel.Configurables
 
         /// <summary>
         /// Creates a new <see cref="ConfigurationRequirement"/> of type
-        /// <see cref="ConfigurationRequirementType.Path"/>.
+        /// <see cref="ConfigurationRequirementType.FilePath"/>.
         /// </summary>
         /// <param name="name">
         /// The name of the <see cref="ConfigurationRequirement"/>.
@@ -210,10 +203,10 @@ namespace Drexel.Configurables
         /// must not be supplied alongside with.
         /// </param>
         /// <returns>
-        /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.Path"/> with the
+        /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.FilePath"/> with the
         /// supplied properties.
         /// </returns>
-        public static IConfigurationRequirement Path(
+        public static IConfigurationRequirement FilePath(
             string name,
             string description,
             CollectionInfo collectionInfo = null,
@@ -223,25 +216,9 @@ namespace Drexel.Configurables
             return new ConfigurationRequirement(
                 name,
                 description,
-                ConfigurationRequirementType.Path,
+                ConfigurationRequirementType.FilePath,
                 false,
-                instance =>
-                {
-                    if (instance == null)
-                    {
-                        return new ArgumentNullException(nameof(instance));
-                    }
-                    else if (!ConfigurationRequirementType.Path.Type.IsAssignableFrom(instance.GetType()))
-                    {
-                        return new InvalidCastException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedObjectIsOfWrongType,
-                                ConfigurationRequirementType.Path.Type.ToString()));
-                    }
-
-                    return null;
-                },
+                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.FilePath),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
@@ -286,23 +263,7 @@ namespace Drexel.Configurables
                 description,
                 ConfigurationRequirementType.Int64,
                 false,
-                instance =>
-                {
-                    if (instance == null)
-                    {
-                        return new ArgumentNullException(nameof(instance));
-                    }
-                    else if (!ConfigurationRequirementType.Int64.Type.IsAssignableFrom(instance.GetType()))
-                    {
-                        return new InvalidCastException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                ConfigurationRequirement.SuppliedObjectIsOfWrongType,
-                                ConfigurationRequirementType.Int64.Type.ToString()));
-                    }
-
-                    return null;
-                },
+                ConfigurationRequirement.GenerateValidator(ConfigurationRequirementType.Int64),
                 collectionInfo,
                 dependsOn,
                 exclusiveWith);
@@ -326,7 +287,7 @@ namespace Drexel.Configurables
         {
             try
             {
-                return this.validator.Invoke(instance);
+                return this.validator.Invoke(this.CollectionInfo, instance);
             }
             catch (Exception e)
             {
@@ -343,6 +304,7 @@ namespace Drexel.Configurables
         public override string ToString()
         {
             const string newline = "\r\n";
+            const string @null = "null";
 
             string JsonEscape(string toEscape)
             {
@@ -380,17 +342,96 @@ namespace Drexel.Configurables
 
                 return builder.ToString();
             }
-            void AppendValue(StringBuilder builder, string name, string value)
+
+            void AppendString(StringBuilder builder, string name, string value)
             {
-                builder.Append('"');
+                builder.Append("\t\"");
                 builder.Append(name);
                 builder.Append("\": ");
-                builder.Append('"');
-                builder.Append(value);
-                builder.Append('"');
+
+                if (value == null)
+                {
+                    builder.Append("null");
+                }
+                else
+                {
+                    builder.Append('"');
+                    builder.Append(JsonEscape(value));
+                    builder.Append('"');
+                }
             }
 
-            const string @null = "<null>";
+            void AppendBool(StringBuilder builder, string name, bool value)
+            {
+                builder.Append("\t\"");
+                builder.Append(name);
+                builder.Append("\": ");
+                builder.Append(value ? "true" : "false");
+            }
+
+            void AppendArray(StringBuilder builder, string name, string[] values)
+            {
+                builder.Append("\t\"");
+                builder.Append(name);
+                builder.Append("\": [");
+
+                if (values.Length == 0)
+                {
+                    builder.Append("]");
+                }
+                else
+                {
+                    builder.Append(newline);
+
+                    foreach (string value in values)
+                    {
+                        if (value == null)
+                        {
+                            builder.Append("\t\t");
+                            if (value == null)
+                            {
+                                builder.Append("null");
+                            }
+                            else
+                            {
+                                builder.Append('"');
+                                builder.Append(JsonEscape(value));
+                                builder.Append("\",");
+                                builder.Append(newline);
+                            }
+                        }
+                    }
+
+                    builder.Append("\t]");
+                }
+            }
+
+            void AppendObject(StringBuilder builder, string name, IEnumerable<(string Name, string Value)> values)
+            {
+                builder.Append("\t\"");
+                builder.Append(name);
+                builder.Append("\": ");
+                if (values == null)
+                {
+                    builder.Append(@null);
+                    return;
+                }
+
+                builder.Append("{");
+                builder.Append(newline);
+
+                foreach ((string Name, string Value) value in values)
+                {
+                    builder.Append("\t\t\"");
+                    builder.Append(value.Name);
+                    builder.Append("\": ");
+                    builder.Append(value.Value);
+                    builder.Append(",");
+                    builder.Append(newline);
+                }
+
+                builder.Append("\t}");
+            }
 
             if (this.cachedToString == null)
             {
@@ -398,42 +439,48 @@ namespace Drexel.Configurables
                 builder.Append('{');
 
                 builder.Append(newline);
-                AppendValue(builder, nameof(this.Name), JsonEscape(this.Name));
+                AppendString(builder, nameof(this.Name), this.Name);
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(builder, nameof(this.OfType), JsonEscape(this.OfType.ToString()));
+                AppendString(builder, nameof(this.OfType), this.OfType.Type.FullName);
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(builder, nameof(this.IsOptional), this.IsOptional.ToString());
+                AppendBool(builder, nameof(this.IsOptional), this.IsOptional);
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(builder, nameof(this.Description), JsonEscape(this.Description));
+                AppendString(builder, nameof(this.Description), this.Description);
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(
+                AppendObject(
                     builder,
                     nameof(this.CollectionInfo),
                     this.CollectionInfo == null
-                        ? "null"
-                        : string.Format(
-                            CultureInfo.InvariantCulture,
-                            "{{ \"{0}\": \"{1}\", \"{2}\": \"{3}\" }}",
-                            nameof(this.CollectionInfo.MaximumCount),
-                            this.CollectionInfo.MaximumCount,
-                            nameof(this.CollectionInfo.MinimumCount),
-                            this.CollectionInfo.MinimumCount));
+                        ? null
+                        : new(string Name, string Value)[]
+                            {
+                                (
+                                    nameof(this.CollectionInfo.MaximumCount),
+                                    this.CollectionInfo.MaximumCount.HasValue
+                                        ? '"' + this.CollectionInfo.MaximumCount.Value.ToString() + '"'
+                                        : @null
+                                ),
+                                (
+                                    nameof(this.CollectionInfo.MinimumCount),
+                                    '"' + this.CollectionInfo.MinimumCount.ToString() + '"'
+                                )
+                            });
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(
+                AppendArray(
                     builder,
                     nameof(this.DependsOn),
-                    JsonEscape(string.Join(", ", this.DependsOn.Select(x => "\"" + (x?.Name ?? @null) + "\""))));
+                    this.DependsOn.Select(x => "\"" + (x?.Name ?? @null) + "\"").ToArray());
                 builder.Append(',');
                 builder.Append(newline);
-                AppendValue(
+                AppendArray(
                     builder,
                     nameof(this.ExclusiveWith),
-                    JsonEscape(string.Join(", ", this.ExclusiveWith.Select(x => "\"" + (x?.Name ?? @null) + "\""))));
+                    this.ExclusiveWith.Select(x => "\"" + (x?.Name ?? @null) + "\"").ToArray());
                 builder.Append(newline);
 
                 builder.Append('}');
@@ -442,6 +489,67 @@ namespace Drexel.Configurables
             }
 
             return this.cachedToString;
+        }
+
+        [DebuggerHidden]
+        private static Validator GenerateValidator(ConfigurationRequirementType type)
+        {
+            return (info, instance) =>
+            {
+                if (instance == null)
+                {
+                    return new ArgumentNullException(nameof(instance));
+                }
+                else if (info == null)
+                {
+                    if (!type.Type.IsAssignableFrom(instance.GetType()))
+                    {
+                        return new ArgumentException(
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                ConfigurationRequirement.SuppliedObjectIsOfWrongType,
+                                type.Type.ToString()),
+                            nameof(instance));
+                    }
+                }
+                else if (info != null)
+                {
+                    if (!(instance is IEnumerable enumerable))
+                    {
+                        return new ArgumentException(
+                            ConfigurationRequirement.SuppliedObjectIsNotIEnumerable,
+                            nameof(instance));
+                    }
+
+                    object[] array = enumerable.Cast<object>().ToArray();
+                    if (array.Length < info.MinimumCount
+                        || info.MaximumCount.HasValue ? array.Length > info.MaximumCount.Value : false)
+                    {
+                        return new ArgumentException(
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                ConfigurationRequirement.SuppliedCollectionOfInvalidSize,
+                                array.Length,
+                                info.MinimumCount,
+                                info.MaximumCount.HasValue
+                                    ? info.MaximumCount.Value.ToString(CultureInfo.InvariantCulture)
+                                    : "null"),
+                            nameof(instance));
+                    }
+
+                    if (array.Length > 0 && !type.Type.IsAssignableFrom(array[0].GetType()))
+                    {
+                        return new ArgumentException(
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                ConfigurationRequirement.SuppliedCollectionContainsObjectsOfWrongType,
+                                type.Type.ToString()),
+                            nameof(instance));
+                    }
+                }
+
+                return null;
+            };
         }
 
         [DebuggerHidden]

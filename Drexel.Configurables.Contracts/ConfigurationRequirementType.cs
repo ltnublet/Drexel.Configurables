@@ -45,9 +45,9 @@ namespace Drexel.Configurables.Contracts
             new ConfigurationRequirementType(typeof(bool));
 
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="FilePath"/>.
+        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="External.FilePath"/>.
         /// </summary>
-        public static ConfigurationRequirementType Path { get; } =
+        public static ConfigurationRequirementType FilePath { get; } =
             new ConfigurationRequirementType(typeof(FilePath));
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Drexel.Configurables.External.Tests.Mocks
+namespace Drexel.Configurables.External.Shared.Mocks
 {
     public class MockPathInteractor : IPathInteractor
     {
