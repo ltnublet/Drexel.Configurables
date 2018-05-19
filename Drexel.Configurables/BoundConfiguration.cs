@@ -11,11 +11,16 @@ namespace Drexel.Configurables
     /// </summary>
     public class BoundConfiguration : IBoundConfiguration
     {
-        private const string ConfigurableRequirementsMustNotBeNull = "Configuration requirements must not be null.";
-        private const string MissingRequirement = "Missing required argument. Name: '{0}'.";
-        private const string DependenciesNotSatisfied = "Argument name '{0}' does not have its dependencies fulfilled.";
-        private const string ConflictingRequirementsSpecified = "Argument name '{0}' has conflicting requirements specified.";
-        private const string RequirementsFailedValidation = "Supplied requirements failed validation.";
+        internal const string ConfigurableRequirementsMustNotBeNull =
+            "Configuration requirements must not be null.";
+        internal const string MissingRequirement =
+            "Missing required requirement. Name: '{0}'.";
+        internal const string DependenciesNotSatisfied =
+            "Requirement '{0}' does not have its dependencies fulfilled.";
+        internal const string ConflictingRequirementsSpecified =
+            "Requirement '{0}' has conflicting requirements specified.";
+        internal const string RequirementsFailedValidation =
+            "Supplied requirements failed validation.";
 
         private Dictionary<IConfigurationRequirement, object> backingDictionary;
         private Lazy<IBinding[]> backingBindings;
@@ -74,16 +79,15 @@ namespace Drexel.Configurables
                 }
                 else if (present)
                 {
+                    // TODO: Should validation happen after checking there are no DependsOn/ExclusiveWith failures?
                     Exception exception = requirement.Validate(binding);
 
                     if (exception != null)
                     {
                         failures.Add(exception);
                     }
-                    else
-                    {
-                        this.backingDictionary.Add(requirement, binding);
-                    }
+
+                    this.backingDictionary.Add(requirement, binding);
                 }
             }
 

@@ -32,5 +32,39 @@ namespace Drexel.Configurables
         /// The bound <see cref="object"/>.
         /// </summary>
         public object Bound { get; private set; }
+
+        /// <summary>
+        /// Returns a value indicating whether this instance is equal to the specified <see cref="object"/>.
+        /// </summary>
+        /// <param name="obj">
+        /// An <see cref="object"/> to compare with this instance.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if <paramref name="obj"/> is an instance of <see cref="Binding"/> and its
+        /// <see cref="Binding.Requirement"/> equals the value of this instance's <see cref="Binding.Requuirement"/>,
+        /// and its <see cref="Binding.Bound"/> equals the value of this instance's <see cref="Binding.Bound"/>;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Binding other))
+            {
+                return false;
+            }
+
+            return (this.Requirement?.Equals(other.Requirement) ?? other.Requirement == null)
+                && (this.Bound?.Equals(other.Bound) ?? other.Bound == null);
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// The hash code for this instance.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return (this.Requirement?.GetHashCode() ?? 0) + (this.Bound?.GetHashCode() ?? 0);
+        }
     }
 }

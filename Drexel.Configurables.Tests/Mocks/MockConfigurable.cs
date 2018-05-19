@@ -18,7 +18,7 @@ namespace Drexel.Configurables.Tests.Mocks
             IEnumerable<IConfigurationRequirement> requirements,
             ConfigureFunc configureFunc = null)
         {
-            this.requirements = new Lazy<IReadOnlyList<IConfigurationRequirement>>(() => requirements.ToList());
+            this.requirements = new Lazy<IReadOnlyList<IConfigurationRequirement>>(() => requirements?.ToList());
             this.configureFunc = configureFunc;
         }
 
