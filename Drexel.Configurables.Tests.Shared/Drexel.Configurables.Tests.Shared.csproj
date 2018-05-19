@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,11 +43,20 @@
   <ItemGroup>
     <Compile Include="Mocks\MockPathInteractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj">
+      <Project>{16bec067-8e98-468c-895d-9c71ddec402c}</Project>
+      <Name>Drexel.Configurables.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj">
       <Project>{10c29687-ef10-485e-9809-b629a561edec}</Project>
       <Name>Drexel.Configurables.External</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj">
+      <Project>{6104cac4-075a-4f89-8c64-b91b536888a0}</Project>
+      <Name>Drexel.Configurables</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

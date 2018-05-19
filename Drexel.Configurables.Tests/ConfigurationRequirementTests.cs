@@ -4,6 +4,7 @@ using System.Linq;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.External;
 using Drexel.Configurables.External.Shared.Mocks;
+using Drexel.Configurables.Tests.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests
@@ -86,9 +87,9 @@ namespace Drexel.Configurables.Tests
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
             IEnumerable<IConfigurationRequirement> dependsOn =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
             IEnumerable<IConfigurationRequirement> exclusiveWith =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
                 name,
@@ -138,9 +139,9 @@ namespace Drexel.Configurables.Tests
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
             IEnumerable<IConfigurationRequirement> dependsOn =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
             IEnumerable<IConfigurationRequirement> exclusiveWith =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
                 name,
@@ -190,9 +191,9 @@ namespace Drexel.Configurables.Tests
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
             IEnumerable<IConfigurationRequirement> dependsOn =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
             IEnumerable<IConfigurationRequirement> exclusiveWith =
-                ConfigurationRequirementTests.CreateIConfigurationRequirementCollection(3);
+                TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
                 name,
@@ -370,7 +371,7 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_ToString_Succeeds()
         {
             ConfigurationRequirement requirement =
-                ConfigurationRequirementTests.CreateConfigurationRequirement();
+                TestUtil.CreateConfigurationRequirement();
 
             JsonCompare.Compare(requirement, requirement.ToString());
         }
@@ -379,7 +380,7 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_ToString_Collection_NoMaximumCount_Succeeds()
         {
             ConfigurationRequirement requirement =
-                ConfigurationRequirementTests.CreateConfigurationRequirement(collectionInfo: new CollectionInfo(3));
+                TestUtil.CreateConfigurationRequirement(collectionInfo: new CollectionInfo(3));
 
             JsonCompare.Compare(requirement, requirement.ToString());
         }
@@ -388,7 +389,7 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_ToString_Collection_MaximumCount_Succeeds()
         {
             ConfigurationRequirement requirement =
-                ConfigurationRequirementTests.CreateConfigurationRequirement(
+                TestUtil.CreateConfigurationRequirement(
                     collectionInfo: new CollectionInfo(3, 12));
             JsonCompare.Compare(requirement, requirement.ToString());
         }
@@ -411,32 +412,5 @@ namespace Drexel.Configurables.Tests
 
             Assert.AreEqual(typeof(NotImplementedException), requirement.Validate(validInput).GetType());
         }
-
-        private static ConfigurationRequirement CreateConfigurationRequirement(
-            string baseName = "ConfigurationRequirementName",
-            string baseDescription = "Configuration requirement description.",
-            ConfigurationRequirementType type = null,
-            bool isOptional = false,
-            Validator validator = null,
-            CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null)
-        {
-            return new ConfigurationRequirement(
-                baseName + Guid.NewGuid(),
-                baseDescription + Guid.NewGuid(),
-                type ?? ConfigurationRequirementType.String,
-                isOptional,
-                validator ?? ((x, y) => null),
-                collectionInfo,
-                dependsOn ?? new IConfigurationRequirement[0],
-                exclusiveWith ?? new IConfigurationRequirement[0]);
-        }
-
-        private static IEnumerable<IConfigurationRequirement> CreateIConfigurationRequirementCollection(int count) =>
-            Enumerable
-                .Range(0, count)
-                .Select(x => ConfigurationRequirementTests.CreateConfigurationRequirement())
-                .ToArray();
     }
 }
