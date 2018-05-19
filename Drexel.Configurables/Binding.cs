@@ -52,7 +52,7 @@ namespace Drexel.Configurables
                 return false;
             }
 
-            return (this.Requirement?.Equals(other.Requirement) ?? other.Requirement == null)
+            return this.Requirement.Equals(other.Requirement)
                 && (this.Bound?.Equals(other.Bound) ?? other.Bound == null);
         }
 
@@ -64,7 +64,7 @@ namespace Drexel.Configurables
         /// </returns>
         public override int GetHashCode()
         {
-            return (this.Requirement?.GetHashCode() ?? 0) + (this.Bound?.GetHashCode() ?? 0);
+            return this.Requirement.GetHashCode() + (this.Bound?.GetHashCode() ?? 0);
         }
     }
 }
