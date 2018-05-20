@@ -5,9 +5,9 @@ using System.Linq;
 using System.Security;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.External;
-using Drexel.Configurables.External.Shared.Mocks;
+using Drexel.Configurables.Tests.Common.Mocks;
 
-namespace Drexel.Configurables.Tests.Shared
+namespace Drexel.Configurables.Tests.Common
 {
     public static class TestUtil
     {

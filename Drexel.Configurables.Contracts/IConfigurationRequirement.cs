@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Drexel.Configurables.Contracts
 {
     /// <summary>
-    /// Represents a configuration requirement of an <see cref="IDataSource{T}"/>.
+    /// Represents a configuration requirement of an <see cref="IConfigurable"/>.
     /// </summary>
     public interface IConfigurationRequirement
     {

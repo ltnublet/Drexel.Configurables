@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests
 {
-    public class AssertUtil
+    public static class AssertUtil
     {
         public static void Compare(
             string expectedName,

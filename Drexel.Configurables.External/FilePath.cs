@@ -8,6 +8,9 @@ namespace Drexel.Configurables.External
     /// </summary>
     public class FilePath
     {
+        /// <summary>
+        /// Exception message for when an invalid path is supplied.
+        /// </summary>
         internal const string InvalidPath = "The specified path is not a valid fully-qualified path.";
 
         /// <summary>
@@ -86,16 +89,16 @@ namespace Drexel.Configurables.External
         /// <summary>
         /// Determines whether the specified <see cref="FilePath"/> is equal to the current <see cref="FilePath"/>.
         /// </summary>
-        /// <param name="path">
+        /// <param name="obj">
         /// The <see cref="FilePath"/> to compare with the current <see cref="FilePath"/>.
         /// </param>
         /// <returns>
         /// <see langword="true"/> if the specified <see cref="FilePath"/> is equal to the current
         /// <see cref="FilePath"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public override bool Equals(object path)
+        public override bool Equals(object obj)
         {
-            if (path is FilePath other)
+            if (obj is FilePath other)
             {
                 return FilePath.InvariantCultureStringEquals(
                     this.Path,

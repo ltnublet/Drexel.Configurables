@@ -19,7 +19,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Tests.Shared", "Drexel.Configurables.Tests.Shared\Drexel.Configurables.Tests.Shared.csproj", "{0538B40E-1236-4646-9650-35A3520407C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Tests.Common", "Drexel.Configurables.Tests.Shared\Drexel.Configurables.Tests.Common.csproj", "{0538B40E-1236-4646-9650-35A3520407C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".StyleCop", ".StyleCop", "{16A2125F-5EAD-4616-8C06-69E443B0E61F}"
+	ProjectSection(SolutionItems) = preProject
+		.StyleCop\CodeAnalysisDictionary.xml = .StyleCop\CodeAnalysisDictionary.xml
+		.StyleCop\Drexel.Configurables.ruleset = .StyleCop\Drexel.Configurables.ruleset
+		.StyleCop\Drexel.Configurables_MSTest.ruleset = .StyleCop\Drexel.Configurables_MSTest.ruleset
+		.StyleCop\stylecop.json = .StyleCop\stylecop.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +62,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{16A2125F-5EAD-4616-8C06-69E443B0E61F} = {D3FD127B-5C95-47A5-AAEE-CF1BFA4F788F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C77AC3CA-EE04-4B78-9AFA-57E6E77454C8}

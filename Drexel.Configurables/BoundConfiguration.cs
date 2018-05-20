@@ -11,14 +11,33 @@ namespace Drexel.Configurables
     /// </summary>
     public class BoundConfiguration : IBoundConfiguration
     {
+        /// <summary>
+        /// Exception message for when a configuration requirements are null.
+        /// </summary>
         internal const string ConfigurableRequirementsMustNotBeNull =
             "Configuration requirements must not be null.";
+
+        /// <summary>
+        /// Exception message for when a requirement is missing.
+        /// </summary>
         internal const string MissingRequirement =
             "Missing required requirement. Name: '{0}'.";
+
+        /// <summary>
+        /// Exception message for when a dependency is not satisfied.
+        /// </summary>
         internal const string DependenciesNotSatisfied =
             "Requirement '{0}' does not have its dependencies fulfilled.";
+
+        /// <summary>
+        /// Exception message for when a conflicting requirement is specified.
+        /// </summary>
         internal const string ConflictingRequirementsSpecified =
             "Requirement '{0}' has conflicting requirements specified.";
+
+        /// <summary>
+        /// Exception message for when requirements fail validation.
+        /// </summary>
         internal const string RequirementsFailedValidation =
             "Supplied requirements failed validation.";
 

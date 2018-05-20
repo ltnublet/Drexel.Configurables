@@ -17,6 +17,10 @@ namespace Drexel.Configurables.External
         /// <returns>
         /// The fully qualified location of <paramref name="path"/>.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "Intentional.")]
         public string GetFullPath(string path)
         {
             try

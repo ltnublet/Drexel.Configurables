@@ -16,8 +16,13 @@ namespace Drexel.Configurables.Contracts
         /// Static initializer for the <see cref="ConfigurationRequirementType"/> class; populates properties in order
         /// so that reflection can be used to retrieve the total set of supported types.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance",
+            "CA1810:InitializeReferenceTypeStaticFieldsInline",
+            Justification = "Order of initializations matters.")]
         static ConfigurationRequirementType()
         {
+#pragma warning disable SA1121 // Use built-in type alias
             ConfigurationRequirementType.Bool = new ConfigurationRequirementType(typeof(Boolean));
             ConfigurationRequirementType.FilePath = new ConfigurationRequirementType(typeof(FilePath));
             ConfigurationRequirementType.Int32 = new ConfigurationRequirementType(typeof(Int32));
@@ -25,6 +30,7 @@ namespace Drexel.Configurables.Contracts
             ConfigurationRequirementType.SecureString = new ConfigurationRequirementType(typeof(SecureString));
             ConfigurationRequirementType.String = new ConfigurationRequirementType(typeof(String));
             ConfigurationRequirementType.Uri = new ConfigurationRequirementType(typeof(Uri));
+#pragma warning restore SA1121 // Use built-in type alias
 
             // Programmatically build the list of supported types by iterating over all public static fields which are
             // of type ConfigurationRequirementType. All properties must be initialized before this is executed.
@@ -48,9 +54,11 @@ namespace Drexel.Configurables.Contracts
             this.Type = type;
         }
 
+#pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
         /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="Boolean"/>.
         /// </summary>
+#pragma warning restore SA1121 // Use built-in type alias
         public static ConfigurationRequirementType Bool { get; }
 
         /// <summary>
@@ -59,14 +67,18 @@ namespace Drexel.Configurables.Contracts
         /// </summary>
         public static ConfigurationRequirementType FilePath { get; }
 
+#pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="Int32"/>.
+        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.Int32"/>.
         /// </summary>
+#pragma warning restore SA1121 // Use built-in type alias
         public static ConfigurationRequirementType Int32 { get; }
 
+#pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="Int64"/>.
+        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.Int64"/>.
         /// </summary>
+#pragma warning restore SA1121 // Use built-in type alias
         public static ConfigurationRequirementType Int64 { get; }
 
         /// <summary>
@@ -75,9 +87,11 @@ namespace Drexel.Configurables.Contracts
         /// </summary>
         public static ConfigurationRequirementType SecureString { get; }
 
+#pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="String"/>.
+        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.String"/>.
         /// </summary>
+#pragma warning restore SA1121 // Use built-in type alias
         public static ConfigurationRequirementType String { get; }
 
         /// <summary>
@@ -115,7 +129,9 @@ namespace Drexel.Configurables.Contracts
         /// </returns>
         public override bool Equals(object obj)
         {
+#pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
             if (obj == null || !(obj is ConfigurationRequirementType other))
+#pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
             {
                 return false;
             }

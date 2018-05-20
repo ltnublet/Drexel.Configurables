@@ -41,13 +41,15 @@ namespace Drexel.Configurables
         /// </param>
         /// <returns>
         /// <see langword="true"/> if <paramref name="obj"/> is an instance of <see cref="Binding"/> and its
-        /// <see cref="Binding.Requirement"/> equals the value of this instance's <see cref="Binding.Requuirement"/>,
+        /// <see cref="Binding.Requirement"/> equals the value of this instance's <see cref="Binding.Requirement"/>,
         /// and its <see cref="Binding.Bound"/> equals the value of this instance's <see cref="Binding.Bound"/>;
         /// otherwise, <see langword="false"/>.
         /// </returns>
         public override bool Equals(object obj)
         {
+#pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
             if (obj == null || !(obj is Binding other))
+#pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
             {
                 return false;
             }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.Tests.Mocks;
-using Drexel.Configurables.Tests.Shared;
+using Drexel.Configurables.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests

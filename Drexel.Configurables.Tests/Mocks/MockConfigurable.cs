@@ -7,6 +7,10 @@ namespace Drexel.Configurables.Tests.Mocks
 {
     public class MockConfigurable : IConfigurable
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
+            Justification = "By design.")]
         public delegate IBoundConfiguration ConfigureFunc(
             IConfigurable self,
             IReadOnlyDictionary<IConfigurationRequirement, object> collection);

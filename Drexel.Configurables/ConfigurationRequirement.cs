@@ -29,11 +29,13 @@ namespace Drexel.Configurables
     /// </summary>
     public class ConfigurationRequirement : IConfigurationRequirement
     {
+#pragma warning disable SA1516 // Elements must be separated by blank line
         private const string SuppliedCollectionOfInvalidSize =
             "Supplied object is a collection of invalid size. Number of items: '{0}'. Minimum: '{1}'. Maximum: '{2}'.";
         private const string SuppliedCollectionContainsObjectsOfWrongType =
             "Supplied collection contains object(s) of wrong type. Expected type: '{0}'.";
         private const string SuppliedObjectIsOfWrongType = "Supplied object is of wrong type. Expected type: '{0}'.";
+#pragma warning restore SA1516 // Elements must be separated by blank line
         private const string SuppliedObjectIsNotIEnumerable = "Supplied object is not an IEnumerable.";
         private const string StringMustBeNonWhitespace = "String must not be whitespace.";
 
@@ -304,9 +306,10 @@ namespace Drexel.Configurables
         /// A <see cref="Validator"/> which accepts the instance <see cref="object"/> being validated. This
         /// <paramref name="additionalValidation"/> will only be invoked if the <see cref="object"/> passes the
         /// default validation logic.
-        /// validation.
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        /// A simple <see cref="Validator"/> with the default validation logic.
+        /// </returns>
         public static Validator CreateSimpleValidator(
             ConfigurationRequirementType type,
             Validator additionalValidation = null)
@@ -455,7 +458,9 @@ namespace Drexel.Configurables
                 }
             }
 
+#pragma warning disable SA1009 // Closing parenthesis must be spaced correctly
             void AppendObject(StringBuilder builder, string name, IEnumerable<(string Name, string Value)> values)
+#pragma warning restore SA1009 // Closing parenthesis must be spaced correctly
             {
                 builder.Append("\t\"");
                 builder.Append(name);
@@ -506,17 +511,25 @@ namespace Drexel.Configurables
                     this.CollectionInfo == null
                         ? null
                         : new(string Name, string Value)[]
+#pragma warning disable SA1009 // Closing parenthesis must be spaced correctly
                             {
                                 (
                                     nameof(this.CollectionInfo.MaximumCount),
                                     this.CollectionInfo.MaximumCount.HasValue
-                                        ? '"' + this.CollectionInfo.MaximumCount.Value.ToString() + '"'
+                                        ? '"'
+                                            + this
+                                                .CollectionInfo
+                                                .MaximumCount
+                                                .Value
+                                                .ToString(CultureInfo.InvariantCulture)
+                                            + '"'
                                         : @null
                                 ),
                                 (
                                     nameof(this.CollectionInfo.MinimumCount),
-                                    '"' + this.CollectionInfo.MinimumCount.ToString() + '"'
+                                    '"' + this.CollectionInfo.MinimumCount.ToString(CultureInfo.InvariantCulture) + '"'
                                 )
+#pragma warning restore SA1009 // Closing parenthesis must be spaced correctly
                             });
                 builder.Append(',');
                 builder.Append(newline);
@@ -534,7 +547,7 @@ namespace Drexel.Configurables
 
                 builder.Append('}');
 
-                cachedToString = builder.ToString();
+                this.cachedToString = builder.ToString();
             }
 
             return this.cachedToString;
@@ -547,17 +560,21 @@ namespace Drexel.Configurables
         /// This field intentionally left blank.
         /// </param>
         /// <param name="info">
-        /// This field also intentionally left blank.
+        /// This field intentionally left blank.
         /// </param>
         /// <param name="instance">
-        /// This field also also intentionally left blank.
+        /// This field intentionally left blank.
         /// </param>
         /// <param name="additionalValidation">
-        /// This field also also also intentionally left blank.
+        /// This field intentionally left blank.
         /// </param>
         /// <returns>
         /// This field intentionally left blank.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1031:DoNotCatchGeneralExceptionTypes",
+            Justification = "We don't control what types of exceptions validation can raise.")]
         internal static Exception SimpleValidator(
             ConfigurationRequirementType type,
             CollectionInfo info,
@@ -582,7 +599,9 @@ namespace Drexel.Configurables
             }
             else if (info != null)
             {
+#pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
                 if (!(instance is IEnumerable enumerable))
+#pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
                 {
                     return new ArgumentException(
                         ConfigurationRequirement.SuppliedObjectIsNotIEnumerable,

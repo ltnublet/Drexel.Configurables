@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Drexel.Configurables.External.Shared.Mocks;
+using Drexel.Configurables.Tests.Common.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.External.Tests
@@ -82,7 +82,8 @@ namespace Drexel.Configurables.External.Tests
         {
             const string path = "path";
 
-            new FilePath(path, FilePathTests.interactor);
+            FilePath filePath = new FilePath(path, FilePathTests.interactor);
+            Assert.IsNotNull(filePath);
         }
 
         [TestMethod]

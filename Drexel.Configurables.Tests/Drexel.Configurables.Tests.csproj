@@ -28,6 +28,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables_MSTest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -61,6 +63,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\.StyleCop\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -72,14 +77,19 @@
       <Project>{10C29687-EF10-485E-9809-B629A561EDEC}</Project>
       <Name>Drexel.Configurables.External</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Drexel.Configurables.Tests.Shared\Drexel.Configurables.Tests.Shared.csproj">
+    <ProjectReference Include="..\Drexel.Configurables.Tests.Shared\Drexel.Configurables.Tests.Common.csproj">
       <Project>{0538b40e-1236-4646-9650-35a3520407c3}</Project>
-      <Name>Drexel.Configurables.Tests.Shared</Name>
+      <Name>Drexel.Configurables.Tests.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj">
       <Project>{6104cac4-075a-4f89-8c64-b91b536888a0}</Project>
       <Name>Drexel.Configurables</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\.StyleCop\CodeAnalysisDictionary.xml">
+      <Link>CodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

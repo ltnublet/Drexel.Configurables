@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.External;
-using Drexel.Configurables.External.Shared.Mocks;
-using Drexel.Configurables.Tests.Shared;
+using Drexel.Configurables.Tests.Common;
+using Drexel.Configurables.Tests.Common.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests
@@ -397,8 +397,8 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void ConfigurationRequirement_Validate_RaisesExceptionDuringValidation_Succeeds()
         {
-            const string name = "DontCare";
-            const string description = "DontCare";
+            const string name = "DoNotCare";
+            const string description = "DoNotCare";
             const bool isOptional = false;
             ConfigurationRequirementType type = ConfigurationRequirementType.String;
             const object validInput = null;

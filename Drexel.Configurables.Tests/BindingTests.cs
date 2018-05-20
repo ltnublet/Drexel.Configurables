@@ -1,6 +1,6 @@
 ﻿using System;
 using Drexel.Configurables.Contracts;
-using Drexel.Configurables.Tests.Shared;
+using Drexel.Configurables.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests
@@ -56,7 +56,7 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Binding_Equals_ValuesDontMatch_ReturnsFalse()
+        public void Binding_Equals_ValuesDoNotMatch_ReturnsFalse()
         {
             IConfigurationRequirement requirement = ConfigurationRequirement.String("Name", "Description");
             Binding first = new Binding(requirement, "Hello World");
@@ -78,7 +78,7 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Binding_Equals_RequirementsDontMatch_ReturnsFalse()
+        public void Binding_Equals_RequirementsDoNotMatch_ReturnsFalse()
         {
             const string value = "Hello World";
             IConfigurationRequirement requirement1 = ConfigurationRequirement.String("Name1", "Description");
