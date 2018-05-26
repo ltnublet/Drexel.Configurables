@@ -271,6 +271,28 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
+        public void BoundConfiguration_Ctor_DependsOnChains_Succeeds()
+        {
+            IConfigurationRequirement parent = TestUtil.CreateConfigurationRequirement(baseName: "Parent");
+            IConfigurationRequirement child = TestUtil.CreateConfigurationRequirement(
+                baseName: "Child",
+                dependsOn: new IConfigurationRequirement[] { parent });
+
+            Dictionary<IConfigurationRequirement, object> supplied =
+                new Dictionary<IConfigurationRequirement, object>()
+                {
+                    [parent] = TestUtil.GetDefaultValidObjectForRequirement(parent),
+                    [child] = TestUtil.GetDefaultValidObjectForRequirement(child)
+                };
+
+            MockConfigurable configurable = new MockConfigurable(new IConfigurationRequirement[] { parent, child });
+            BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
+
+            Assert.IsNotNull(configuration);
+            CollectionAssert.AreEquivalent(supplied, configurable.Requirements.ToArray());
+        }
+
+        [TestMethod]
         public void BoundConfiguration_Bindings_Succeeds()
         {
             const int numberOfRequirements = 50;

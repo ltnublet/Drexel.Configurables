@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Drexel.Configurables.Contracts;
+using Drexel.Configurables.External;
 
 namespace Drexel.Configurables
 {
@@ -82,7 +83,115 @@ namespace Drexel.Configurables
                     nameof(configurable));
             }
 
+            this.backingDictionary = bindings.ToDictionary(x => x.Key, x => x.Value);
+
             List<Exception> failures = new List<Exception>();
+
+            // Check for DependsOn failures.
+            IConfigurationRequirement[] dependsOnFailures = this.backingDictionary
+                .Keys
+                .Where(x => x.DependsOn.Any(y => !bindings.Keys.Contains(y)))
+                .ToArray();
+            failures.AddRange(dependsOnFailures
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.DependenciesNotSatisfied,
+                        x.Name))));
+
+            // Check for ExclusiveWith failures.
+            IConfigurationRequirement[] exclusiveConflicts = this.backingDictionary
+                .Keys
+                .Where(x => x.ExclusiveWith.Any(y => bindings.Keys.Contains(y)))
+                .ToArray();
+            failures.AddRange(exclusiveConflicts
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.ConflictingRequirementsSpecified,
+                        x.Name))));
+
+            // Remove ExclusiveWith/DependsOn errors from the set of validations to execute.
+            foreach (IConfigurationRequirement cantValidate in exclusiveConflicts.Concat(dependsOnFailures))
+            {
+                this.backingDictionary.Remove(cantValidate);
+            }
+
+            // Build dependsOn chains.
+            Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>> chains =
+                new Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>>();
+            Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> nodes =
+                new Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>>();
+
+            foreach (IConfigurationRequirement requirement in this.backingDictionary.Keys)
+            {
+                chains.Add(
+                    requirement,
+                    this.backingDictionary.Keys.Where(x => x.DependsOn.Contains(requirement)).ToList());
+                nodes.Add(
+                    requirement,
+                    new TreeNode<IConfigurationRequirement>(requirement));
+            }
+
+            foreach (KeyValuePair<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> requirement in nodes)
+            {
+                requirement.Value.AddRange(chains[requirement.Key].Select(child => nodes[child]));
+            }
+
+            // At this point, we now have a tree for each requirement, where performing a BFS and providing all
+            // previously computed nodes at that depth will satisfy the requirements at each level.
+            // First, validate all the roots.
+            IConfigurationRequirement[] roots = this.backingDictionary.Keys.Where(x => !x.DependsOn.Any()).ToArray();
+            Dictionary<IConfigurationRequirement, IBinding> completed =
+                new Dictionary<IConfigurationRequirement, IBinding>();
+
+            foreach (IConfigurationRequirement requirement in roots)
+            {
+                Exception exception = this.Validate(bindings, requirement, out object binding);
+                if (exception == null)
+                {
+                    completed.Add(requirement, new Binding(requirement, binding));
+                }
+                else
+                {
+                    failures.Add(exception);
+                }
+            }
+
+            // TODO: This seems like it should be recursive, with the initial set being the roots, and then for each
+            // child of the roots the same thing happens, and then for each child of those nodes the same thing happens
+
+            // With the roots validated, we can perform a BFS on each of their trees, caching each nodes result.
+            foreach (TreeNode<IConfigurationRequirement> node in nodes.Keys.Where(x => roots.Contains(x)))
+            {
+                foreach (TreeNode<IConfigurationRequirement> child in node.Children)
+                {
+                    Exception exception = this.Validate(bindings, child.Value, out object binding);
+                    if (exception == null)
+                    {
+                        completed.Add(child.Value, new Binding(child.Value, binding));
+                    }
+                    else
+                    {
+                        failures.Add(exception);
+                    }
+                }
+            }
+
+            Dictionary<IConfigurationRequirement, Tree<IConfigurationRequirement>> roots = this
+                .backingDictionary
+                .Keys
+                .Where(x => !x.DependsOn.Any())
+                .ToDictionary(
+                    x => x,
+                    x => new Tree<IConfigurationRequirement>(new TreeNode<IConfigurationRequirement>(x)));
+            foreach (IConfigurationRequirement hasDependencies in this.backingDictionary.Keys.Except(roots.Keys))
+            {
+
+            }
+
+            // Perform validation for each of the dependsOn chains
+
             this.backingDictionary = new Dictionary<IConfigurationRequirement, object>();
             foreach (IConfigurationRequirement requirement in configurable.Requirements)
             {
@@ -121,20 +230,6 @@ namespace Drexel.Configurables
                         string.Format(
                             CultureInfo.InvariantCulture,
                             BoundConfiguration.DependenciesNotSatisfied,
-                            pair.Key.Name)));
-            }
-
-            foreach (KeyValuePair<IConfigurationRequirement, object> pair in
-                this.backingDictionary
-                    .Where(x => x.Key.ExclusiveWith.Any(y => this.backingDictionary.ContainsKey(y)))
-                    .ToArray())
-            {
-                this.backingDictionary.Remove(pair.Key);
-                failures.Add(
-                    new ArgumentException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            BoundConfiguration.ConflictingRequirementsSpecified,
                             pair.Key.Name)));
             }
 
@@ -197,6 +292,30 @@ namespace Drexel.Configurables
             }
 
             return result;
+        }
+
+        private Exception Validate(
+            IReadOnlyDictionary<IConfigurationRequirement, object> bindings,
+            IConfigurationRequirement requirement,
+            out object binding)
+        {
+            bool present = bindings.TryGetValue(requirement, out binding);
+            if (!present && !requirement.IsOptional)
+            {
+                return new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.MissingRequirement,
+                        requirement.Name));
+            }
+            else if (present)
+            {
+                Exception exception = requirement.Validate(binding);
+
+                return exception;
+            }
+
+            return null;
         }
     }
 }
