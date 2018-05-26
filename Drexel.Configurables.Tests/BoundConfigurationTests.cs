@@ -289,7 +289,9 @@ namespace Drexel.Configurables.Tests
             BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
 
             Assert.IsNotNull(configuration);
-            CollectionAssert.AreEquivalent(supplied, configurable.Requirements.ToArray());
+            CollectionAssert.AreEquivalent(
+                supplied.Select(x => new Binding(x.Key, x.Value)).ToArray(),
+                configuration.Bindings.ToArray());
         }
 
         [TestMethod]

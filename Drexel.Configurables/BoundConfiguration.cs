@@ -145,93 +145,31 @@ namespace Drexel.Configurables
             Dictionary<IConfigurationRequirement, IBinding> completed =
                 new Dictionary<IConfigurationRequirement, IBinding>();
 
-            foreach (IConfigurationRequirement requirement in roots)
+            void DoThing(IEnumerable<TreeNode<IConfigurationRequirement>> dudes)
             {
-                Exception exception = this.Validate(bindings, requirement, out object binding);
-                if (exception == null)
+                List<TreeNode<IConfigurationRequirement>> asList = dudes.ToList();
+                if (!asList.Any())
                 {
-                    completed.Add(requirement, new Binding(requirement, binding));
+                    return;
                 }
-                else
-                {
-                    failures.Add(exception);
-                }
-            }
 
-            // TODO: This seems like it should be recursive, with the initial set being the roots, and then for each
-            // child of the roots the same thing happens, and then for each child of those nodes the same thing happens
-
-            // With the roots validated, we can perform a BFS on each of their trees, caching each nodes result.
-            foreach (TreeNode<IConfigurationRequirement> node in nodes.Keys.Where(x => roots.Contains(x)))
-            {
-                foreach (TreeNode<IConfigurationRequirement> child in node.Children)
+                foreach (IConfigurationRequirement requirement in asList.Select(x => x.Value))
                 {
-                    Exception exception = this.Validate(bindings, child.Value, out object binding);
+                    Exception exception = this.Validate(bindings, requirement, out object binding);
                     if (exception == null)
                     {
-                        completed.Add(child.Value, new Binding(child.Value, binding));
+                        completed.Add(requirement, new Binding(requirement, binding));
                     }
                     else
                     {
                         failures.Add(exception);
                     }
                 }
+
+                DoThing(asList.SelectMany(x => x.Children).ToList());
             }
 
-            Dictionary<IConfigurationRequirement, Tree<IConfigurationRequirement>> roots = this
-                .backingDictionary
-                .Keys
-                .Where(x => !x.DependsOn.Any())
-                .ToDictionary(
-                    x => x,
-                    x => new Tree<IConfigurationRequirement>(new TreeNode<IConfigurationRequirement>(x)));
-            foreach (IConfigurationRequirement hasDependencies in this.backingDictionary.Keys.Except(roots.Keys))
-            {
-
-            }
-
-            // Perform validation for each of the dependsOn chains
-
-            this.backingDictionary = new Dictionary<IConfigurationRequirement, object>();
-            foreach (IConfigurationRequirement requirement in configurable.Requirements)
-            {
-                bool present = bindings.TryGetValue(requirement, out object binding);
-                if (!present && !requirement.IsOptional)
-                {
-                    failures.Add(
-                        new ArgumentException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                BoundConfiguration.MissingRequirement,
-                                requirement.Name)));
-                }
-                else if (present)
-                {
-                    // TODO: Should validation happen after checking there are no DependsOn/ExclusiveWith failures?
-                    Exception exception = requirement.Validate(binding);
-
-                    if (exception != null)
-                    {
-                        failures.Add(exception);
-                    }
-
-                    this.backingDictionary.Add(requirement, binding);
-                }
-            }
-
-            foreach (KeyValuePair<IConfigurationRequirement, object> pair in
-                this.backingDictionary
-                    .Where(x => !x.Key.DependsOn.All(y => this.backingDictionary.ContainsKey(y)))
-                    .ToArray())
-            {
-                this.backingDictionary.Remove(pair.Key);
-                failures.Add(
-                    new ArgumentException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            BoundConfiguration.DependenciesNotSatisfied,
-                            pair.Key.Name)));
-            }
+            DoThing(nodes.Where(x => roots.Contains(x.Key)).Select(x => x.Value));
 
             if (failures.Any())
             {
