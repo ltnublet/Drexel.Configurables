@@ -223,14 +223,19 @@ namespace Drexel.Configurables.Tests
             const int expectedFailureCount = 4;
 
             IConfigurationRequirement requiredButMissing = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(requiredButMissing),
                 isOptional: false);
             IConfigurationRequirement dependsOnIsMissing = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(dependsOnIsMissing),
                 dependsOn: new IConfigurationRequirement[] { requiredButMissing });
             IConfigurationRequirement failsValidation = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(failsValidation),
                 validator: (x, y) => throw new NotImplementedException(validationFailureMessage));
             IConfigurationRequirement exclusiveWith = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(exclusiveWith),
                 exclusiveWith: new IConfigurationRequirement[] { failsValidation });
             IConfigurationRequirement isFine = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(isFine),
                 validator: (x, y) => null);
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(
@@ -243,7 +248,7 @@ namespace Drexel.Configurables.Tests
             Dictionary<IConfigurationRequirement, object> bindings =
                 new IConfigurationRequirement[] { dependsOnIsMissing, failsValidation, exclusiveWith, isFine }
                     .Select(x => new KeyValuePair<IConfigurationRequirement, object>(x, null))
-                    .ToDictionary(x => x.Key, x => x.Value);
+                    .ToDictionary(x => x.Key, x => x.Value); 
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
                 new BoundConfiguration(configurable, bindings));

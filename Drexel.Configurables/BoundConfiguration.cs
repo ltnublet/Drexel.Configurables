@@ -122,7 +122,6 @@ namespace Drexel.Configurables
                 new Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>>();
             Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> nodes =
                 new Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>>();
-
             foreach (IConfigurationRequirement requirement in this.backingDictionary.Keys)
             {
                 chains.Add(
@@ -140,16 +139,15 @@ namespace Drexel.Configurables
 
             // At this point, we now have a tree for each requirement, where performing a BFS and providing all
             // previously computed nodes at that depth will satisfy the requirements at each level.
-            // First, validate all the roots.
             IConfigurationRequirement[] roots = this.backingDictionary.Keys.Where(x => !x.DependsOn.Any()).ToArray();
             Dictionary<IConfigurationRequirement, IBinding> completed =
                 new Dictionary<IConfigurationRequirement, IBinding>();
-
-            void DoThing(IEnumerable<TreeNode<IConfigurationRequirement>> dudes)
+            void PerformValidation(IEnumerable<TreeNode<IConfigurationRequirement>> currentLayer)
             {
-                List<TreeNode<IConfigurationRequirement>> asList = dudes.ToList();
+                List<TreeNode<IConfigurationRequirement>> asList = currentLayer.ToList();
                 if (!asList.Any())
                 {
+                    // Base case - current depth contains no nodes.
                     return;
                 }
 
@@ -166,10 +164,10 @@ namespace Drexel.Configurables
                     }
                 }
 
-                DoThing(asList.SelectMany(x => x.Children).ToList());
+                PerformValidation(asList.SelectMany(x => x.Children).ToList());
             }
 
-            DoThing(nodes.Where(x => roots.Contains(x.Key)).Select(x => x.Value));
+            PerformValidation(nodes.Where(x => roots.Contains(x.Key)).Select(x => x.Value));
 
             if (failures.Any())
             {
