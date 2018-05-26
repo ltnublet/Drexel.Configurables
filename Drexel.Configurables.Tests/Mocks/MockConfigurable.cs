@@ -15,8 +15,8 @@ namespace Drexel.Configurables.Tests.Mocks
             IConfigurable self,
             IReadOnlyDictionary<IConfigurationRequirement, object> collection);
 
-        private Lazy<IReadOnlyList<IConfigurationRequirement>> requirements;
-        private ConfigureFunc configureFunc;
+        private readonly Lazy<IReadOnlyList<IConfigurationRequirement>> requirements;
+        private readonly ConfigureFunc configureFunc;
 
         public MockConfigurable(
             IEnumerable<IConfigurationRequirement> requirements,

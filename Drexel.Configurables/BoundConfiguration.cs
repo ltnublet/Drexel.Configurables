@@ -42,8 +42,8 @@ namespace Drexel.Configurables
         internal const string RequirementsFailedValidation =
             "Supplied requirements failed validation.";
 
-        private Dictionary<IConfigurationRequirement, object> backingDictionary;
-        private Lazy<IBinding[]> backingBindings;
+        private readonly Lazy<IBinding[]> backingBindings;
+        private readonly Dictionary<IConfigurationRequirement, object> backingDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundConfiguration"/> class.
@@ -62,6 +62,14 @@ namespace Drexel.Configurables
         /// <see cref="AggregateException.InnerExceptions"/> are the specific reasons the <paramref name="bindings"/>
         /// were invalid.
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Maintainability",
+            "CA1506:AvoidExcessiveClassCoupling",
+            Justification = "Intentional.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Maintainability",
+            "CA1502:AvoidExcessiveComplexity",
+            Justification = "Constructor performs complex logic to validate state.")]
         public BoundConfiguration(
             IConfigurable configurable,
             IReadOnlyDictionary<IConfigurationRequirement, object> bindings)
@@ -163,7 +171,7 @@ namespace Drexel.Configurables
 
                 foreach (IConfigurationRequirement requirement in asList.Select(x => x.Value))
                 {
-                    Exception exception = this.Validate(bindings, requirement, out object binding);
+                    Exception exception = BoundConfiguration.Validate(bindings, requirement, out object binding);
                     if (exception == null)
                     {
                         completed.Add(requirement, new Binding(requirement, binding));
@@ -240,7 +248,7 @@ namespace Drexel.Configurables
             return result;
         }
 
-        private Exception Validate(
+        private static Exception Validate(
             IReadOnlyDictionary<IConfigurationRequirement, object> bindings,
             IConfigurationRequirement requirement,
             out object binding)
@@ -262,6 +270,26 @@ namespace Drexel.Configurables
             }
 
             return null;
+        }
+
+        private class TreeNode<T>
+        {
+            private readonly List<TreeNode<T>> innerChildren;
+
+            public TreeNode(T value)
+            {
+                this.Value = value;
+                this.innerChildren = new List<TreeNode<T>>();
+            }
+
+            public T Value { get; private set; }
+
+            public IReadOnlyList<TreeNode<T>> Children => this.innerChildren;
+
+            public void AddRange(IEnumerable<TreeNode<T>> children)
+            {
+                this.innerChildren.AddRange(children);
+            }
         }
     }
 }
