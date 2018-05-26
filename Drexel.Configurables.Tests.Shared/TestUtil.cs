@@ -32,6 +32,8 @@ namespace Drexel.Configurables.Tests.Common
 
         private static Random random = new Random();
 
+        private static long counter = 0;
+
         public static ConfigurationRequirement CreateConfigurationRequirement(
             string baseName = "ConfigurationRequirementName",
             string baseDescription = "Configuration requirement description.",
@@ -43,8 +45,8 @@ namespace Drexel.Configurables.Tests.Common
             IEnumerable<IConfigurationRequirement> exclusiveWith = null)
         {
             return new ConfigurationRequirement(
-                baseName + Guid.NewGuid(),
-                baseDescription + Guid.NewGuid(),
+                baseName + TestUtil.counter++,
+                baseDescription + TestUtil.counter++,
                 type ?? ConfigurationRequirementType.String,
                 isOptional,
                 validator ?? ((x, y) => null),

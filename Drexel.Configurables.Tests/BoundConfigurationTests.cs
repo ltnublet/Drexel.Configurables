@@ -223,14 +223,19 @@ namespace Drexel.Configurables.Tests
             const int expectedFailureCount = 4;
 
             IConfigurationRequirement requiredButMissing = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(requiredButMissing),
                 isOptional: false);
             IConfigurationRequirement dependsOnIsMissing = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(dependsOnIsMissing),
                 dependsOn: new IConfigurationRequirement[] { requiredButMissing });
             IConfigurationRequirement failsValidation = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(failsValidation),
                 validator: (x, y) => throw new NotImplementedException(validationFailureMessage));
             IConfigurationRequirement exclusiveWith = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(exclusiveWith),
                 exclusiveWith: new IConfigurationRequirement[] { failsValidation });
             IConfigurationRequirement isFine = TestUtil.CreateConfigurationRequirement(
+                baseName: nameof(isFine),
                 validator: (x, y) => null);
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(
@@ -243,7 +248,7 @@ namespace Drexel.Configurables.Tests
             Dictionary<IConfigurationRequirement, object> bindings =
                 new IConfigurationRequirement[] { dependsOnIsMissing, failsValidation, exclusiveWith, isFine }
                     .Select(x => new KeyValuePair<IConfigurationRequirement, object>(x, null))
-                    .ToDictionary(x => x.Key, x => x.Value);
+                    .ToDictionary(x => x.Key, x => x.Value); 
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
                 new BoundConfiguration(configurable, bindings));
@@ -268,6 +273,30 @@ namespace Drexel.Configurables.Tests
                     .InnerExceptions
                     .SingleOrDefault(x => x.Message.Contains("Missing required requirement")),
                 testFailureMessage);
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_Ctor_DependsOnChains_Succeeds()
+        {
+            IConfigurationRequirement parent = TestUtil.CreateConfigurationRequirement(baseName: "Parent");
+            IConfigurationRequirement child = TestUtil.CreateConfigurationRequirement(
+                baseName: "Child",
+                dependsOn: new IConfigurationRequirement[] { parent });
+
+            Dictionary<IConfigurationRequirement, object> supplied =
+                new Dictionary<IConfigurationRequirement, object>()
+                {
+                    [parent] = TestUtil.GetDefaultValidObjectForRequirement(parent),
+                    [child] = TestUtil.GetDefaultValidObjectForRequirement(child)
+                };
+
+            MockConfigurable configurable = new MockConfigurable(new IConfigurationRequirement[] { parent, child });
+            BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
+
+            Assert.IsNotNull(configuration);
+            CollectionAssert.AreEquivalent(
+                supplied.Select(x => new Binding(x.Key, x.Value)).ToArray(),
+                configuration.Bindings.ToArray());
         }
 
         [TestMethod]

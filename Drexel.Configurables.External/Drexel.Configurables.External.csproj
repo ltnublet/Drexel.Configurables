@@ -48,6 +48,8 @@
     <Compile Include="IPathInteractor.cs" />
     <Compile Include="PathInteractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tree.cs" />
+    <Compile Include="TreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\.StyleCop\stylecop.json">

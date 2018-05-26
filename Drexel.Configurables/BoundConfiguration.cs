@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Drexel.Configurables.Contracts;
+using Drexel.Configurables.External;
 
 namespace Drexel.Configurables
 {
@@ -82,61 +83,101 @@ namespace Drexel.Configurables
                     nameof(configurable));
             }
 
-            List<Exception> failures = new List<Exception>();
-            this.backingDictionary = new Dictionary<IConfigurationRequirement, object>();
-            foreach (IConfigurationRequirement requirement in configurable.Requirements)
-            {
-                bool present = bindings.TryGetValue(requirement, out object binding);
-                if (!present && !requirement.IsOptional)
-                {
-                    failures.Add(
-                        new ArgumentException(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                BoundConfiguration.MissingRequirement,
-                                requirement.Name)));
-                }
-                else if (present)
-                {
-                    // TODO: Should validation happen after checking there are no DependsOn/ExclusiveWith failures?
-                    Exception exception = requirement.Validate(binding);
+            this.backingDictionary = bindings.ToDictionary(x => x.Key, x => x.Value);
 
-                    if (exception != null)
+            List<Exception> failures = new List<Exception>();
+
+            // Check for missing requirements.
+            failures.AddRange(configurable
+                .Requirements
+                .Where(x => !x.IsOptional && !this.backingDictionary.Keys.Contains(x))
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.MissingRequirement,
+                        x.Name))));
+
+            // Check for DependsOn failures.
+            IConfigurationRequirement[] dependsOnFailures = this.backingDictionary
+                .Keys
+                .Where(x => x.DependsOn.Any(y => !bindings.Keys.Contains(y)))
+                .ToArray();
+            failures.AddRange(dependsOnFailures
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.DependenciesNotSatisfied,
+                        x.Name))));
+
+            // Check for ExclusiveWith failures.
+            IConfigurationRequirement[] exclusiveConflicts = this.backingDictionary
+                .Keys
+                .Where(x => x.ExclusiveWith.Any(y => bindings.Keys.Contains(y)))
+                .ToArray();
+            failures.AddRange(exclusiveConflicts
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.ConflictingRequirementsSpecified,
+                        x.Name))));
+
+            // Remove ExclusiveWith/DependsOn errors from the set of validations to execute.
+            foreach (IConfigurationRequirement cantValidate in exclusiveConflicts.Concat(dependsOnFailures))
+            {
+                this.backingDictionary.Remove(cantValidate);
+            }
+
+            // Build dependsOn chains.
+            Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>> chains =
+                new Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>>();
+            Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> nodes =
+                new Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>>();
+            foreach (IConfigurationRequirement requirement in this.backingDictionary.Keys)
+            {
+                chains.Add(
+                    requirement,
+                    this.backingDictionary.Keys.Where(x => x.DependsOn.Contains(requirement)).ToList());
+                nodes.Add(
+                    requirement,
+                    new TreeNode<IConfigurationRequirement>(requirement));
+            }
+
+            foreach (KeyValuePair<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> requirement in nodes)
+            {
+                requirement.Value.AddRange(chains[requirement.Key].Select(child => nodes[child]));
+            }
+
+            // At this point, we now have a tree for each requirement, where performing a BFS and providing all
+            // previously computed nodes at that depth will satisfy the requirements at each level.
+            IConfigurationRequirement[] roots = this.backingDictionary.Keys.Where(x => !x.DependsOn.Any()).ToArray();
+            Dictionary<IConfigurationRequirement, IBinding> completed =
+                new Dictionary<IConfigurationRequirement, IBinding>();
+            void PerformValidation(IEnumerable<TreeNode<IConfigurationRequirement>> currentLayer)
+            {
+                List<TreeNode<IConfigurationRequirement>> asList = currentLayer.ToList();
+                if (!asList.Any())
+                {
+                    // Base case - current depth contains no nodes.
+                    return;
+                }
+
+                foreach (IConfigurationRequirement requirement in asList.Select(x => x.Value))
+                {
+                    Exception exception = this.Validate(bindings, requirement, out object binding);
+                    if (exception == null)
+                    {
+                        completed.Add(requirement, new Binding(requirement, binding));
+                    }
+                    else
                     {
                         failures.Add(exception);
                     }
-
-                    this.backingDictionary.Add(requirement, binding);
                 }
+
+                PerformValidation(asList.SelectMany(x => x.Children).ToList());
             }
 
-            foreach (KeyValuePair<IConfigurationRequirement, object> pair in
-                this.backingDictionary
-                    .Where(x => !x.Key.DependsOn.All(y => this.backingDictionary.ContainsKey(y)))
-                    .ToArray())
-            {
-                this.backingDictionary.Remove(pair.Key);
-                failures.Add(
-                    new ArgumentException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            BoundConfiguration.DependenciesNotSatisfied,
-                            pair.Key.Name)));
-            }
-
-            foreach (KeyValuePair<IConfigurationRequirement, object> pair in
-                this.backingDictionary
-                    .Where(x => x.Key.ExclusiveWith.Any(y => this.backingDictionary.ContainsKey(y)))
-                    .ToArray())
-            {
-                this.backingDictionary.Remove(pair.Key);
-                failures.Add(
-                    new ArgumentException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            BoundConfiguration.ConflictingRequirementsSpecified,
-                            pair.Key.Name)));
-            }
+            PerformValidation(nodes.Where(x => roots.Contains(x.Key)).Select(x => x.Value));
 
             if (failures.Any())
             {
@@ -197,6 +238,30 @@ namespace Drexel.Configurables
             }
 
             return result;
+        }
+
+        private Exception Validate(
+            IReadOnlyDictionary<IConfigurationRequirement, object> bindings,
+            IConfigurationRequirement requirement,
+            out object binding)
+        {
+            bool present = bindings.TryGetValue(requirement, out binding);
+            if (!present && !requirement.IsOptional)
+            {
+                return new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.MissingRequirement,
+                        requirement.Name));
+            }
+            else if (present)
+            {
+                Exception exception = requirement.Validate(binding);
+
+                return exception;
+            }
+
+            return null;
         }
     }
 }
