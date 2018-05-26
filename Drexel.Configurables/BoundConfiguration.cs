@@ -87,6 +87,16 @@ namespace Drexel.Configurables
 
             List<Exception> failures = new List<Exception>();
 
+            // Check for missing requirements.
+            failures.AddRange(configurable
+                .Requirements
+                .Where(x => !x.IsOptional && !this.backingDictionary.Keys.Contains(x))
+                .Select(x => new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        BoundConfiguration.MissingRequirement,
+                        x.Name))));
+
             // Check for DependsOn failures.
             IConfigurationRequirement[] dependsOnFailures = this.backingDictionary
                 .Keys
