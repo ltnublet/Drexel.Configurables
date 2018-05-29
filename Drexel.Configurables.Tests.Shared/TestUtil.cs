@@ -49,7 +49,7 @@ namespace Drexel.Configurables.Tests.Common
                 baseDescription + TestUtil.counter++,
                 type ?? ConfigurationRequirementType.String,
                 isOptional,
-                validator ?? ((x, y) => null),
+                validator ?? ((x, y, z) => null),
                 collectionInfo,
                 dependsOn ?? new IConfigurationRequirement[0],
                 exclusiveWith ?? new IConfigurationRequirement[0]);

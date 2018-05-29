@@ -84,7 +84,7 @@ namespace Drexel.Configurables.Tests
             const string exceptionMessage = "BOUNDCONFIGURATIONTESTS_RequirementFailsValidation";
 
             IConfigurationRequirement required = TestUtil.CreateConfigurationRequirement(
-                validator: (x, y) => throw new NotImplementedException(exceptionMessage));
+                validator: (x, y, z) => throw new NotImplementedException(exceptionMessage));
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(required);
 
@@ -230,13 +230,13 @@ namespace Drexel.Configurables.Tests
                 dependsOn: new IConfigurationRequirement[] { requiredButMissing });
             IConfigurationRequirement failsValidation = TestUtil.CreateConfigurationRequirement(
                 baseName: nameof(failsValidation),
-                validator: (x, y) => throw new NotImplementedException(validationFailureMessage));
+                validator: (x, y, z) => throw new NotImplementedException(validationFailureMessage));
             IConfigurationRequirement exclusiveWith = TestUtil.CreateConfigurationRequirement(
                 baseName: nameof(exclusiveWith),
                 exclusiveWith: new IConfigurationRequirement[] { failsValidation });
             IConfigurationRequirement isFine = TestUtil.CreateConfigurationRequirement(
                 baseName: nameof(isFine),
-                validator: (x, y) => null);
+                validator: (x, y, z) => null);
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(
                 requiredButMissing,
@@ -291,6 +291,67 @@ namespace Drexel.Configurables.Tests
                 };
 
             MockConfigurable configurable = new MockConfigurable(new IConfigurationRequirement[] { parent, child });
+            BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
+
+            Assert.IsNotNull(configuration);
+            CollectionAssert.AreEquivalent(
+                supplied.Select(x => new Binding(x.Key, x.Value)).ToArray(),
+                configuration.Bindings.ToArray());
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_Ctor_DependsOn_PropagatesDependencies()
+        {
+            IConfigurationRequirement parent1 = TestUtil.CreateConfigurationRequirement(baseName: "ParentOne");
+            IConfigurationRequirement parent2 = TestUtil.CreateConfigurationRequirement(baseName: "ParentTwo");
+            IConfigurationRequirement child1 = TestUtil.CreateConfigurationRequirement(
+                baseName: "ChildOne",
+                dependsOn: new IConfigurationRequirement[] { parent1 },
+                validator: (x, y, z) =>
+                {
+                    CollectionAssert.Contains(z.Keys.ToArray(), parent1);
+
+                    return null;
+                });
+            IConfigurationRequirement child2 = TestUtil.CreateConfigurationRequirement(
+                baseName: "ChildTwo",
+                dependsOn: new IConfigurationRequirement[] { child1 },
+                validator: (x, y, z) =>
+                {
+                    CollectionAssert.Contains(z.Keys.ToArray(), child1);
+
+                    return null;
+                });
+            IConfigurationRequirement child3 = TestUtil.CreateConfigurationRequirement(
+                baseName: "ChildThree",
+                dependsOn: new IConfigurationRequirement[] { parent2, child2 },
+                validator: (x, y, z) =>
+                {
+                    CollectionAssert.Contains(z.Keys.ToArray(), parent2);
+                    CollectionAssert.Contains(z.Keys.ToArray(), child2);
+
+                    return null;
+                });
+
+            Dictionary<IConfigurationRequirement, object> supplied =
+                new Dictionary<IConfigurationRequirement, object>()
+                {
+                    [parent1] = TestUtil.GetDefaultValidObjectForRequirement(parent1),
+                    [parent2] = TestUtil.GetDefaultValidObjectForRequirement(parent2),
+                    [child1] = TestUtil.GetDefaultValidObjectForRequirement(child1),
+                    [child2] = TestUtil.GetDefaultValidObjectForRequirement(child2),
+                    [child3] = TestUtil.GetDefaultValidObjectForRequirement(child3)
+                };
+
+            MockConfigurable configurable = new MockConfigurable(
+                new IConfigurationRequirement[]
+                {
+                    parent1,
+                    parent2,
+                    child1,
+                    child2,
+                    child3
+                });
             BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
 
             Assert.IsNotNull(configuration);

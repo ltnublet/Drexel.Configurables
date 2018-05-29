@@ -171,7 +171,20 @@ namespace Drexel.Configurables
 
                 foreach (IConfigurationRequirement requirement in asList.Select(x => x.Value))
                 {
-                    Exception exception = BoundConfiguration.Validate(bindings, requirement, out object binding);
+                    if (!requirement.DependsOn.All(x => completed.ContainsKey(x)))
+                    {
+                        // Special case - if not all dependsOns have been calculated, skip this one. We'll get to it
+                        // at a later depth.
+                        continue;
+                    }
+
+                    Exception exception = BoundConfiguration.Validate(
+                        bindings,
+                        completed
+                            .Where(x => requirement.DependsOn.Contains(x.Key))
+                            .ToDictionary(x => x.Key, x => x.Value),
+                        requirement,
+                        out object binding);
                     if (exception == null)
                     {
                         completed.Add(requirement, new Binding(requirement, binding));
@@ -249,11 +262,12 @@ namespace Drexel.Configurables
         }
 
         private static Exception Validate(
-            IReadOnlyDictionary<IConfigurationRequirement, object> bindings,
+            IReadOnlyDictionary<IConfigurationRequirement, object> allInputs,
+            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentInputs,
             IConfigurationRequirement requirement,
             out object binding)
         {
-            bool present = bindings.TryGetValue(requirement, out binding);
+            bool present = allInputs.TryGetValue(requirement, out binding);
             if (!present && !requirement.IsOptional)
             {
                 return new ArgumentException(
@@ -264,7 +278,7 @@ namespace Drexel.Configurables
             }
             else if (present)
             {
-                Exception exception = requirement.Validate(binding);
+                Exception exception = requirement.Validate(binding, dependentInputs);
 
                 return exception;
             }

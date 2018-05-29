@@ -38,7 +38,7 @@ namespace Drexel.Configurables.Contracts
 
         /// <summary>
         /// The type of this requirement. This indicates what the expected type of the input to
-        /// <see cref="Validate(object)"/> is.
+        /// <see cref="Validate(object, IReadOnlyDictionary{IConfigurationRequirement, IBinding})"/> is.
         /// </summary>
         ConfigurationRequirementType OfType { get; }
 
@@ -53,10 +53,15 @@ namespace Drexel.Configurables.Contracts
         /// <param name="instance">
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
+        /// <param name="dependentBindings">
+        /// The set of bindings upon which this requirement is dependent, and the associated <b>validated</b> values.
+        /// </param>
         /// <returns>
         /// <see langword="null"/> if the supplied <see cref="object"/> <paramref name="instance"/> passed validation;
         /// an <see cref="Exception"/> describing the validation failure otherwise.
         /// </returns>
-        Exception Validate(object instance);
+        Exception Validate(
+            object instance,
+            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null);
     }
 }

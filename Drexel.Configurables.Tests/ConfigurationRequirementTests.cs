@@ -26,7 +26,7 @@ namespace Drexel.Configurables.Tests
                 description,
                 type,
                 isOptional,
-                (x, y) => null);
+                (x, y, z) => null);
 
             Assert.AreEqual(name, requirement.Name);
             Assert.AreEqual(description, requirement.Description);
@@ -332,7 +332,8 @@ namespace Drexel.Configurables.Tests
                         ConfigurationRequirementType.String,
                         null,
                         "Valid",
-                        (x, y) => null));
+                        null,
+                        (x, y, z) => null));
         }
 
         [TestMethod]
@@ -347,7 +348,8 @@ namespace Drexel.Configurables.Tests
                         ConfigurationRequirementType.String,
                         null,
                         "Valid",
-                        (x, y) => toReturn)
+                        null,
+                        (x, y, z) => toReturn)
                     .Message);
         }
 
@@ -363,7 +365,8 @@ namespace Drexel.Configurables.Tests
                         ConfigurationRequirementType.String,
                         null,
                         "Valid",
-                        (x, y) => throw toReturn)
+                        null,
+                        (x, y, z) => throw toReturn)
                     .Message);
         }
 
@@ -408,7 +411,7 @@ namespace Drexel.Configurables.Tests
                 description,
                 type,
                 isOptional,
-                (x, y) => throw new NotImplementedException());
+                (x, y, z) => throw new NotImplementedException());
 
             Assert.AreEqual(typeof(NotImplementedException), requirement.Validate(validInput).GetType());
         }

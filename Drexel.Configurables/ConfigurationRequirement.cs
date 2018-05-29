@@ -18,11 +18,17 @@ namespace Drexel.Configurables
     /// <param name="instance">
     /// The <see cref="object"/> to validate.
     /// </param>
+    /// <param name="dependentBindings">
+    /// The set of bindings upon which this validation is dependent, and the associated <b>validated</b> values.
+    /// </param>
     /// <returns>
     /// <see langword="null"/> if the object passed validation; else, an <see cref="Exception"/> describing why the
     /// supplied <paramref name="instance"/> failed validation.
     /// </returns>
-    public delegate Exception Validator(CollectionInfo collectionInfo, object instance);
+    public delegate Exception Validator(
+        CollectionInfo collectionInfo,
+        object instance,
+        IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings);
 
     /// <summary>
     /// A simple <see cref="IConfigurationRequirement"/> implementation.
@@ -127,7 +133,7 @@ namespace Drexel.Configurables
 
         /// <summary>
         /// The type of this requirement. This indicates what the expected type of the input to
-        /// <see cref="Validate(object)"/> is.
+        /// <see cref="Validate(object, IReadOnlyDictionary{IConfigurationRequirement, IBinding})"/> is.
         /// </summary>
         public ConfigurationRequirementType OfType { get; private set; }
 
@@ -314,10 +320,11 @@ namespace Drexel.Configurables
             ConfigurationRequirementType type,
             Validator additionalValidation = null)
         {
-            return (info, instance) => ConfigurationRequirement.SimpleValidator(
+            return (info, instance, dependentBindings) => ConfigurationRequirement.SimpleValidator(
                 type,
                 info,
                 instance,
+                dependentBindings,
                 additionalValidation);
         }
 
@@ -327,6 +334,9 @@ namespace Drexel.Configurables
         /// <param name="instance">
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
+        /// <param name="dependentBindings">
+        /// The set of bindings upon which this requirement is dependent, and the associated <b>validated</b> values.
+        /// </param>
         /// <returns>
         /// <see langword="null"/> if the supplied <see cref="object"/> <paramref name="instance"/> passed validation;
         /// an <see cref="Exception"/> describing the validation failure otherwise.
@@ -335,11 +345,13 @@ namespace Drexel.Configurables
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "By design, no exception should escape the validation call.")]
-        public Exception Validate(object instance)
+        public Exception Validate(
+            object instance,
+            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null)
         {
             try
             {
-                return this.validator.Invoke(this.CollectionInfo, instance);
+                return this.validator.Invoke(this.CollectionInfo, instance, dependentBindings);
             }
             catch (Exception e)
             {
@@ -554,7 +566,8 @@ namespace Drexel.Configurables
         }
 
         /// <summary>
-        /// This method is only internal so that unit tests can reach it. Do not call it directly.
+        /// This method is only internal so that unit tests can reach it. Do not call it directly unless the caller is
+        /// within <see cref="ConfigurationRequirement"/>.
         /// </summary>
         /// <param name="type">
         /// This field intentionally left blank.
@@ -563,6 +576,9 @@ namespace Drexel.Configurables
         /// This field intentionally left blank.
         /// </param>
         /// <param name="instance">
+        /// This field intentionally left blank.
+        /// </param>
+        /// <param name="dependentBindings">
         /// This field intentionally left blank.
         /// </param>
         /// <param name="additionalValidation">
@@ -579,6 +595,7 @@ namespace Drexel.Configurables
             ConfigurationRequirementType type,
             CollectionInfo info,
             object instance,
+            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null,
             Validator additionalValidation = null)
         {
             if (instance == null)
@@ -637,7 +654,7 @@ namespace Drexel.Configurables
 
             try
             {
-                return additionalValidation?.Invoke(info, instance);
+                return additionalValidation?.Invoke(info, instance, dependentBindings);
             }
             catch (Exception e)
             {
