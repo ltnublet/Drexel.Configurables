@@ -197,6 +197,59 @@ namespace Drexel.Configurables
 
         /// <summary>
         /// Creates a new <see cref="ConfigurationRequirement"/> of type
+        /// <see cref="ConfigurationRequirementType.SecureString"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the <see cref="ConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="description">
+        /// The description of the <see cref="ConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
+        /// </param>
+        /// <param name="dependsOn">
+        /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
+        /// must be supplied alongside.
+        /// </param>
+        /// <param name="exclusiveWith">
+        /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
+        /// must not be supplied alongside with.
+        /// </param>
+        /// <param name="additionalValidation">
+        /// A <see cref="Validator"/> which accepts the instance <see cref="object"/> being validated. This
+        /// <paramref name="additionalValidation"/> will only be invoked if the <see cref="object"/> passes the
+        /// default validation logic.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.SecureString"/>
+        /// with the supplied properties.
+        /// </returns>
+        public static IConfigurationRequirement SecureString(
+            string name,
+            string description,
+            CollectionInfo collectionInfo = null,
+            IEnumerable<IConfigurationRequirement> dependsOn = null,
+            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            Validator additionalValidation = null)
+        {
+            return new ConfigurationRequirement(
+                name,
+                description,
+                ConfigurationRequirementType.SecureString,
+                false,
+                ConfigurationRequirement.CreateSimpleValidator(
+                    ConfigurationRequirementType.SecureString,
+                    additionalValidation),
+                collectionInfo,
+                dependsOn,
+                exclusiveWith);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="ConfigurationRequirement"/> of type
         /// <see cref="ConfigurationRequirementType.FilePath"/>.
         /// </summary>
         /// <param name="name">
@@ -295,6 +348,59 @@ namespace Drexel.Configurables
                 false,
                 ConfigurationRequirement.CreateSimpleValidator(
                     ConfigurationRequirementType.Int64,
+                    additionalValidation),
+                collectionInfo,
+                dependsOn,
+                exclusiveWith);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="ConfigurationRequirement"/> of type
+        /// <see cref="ConfigurationRequirementType.Uri"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the <see cref="ConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="description">
+        /// The description of the <see cref="ConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="collectionInfo">
+        /// The <see cref="CollectionInfo"/> describing this <see cref="ConfigurationRequirement"/>.
+        /// When <see langword="null"/>, indicates that this <see cref="ConfigurationRequirement"/> is not a
+        /// collection.
+        /// </param>
+        /// <param name="dependsOn">
+        /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
+        /// must be supplied alongside.
+        /// </param>
+        /// <param name="exclusiveWith">
+        /// A collection of <see cref="IConfigurationRequirement"/>s which this <see cref="ConfigurationRequirement"/>
+        /// must not be supplied alongside with.
+        /// </param>
+        /// <param name="additionalValidation">
+        /// A <see cref="Validator"/> which accepts the instance <see cref="object"/> being validated. This
+        /// <paramref name="additionalValidation"/> will only be invoked if the <see cref="object"/> passes the
+        /// default validation logic.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.Uri"/> with the
+        /// supplied properties.
+        /// </returns>
+        public static IConfigurationRequirement Uri(
+            string name,
+            string description,
+            CollectionInfo collectionInfo = null,
+            IEnumerable<IConfigurationRequirement> dependsOn = null,
+            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            Validator additionalValidation = null)
+        {
+            return new ConfigurationRequirement(
+                name,
+                description,
+                ConfigurationRequirementType.Uri,
+                false,
+                ConfigurationRequirement.CreateSimpleValidator(
+                    ConfigurationRequirementType.Uri,
                     additionalValidation),
                 collectionInfo,
                 dependsOn,

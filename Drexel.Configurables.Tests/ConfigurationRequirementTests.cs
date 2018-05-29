@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.External;
 using Drexel.Configurables.Tests.Common;
@@ -57,6 +58,58 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
+        public void ConfigurationRequirement_SecureString_Succeeds()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const long badInput = 8675309L;
+            SecureString goodInput = "Hello world".ToSecureString();
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.SecureString,
+                () => ConfigurationRequirement.SecureString(name, description),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_SecureString_PropagatesInfo()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const long badInput = 8675309L;
+            SecureString[] goodInput =
+                new SecureString[]
+                {
+                    "Hello world".ToSecureString()
+                };
+            CollectionInfo collectionInfo = new CollectionInfo(1, 4);
+
+            IEnumerable<IConfigurationRequirement> dependsOn =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+            IEnumerable<IConfigurationRequirement> exclusiveWith =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.SecureString,
+                collectionInfo,
+                dependsOn,
+                exclusiveWith,
+                () => ConfigurationRequirement.SecureString(
+                    name,
+                    description,
+                    collectionInfo: collectionInfo,
+                    dependsOn: dependsOn,
+                    exclusiveWith: exclusiveWith),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
         public void ConfigurationRequirement_String_Succeeds()
         {
             const string name = "ConfigurationRequirementName";
@@ -99,6 +152,58 @@ namespace Drexel.Configurables.Tests
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.String(
+                    name,
+                    description,
+                    collectionInfo: collectionInfo,
+                    dependsOn: dependsOn,
+                    exclusiveWith: exclusiveWith),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Uri_Succeeds()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const long badInput = 8675309L;
+            Uri goodInput = new Uri("https://www.example.com");
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Uri,
+                () => ConfigurationRequirement.Uri(name, description),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Uri_PropagatesInfo()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const long badInput = 8675309L;
+            Uri[] goodInput =
+                new Uri[]
+                {
+                    new Uri("https://www.example.com")
+                };
+            CollectionInfo collectionInfo = new CollectionInfo(1, 4);
+
+            IEnumerable<IConfigurationRequirement> dependsOn =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+            IEnumerable<IConfigurationRequirement> exclusiveWith =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Uri,
+                collectionInfo,
+                dependsOn,
+                exclusiveWith,
+                () => ConfigurationRequirement.Uri(
                     name,
                     description,
                     collectionInfo: collectionInfo,
