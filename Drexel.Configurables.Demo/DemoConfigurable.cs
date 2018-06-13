@@ -22,36 +22,32 @@ namespace Drexel.Configurables.Demo
 
         public DemoConfigurable(IBoundConfiguration configuration)
         {
-            this.website =
-                (Uri)configuration.GetOrDefault(
-                    DemoConfigurableFactory.Website,
-                    () => null)
-                as Uri
-                ?? throw new ArgumentException(
+            // [~9]. Try to retrieve the information we need from the IBoundConfiguration. Using the
+            // information that we retrieve, set some fields on our DemoConfigurable.
+            if (!configuration.TryGetOrDefault(DemoConfigurator.Website, () => null, out this.website))
+            {
+                throw new ArgumentException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurableFactory.Website)));
-            this.username =
-                (string)configuration.GetOrDefault(
-                    DemoConfigurableFactory.Username,
-                    () => null)
-                as string
-                ?? throw new ArgumentException(
+                        nameof(DemoConfigurator.Website)));
+            }
+            else if (!configuration.TryGetOrDefault(DemoConfigurator.Username, () => null, out this.username))
+            {
+                throw new ArgumentException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurableFactory.Username)));
-            this.password =
-                (SecureString)configuration.GetOrDefault(
-                    DemoConfigurableFactory.Password,
-                    () => null)
-                as SecureString
-                ?? throw new ArgumentException(
+                        nameof(DemoConfigurator.Username)));
+            }
+            else if (!configuration.TryGetOrDefault(DemoConfigurator.Password, () => null, out this.password))
+            {
+                throw new ArgumentException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurableFactory.Password)));
+                        nameof(DemoConfigurator.Password)));
+            }
 
             this.IsConnected = false;
         }
@@ -60,6 +56,9 @@ namespace Drexel.Configurables.Demo
 
         public void Connect()
         {
+            // [~11]. Pretend to connect to a website.
+            // We know what we expect the website, username, and password to be. If any of them are wrong,
+            // then throw an exception.
             this.IsConnected = false;
             if (this.website != DemoConfigurable.ExpectedWebsite)
             {
@@ -69,7 +68,7 @@ namespace Drexel.Configurables.Demo
             {
                 throw new InvalidOperationException($"Unrecognized username '{this.username}'.");
             }
-            else if (this.password != DemoConfigurable.ExpectedPassword)
+            else if (!this.password.IsEqual(DemoConfigurable.ExpectedPassword))
             {
                 throw new InvalidOperationException("Wrong password.");
             }

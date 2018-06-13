@@ -42,7 +42,6 @@ namespace Drexel.Configurables
         internal const string RequirementsFailedValidation =
             "Supplied requirements failed validation.";
 
-        private readonly Lazy<IBinding[]> backingBindings;
         private readonly Dictionary<IConfigurationRequirement, object> backingDictionary;
 
         /// <summary>
@@ -135,70 +134,60 @@ namespace Drexel.Configurables
                 this.backingDictionary.Remove(cantValidate);
             }
 
-            // Build dependsOn chains.
-            Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>> chains =
-                new Dictionary<IConfigurationRequirement, List<IConfigurationRequirement>>();
-            Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> nodes =
-                new Dictionary<IConfigurationRequirement, TreeNode<IConfigurationRequirement>>();
-            foreach (IConfigurationRequirement requirement in this.backingDictionary.Keys)
+            // Validate the remaining requirements.
+            // We can only reach this after removing all requirements that don't have their prerequisites.
+            // We need to determine what "level" in the heirarchy each requirement is at.
+            // If a requirement has no dependsOns, then it's at level "0" (can be immediately evaluated)
+            // For each requirement which has all dependsOns in the set of previously evaluated requirements, add it
+            // Repeat until all requirements have been added (this can always be reached, because we removed all
+            // requirements which didn't have all their dependsOns satisfied)
+            IList<IConfigurationRequirement> toEvaluate = new List<IConfigurationRequirement>();
+            void RecursiveAdd(
+                ref IList<IConfigurationRequirement> addTo,
+                IReadOnlyList<IConfigurationRequirement> remaining)
             {
-                chains.Add(
-                    requirement,
-                    this.backingDictionary.Keys.Where(x => x.DependsOn.Contains(requirement)).ToList());
-                nodes.Add(
-                    requirement,
-                    new TreeNode<IConfigurationRequirement>(requirement));
-            }
-
-            foreach (KeyValuePair<IConfigurationRequirement, TreeNode<IConfigurationRequirement>> requirement in nodes)
-            {
-                requirement.Value.AddRange(chains[requirement.Key].Select(child => nodes[child]));
-            }
-
-            // At this point, we now have a tree for each requirement, where performing a BFS and providing all
-            // previously computed nodes at that depth will satisfy the requirements at each level.
-            IConfigurationRequirement[] roots = this.backingDictionary.Keys.Where(x => !x.DependsOn.Any()).ToArray();
-            Dictionary<IConfigurationRequirement, IBinding> completed =
-                new Dictionary<IConfigurationRequirement, IBinding>();
-            void PerformValidation(IEnumerable<TreeNode<IConfigurationRequirement>> currentLayer)
-            {
-                List<TreeNode<IConfigurationRequirement>> asList = currentLayer.ToList();
-                if (!asList.Any())
+                if (!remaining.Any())
                 {
-                    // Base case - current depth contains no nodes.
                     return;
                 }
 
-                foreach (IConfigurationRequirement requirement in asList.Select(x => x.Value))
+                foreach (IConfigurationRequirement toCheck in remaining)
                 {
-                    if (!requirement.DependsOn.All(x => completed.ContainsKey(x)))
+                    if (!toCheck.DependsOn.Any() || toCheck.DependsOn.All(x => toEvaluate.Contains(x)))
                     {
-                        // Special case - if not all dependsOns have been calculated, skip this one. We'll get to it
-                        // at a later depth.
-                        continue;
-                    }
-
-                    Exception exception = BoundConfiguration.Validate(
-                        bindings,
-                        completed
-                            .Where(x => requirement.DependsOn.Contains(x.Key))
-                            .ToDictionary(x => x.Key, x => x.Value),
-                        requirement,
-                        out object binding);
-                    if (exception == null)
-                    {
-                        completed.Add(requirement, new Binding(requirement, binding));
-                    }
-                    else
-                    {
-                        failures.Add(exception);
+                        toEvaluate.Add(toCheck);
                     }
                 }
-
-                PerformValidation(asList.SelectMany(x => x.Children).ToList());
             }
 
-            PerformValidation(nodes.Where(x => roots.Contains(x.Key)).Select(x => x.Value));
+            RecursiveAdd(ref toEvaluate, this.backingDictionary.Keys.ToList());
+
+            // We can now iterate through toEvaluate; at each requirement, we set of previously completed requirements
+            // will satisfy all dependsOns.
+            Dictionary<IConfigurationRequirement, IBinding> completed =
+                new Dictionary<IConfigurationRequirement, IBinding>();
+            foreach (IConfigurationRequirement requirement in toEvaluate)
+            {
+                object value = bindings[requirement];
+
+                Exception failure = requirement.Validate(
+                    value,
+                    completed.Where(
+                        x =>
+                        requirement.DependsOn.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value));
+
+                if (failure == null)
+                {
+                    completed.Add(requirement, new Binding(requirement, value));
+                }
+                else
+                {
+                    failures.Add(failure);
+
+                    // This isn't really required, but just for future-proofing...
+                    this.backingDictionary.Remove(requirement);
+                }
+            }
 
             if (failures.Any())
             {
@@ -207,14 +196,13 @@ namespace Drexel.Configurables
                     failures);
             }
 
-            this.backingBindings =
-                new Lazy<IBinding[]>(() => this.backingDictionary.Select(x => new Binding(x.Key, x.Value)).ToArray());
+            this.Bindings = completed.Values;
         }
 
         /// <summary>
         /// A collection of <see cref="IBinding"/>s contained by this <see cref="IBoundConfiguration"/>.
         /// </summary>
-        public IEnumerable<IBinding> Bindings => this.backingBindings.Value;
+        public IEnumerable<IBinding> Bindings { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="object"/> associated with the specified <see cref="IConfigurationRequirement"/>
@@ -232,8 +220,8 @@ namespace Drexel.Configurables
         /// <summary>
         /// If the specified <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is contained by
         /// this <see cref="IBoundConfiguration"/>, returns the <see cref="object"/> held by the associated
-        /// <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>; otherwise, returns the result of invoking
-        /// the supplied <paramref name="defaultValueFactory"/>.
+        /// <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>; otherwise, returns the result of
+        /// invoking the supplied <paramref name="defaultValueFactory"/>.
         /// </summary>
         /// <param name="requirement">
         /// The <see cref="IConfigurationRequirement"/>.
@@ -248,6 +236,11 @@ namespace Drexel.Configurables
         /// </returns>
         public object GetOrDefault(IConfigurationRequirement requirement, Func<object> defaultValueFactory)
         {
+            if (requirement == null)
+            {
+                throw new ArgumentNullException(nameof(requirement));
+            }
+
             if (defaultValueFactory == null)
             {
                 throw new ArgumentNullException(nameof(defaultValueFactory));
@@ -261,49 +254,59 @@ namespace Drexel.Configurables
             return result;
         }
 
-        private static Exception Validate(
-            IReadOnlyDictionary<IConfigurationRequirement, object> allInputs,
-            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentInputs,
+        /// <summary>
+        /// If the specified <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is contained by
+        /// this <see cref="IBoundConfiguration"/>, <paramref name="result"/> is set to the <typeparamref name="T"/>
+        /// held by the associated <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>, and
+        /// <see langword="true"/> is returned; otherwise, <paramref name="result"/> is set to the result of
+        /// invoking the supplied <paramref name="defaultValueFactory"/>, and <see langword="false"/> is returned.
+        /// </summary>
+        /// <param name="requirement">
+        /// The <see cref="IConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="defaultValueFactory">
+        /// The default value factory.
+        /// </param>
+        /// <param name="result">
+        /// The result.
+        /// </param>
+        /// <typeparam name="T">
+        /// The expected <see cref="Type"/> of the <see cref="object"/> to return. If the specified
+        /// <see cref="IConfigurationRequirement"/> is contained by this <see cref="IBoundConfiguration"/>, but the
+        /// <paramref name="result"/> cannot be set to the expected <see cref="Type"/> <typeparamref name="T"/>, then
+        /// the <paramref name="defaultValueFactory"/> will be invoked.
+        /// </typeparam>
+        /// <returns>
+        /// <see langword="true"/> if the <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is
+        /// contained by this <see cref="IBoundConfiguration"/>, and <paramref name="result"/> is able to be
+        /// set to the expected <see cref="Type"/> <typeparamref name="T"/>; otherwise, return <see langword="false"/>.
+        /// </returns>
+        public bool TryGetOrDefault<T>(
             IConfigurationRequirement requirement,
-            out object binding)
+            Func<T> defaultValueFactory,
+            out T result)
         {
-            bool present = allInputs.TryGetValue(requirement, out binding);
-            if (!present && !requirement.IsOptional)
+            if (requirement == null)
             {
-                return new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        BoundConfiguration.MissingRequirement,
-                        requirement.Name));
-            }
-            else if (present)
-            {
-                Exception exception = requirement.Validate(binding, dependentInputs);
-
-                return exception;
+                throw new ArgumentNullException(nameof(requirement));
             }
 
-            return null;
-        }
-
-        private class TreeNode<T>
-        {
-            private readonly List<TreeNode<T>> innerChildren;
-
-            public TreeNode(T value)
+            if (defaultValueFactory == null)
             {
-                this.Value = value;
-                this.innerChildren = new List<TreeNode<T>>();
+                throw new ArgumentNullException(nameof(defaultValueFactory));
             }
 
-            public T Value { get; private set; }
-
-            public IReadOnlyList<TreeNode<T>> Children => this.innerChildren;
-
-            public void AddRange(IEnumerable<TreeNode<T>> children)
+            if (!this.backingDictionary.TryGetValue(requirement, out object actual)
+#pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
+                || !(actual is T output))
+#pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
             {
-                this.innerChildren.AddRange(children);
+                result = defaultValueFactory.Invoke();
+                return false;
             }
+
+            result = output;
+            return true;
         }
     }
 }

@@ -404,36 +404,37 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
+        public void BoundConfiguration_GetOrDefault_RequirementNull_ThrowsArgumentNull()
+        {
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement requirement);
+            Assert.ThrowsException<ArgumentNullException>(() => configuration.GetOrDefault(null, () => null));
+        }
+
+        [TestMethod]
         public void BoundConfiguration_GetOrDefault_ValueFactoryNull_ThrowsArgumentNull()
         {
-            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
-            Dictionary<IConfigurationRequirement, object> bindings =
-                new Dictionary<IConfigurationRequirement, object>()
-                {
-                    [requirement] = TestUtil.GetDefaultValidObjectForRequirement(requirement)
-                };
-
-            IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
-
-            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
-
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement requirement);
             Assert.ThrowsException<ArgumentNullException>(() => configuration.GetOrDefault(requirement, null));
         }
 
         [TestMethod]
         public void BoundConfiguration_GetOrDefault_Succeeds()
         {
-            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
-            object expected = TestUtil.GetDefaultValidObjectForRequirement(requirement);
-            Dictionary<IConfigurationRequirement, object> bindings =
-                new Dictionary<IConfigurationRequirement, object>()
+            object expected = null;
+            Func<IConfigurationRequirement, object> valueFactory =
+                x =>
                 {
-                    [requirement] = expected
+                    expected = TestUtil.GetDefaultValidObjectForRequirement(x);
+                    return expected;
                 };
 
-            IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
-
-            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                valueFactory,
+                out IConfigurationRequirement requirement);
 
             Assert.AreEqual(expected, configuration.GetOrDefault(requirement, () => null));
         }
@@ -459,7 +460,65 @@ namespace Drexel.Configurables.Tests
             Assert.AreEqual(fallbackValue, configuration.GetOrDefault(notPresent, () => fallbackValue));
         }
 
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_RequirementNull_ThrowsArgumentNull()
+        {
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement requirement);
+            Assert.ThrowsException<ArgumentNullException>(
+                () => configuration.TryGetOrDefault<object>(null, () => null, out object dontCare));
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_ValueFactoryNull_ThrowsArgumentNull()
+        {
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement requirement);
+            Assert.ThrowsException<ArgumentNullException>(
+                () => configuration.TryGetOrDefault<object>(requirement, null, out object dontCare));
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_Succeeds()
+        {
+            // The type here needs to match the expected generic type used later.
+            ConfigurationRequirementType type = ConfigurationRequirementType.Bool;
+
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(type: type);
+
+            // Use the inverse of the default value for our expected (just in case the default somehow slips in)
+            bool expected = !(bool)TestUtil.GetDefaultValidObjectForRequirement(requirement);
+            Dictionary<IConfigurationRequirement, object> bindings =
+                new Dictionary<IConfigurationRequirement, object>()
+                {
+                    [requirement] = expected
+                };
+
+            IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
+
+            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
+            configuration.GetOrDefault<bool>()
+        }
+
         private static IConfigurable CreateConfigurable(params IConfigurationRequirement[] required) =>
             new MockConfigurable(required);
+
+        private static BoundConfiguration CreateConfiguration(
+            Func<IConfigurationRequirement, object> valueFactory,
+            out IConfigurationRequirement requirement)
+        {
+            requirement = TestUtil.CreateConfigurationRequirement();
+            Dictionary<IConfigurationRequirement, object> bindings =
+                new Dictionary<IConfigurationRequirement, object>()
+                {
+                    [requirement] = valueFactory.Invoke(requirement)
+                };
+
+            IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
+
+            return new BoundConfiguration(configurable, bindings);
+        }
     }
 }

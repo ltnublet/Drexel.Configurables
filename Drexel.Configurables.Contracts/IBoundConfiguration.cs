@@ -33,8 +33,8 @@ namespace Drexel.Configurables.Contracts
         /// <summary>
         /// If the specified <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is contained by
         /// this <see cref="IBoundConfiguration"/>, returns the <see cref="object"/> held by the associated
-        /// <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>; otherwise, returns the result of invoking
-        /// the supplied <paramref name="defaultValueFactory"/>.
+        /// <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>; otherwise, returns the result of
+        /// invoking the supplied <paramref name="defaultValueFactory"/>.
         /// </summary>
         /// <param name="requirement">
         /// The <see cref="IConfigurationRequirement"/>.
@@ -48,5 +48,34 @@ namespace Drexel.Configurables.Contracts
         /// <paramref name="defaultValueFactory"/>.
         /// </returns>
         object GetOrDefault(IConfigurationRequirement requirement, Func<object> defaultValueFactory);
+
+        /// <summary>
+        /// If the specified <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is contained by
+        /// this <see cref="IBoundConfiguration"/>, <paramref name="result"/> is set to the <typeparamref name="T"/>
+        /// held by the associated <see cref="IBinding"/> in <see cref="IBoundConfiguration.Bindings"/>, and
+        /// <see langword="true"/> is returned; otherwise, <paramref name="result"/> is set to the result of
+        /// invoking the supplied <paramref name="defaultValueFactory"/>, and <see langword="false"/> is returned.
+        /// </summary>
+        /// <param name="requirement">
+        /// The <see cref="IConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="defaultValueFactory">
+        /// The default value factory.
+        /// </param>
+        /// <param name="result">
+        /// The result.
+        /// </param>
+        /// <typeparam name="T">
+        /// The expected <see cref="Type"/> of the <see cref="object"/> to return. If the specified
+        /// <see cref="IConfigurationRequirement"/> is contained by this <see cref="IBoundConfiguration"/>, but the
+        /// <paramref name="result"/> cannot be set to the expected <see cref="Type"/> <typeparamref name="T"/>, then
+        /// the <paramref name="defaultValueFactory"/> will be invoked.
+        /// </typeparam>
+        /// <returns>
+        /// <see langword="true"/> if the <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is
+        /// contained by this <see cref="IBoundConfiguration"/>, and <paramref name="result"/> is able to be
+        /// set to the expected <see cref="Type"/> <typeparamref name="T"/>; otherwise, return <see langword="false"/>.
+        /// </returns>
+        bool TryGetOrDefault<T>(IConfigurationRequirement requirement, Func<T> defaultValueFactory, out T result);
     }
 }

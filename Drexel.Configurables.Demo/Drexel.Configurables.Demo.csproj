@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoConfigurable.cs" />
-    <Compile Include="DemoConfigurableFactory.cs" />
+    <Compile Include="DemoConfigurator.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
