@@ -8,14 +8,18 @@ namespace Drexel.Configurables.Demo
     {
         public static SecureString ToSecureString(this string source)
         {
-            char[] charArray = source.ToCharArray();
-            unsafe
+            if (source == null)
             {
-                fixed (char* chars = charArray)
-                {
-                    return new SecureString(chars, charArray.Length);
-                }
+                return null;
             }
+
+            SecureString returnValue = new SecureString();
+            foreach (char @char in source)
+            {
+                returnValue.AppendChar(@char);
+            }
+
+            return returnValue;
         }
 
         public static bool IsEqual(this SecureString left, SecureString right)
