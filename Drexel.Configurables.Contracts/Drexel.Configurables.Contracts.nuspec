@@ -20,8 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src=".\bin\Release\Drexel.Configurables.dll" target="lib\Net472" />
-    <file src=".\bin\Release\Drexel.Configurables.pdb" target="lib\Net472" />
-    <file src=".\bin\Release\Drexel.Configurables.xml" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.Contracts.dll" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.Contracts.pdb" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.Contracts.xml" target="lib\Net472" />
   </files>
 </package>
