@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Drexel.Configurables.External</id>
+    <version>0.1.6738</version>
+    <title>Drexel.Configurables.External</title>
+    <authors>Max Drexel</authors>
+    <owners>Max Drexel</owners>
+    <licenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ltnublet/Drexel.Configurables</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>External code for configurable resources.</description>
+    <releaseNotes>
+0.1.6738: Initial release
+    </releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>configurables configuration configure configurables drexel</tags>
+  </metadata>
+  <files>
+    <file src=".\bin\Release\Drexel.Configurables.External.dll" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.External.pdb" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.External.xml" target="lib\Net472" />
+  </files>
+</package>

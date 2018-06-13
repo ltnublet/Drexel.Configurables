@@ -15,9 +15,9 @@ namespace Drexel.Configurables.Demo
         public static SecureString ExpectedPassword = DemoConfigurable.ExpectedPasswordPlaintext.ToSecureString();
         public static Uri ExpectedWebsite = new Uri("https://www.expected.com");
 
-        private Uri website;
-        private string username;
-        private SecureString password;
+        private readonly Uri website;
+        private readonly string username;
+        private readonly SecureString password;
 
         public DemoConfigurable(IBoundConfiguration configuration)
         {

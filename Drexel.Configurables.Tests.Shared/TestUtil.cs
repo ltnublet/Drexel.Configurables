@@ -85,16 +85,24 @@ namespace Drexel.Configurables.Tests.Common
             return result;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Test code.")]
         public static SecureString ToSecureString(this string source)
         {
-            char[] charArray = source.ToCharArray();
-            unsafe
+            if (source == null)
             {
-                fixed (char* chars = charArray)
-                {
-                    return new SecureString(chars, charArray.Length);
-                }
+                return null;
             }
+
+            SecureString result = new SecureString();
+            foreach (char @char in source)
+            {
+                result.AppendChar(@char);
+            }
+
+            return result;
         }
     }
 }

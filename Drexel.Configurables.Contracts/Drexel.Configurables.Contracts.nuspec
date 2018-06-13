@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Drexel.Configurables.Contracts</id>
+    <version>0.1.6738</version>
+    <title>Drexel.Configurables.Contracts</title>
+    <authors>Max Drexel</authors>
+    <owners>Max Drexel</owners>
+    <licenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ltnublet/Drexel.Configurables</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Contracts for configurable resources.</description>
+    <releaseNotes>
+0.1.6738: Initial release
+    </releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>configurables configuration configure configurables drexel</tags>
+    <dependencies>
+      <dependency id="Drexel.Configurables.External" version="0.1.6738" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\bin\Release\Drexel.Configurables.dll" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.pdb" target="lib\Net472" />
+    <file src=".\bin\Release\Drexel.Configurables.xml" target="lib\Net472" />
+  </files>
+</package>
