@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Drexel.Configurables.Contracts</id>
-    <version>0.1.6738</version>
+    <version>0.1.6738.1</version>
     <title>Drexel.Configurables.Contracts</title>
     <authors>Max Drexel</authors>
     <owners>Max Drexel</owners>
@@ -16,7 +16,7 @@
     <copyright>Copyright 2018</copyright>
     <tags>configurables configuration configure configurables drexel</tags>
     <dependencies>
-      <dependency id="Drexel.Configurables.External" version="0.1.6738" />
+      <dependency id="Drexel.Configurables.External" version="0.1.6738.1" />
     </dependencies>
   </metadata>
   <files>
