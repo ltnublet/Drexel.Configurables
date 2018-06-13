@@ -486,20 +486,70 @@ namespace Drexel.Configurables.Tests
             // The type here needs to match the expected generic type used later.
             ConfigurationRequirementType type = ConfigurationRequirementType.Bool;
 
-            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(type: type);
+            bool expected = false;
 
-            // Use the inverse of the default value for our expected (just in case the default somehow slips in)
-            bool expected = !(bool)TestUtil.GetDefaultValidObjectForRequirement(requirement);
-            Dictionary<IConfigurationRequirement, object> bindings =
-                new Dictionary<IConfigurationRequirement, object>()
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                x =>
                 {
-                    [requirement] = expected
-                };
+                    // Use the inverse of the default value for our expected (just in case the default somehow slips in)
+                    expected = !(bool)TestUtil.GetDefaultValidObjectForRequirement(x);
+                    return expected;
+                },
+                out IConfigurationRequirement requirement,
+                () => TestUtil.CreateConfigurationRequirement(type: type));
 
-            IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
+            Assert.IsTrue(configuration.TryGetOrDefault<bool>(requirement, () => !expected, out bool actual));
+            Assert.AreEqual(expected, actual);
+        }
 
-            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
-            configuration.GetOrDefault<bool>()
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_ValueNotPresent_UsesValueFactory()
+        {
+            ConfigurationRequirementType type = ConfigurationRequirementType.Uri;
+
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement present);
+            IConfigurationRequirement notPresent = TestUtil.CreateConfigurationRequirement(type: type);
+
+            Uri expected = (Uri)TestUtil.GetDefaultValidObjectForRequirement(notPresent);
+
+            Assert.IsFalse(configuration.TryGetOrDefault(notPresent, () => expected, out Uri actual));
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_ValuePresentButWrongType_ConversionFails_UsesValueFactory()
+        {
+            const string expected = "BOUNDCONFIGURATION_TryGetOrDefault";
+            
+            // `expected` must be of a different type than `type`
+            ConfigurationRequirementType type = ConfigurationRequirementType.Int32;
+
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                TestUtil.GetDefaultValidObjectForRequirement,
+                out IConfigurationRequirement requirement,
+                () => TestUtil.CreateConfigurationRequirement(type: type));
+
+            Assert.IsFalse(configuration.TryGetOrDefault<string>(requirement, () => expected, out string actual));
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_TryGetOrDefault_ValuePresentButWrongType_ConversionSucceeds()
+        {
+            const long expected = 8675309L;
+            const int notExpected = 111111;
+
+            ConfigurationRequirementType type = ConfigurationRequirementType.Int32;
+
+            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+                x => expected,
+                out IConfigurationRequirement requirement,
+                () => TestUtil.CreateConfigurationRequirement(type: type));
+
+            Assert.IsTrue(configuration.TryGetOrDefault<long>(requirement, () => notExpected, out long actual));
+            Assert.AreEqual(expected, actual);
         }
 
         private static IConfigurable CreateConfigurable(params IConfigurationRequirement[] required) =>
@@ -507,9 +557,10 @@ namespace Drexel.Configurables.Tests
 
         private static BoundConfiguration CreateConfiguration(
             Func<IConfigurationRequirement, object> valueFactory,
-            out IConfigurationRequirement requirement)
+            out IConfigurationRequirement requirement,
+            Func<IConfigurationRequirement> requirementFactory = null)
         {
-            requirement = TestUtil.CreateConfigurationRequirement();
+            requirement = (requirementFactory ?? (() => TestUtil.CreateConfigurationRequirement())).Invoke();
             Dictionary<IConfigurationRequirement, object> bindings =
                 new Dictionary<IConfigurationRequirement, object>()
                 {

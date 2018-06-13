@@ -296,17 +296,17 @@ namespace Drexel.Configurables
                 throw new ArgumentNullException(nameof(defaultValueFactory));
             }
 
-            if (!this.backingDictionary.TryGetValue(requirement, out object actual)
-#pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
-                || !(actual is T output))
-#pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
+            if (this.backingDictionary.TryGetValue(requirement, out object actual))
             {
-                result = defaultValueFactory.Invoke();
-                return false;
+                if (actual is T buffer)
+                {
+                    result = buffer;
+                    return true;
+                }
             }
 
-            result = output;
-            return true;
+            result = defaultValueFactory.Invoke();
+            return false;
         }
     }
 }

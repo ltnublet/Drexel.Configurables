@@ -76,6 +76,9 @@ namespace Drexel.Configurables.Contracts
         /// contained by this <see cref="IBoundConfiguration"/>, and <paramref name="result"/> is able to be
         /// set to the expected <see cref="Type"/> <typeparamref name="T"/>; otherwise, return <see langword="false"/>.
         /// </returns>
-        bool TryGetOrDefault<T>(IConfigurationRequirement requirement, Func<T> defaultValueFactory, out T result);
+        bool TryGetOrDefault<T>(
+            IConfigurationRequirement requirement,
+            Func<T> defaultValueFactory,
+            out T result);
     }
 }

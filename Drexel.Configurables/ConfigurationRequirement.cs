@@ -521,7 +521,7 @@ namespace Drexel.Configurables
 
                 if (value == null)
                 {
-                    builder.Append("null");
+                    builder.Append(@null);
                 }
                 else
                 {
@@ -553,22 +553,25 @@ namespace Drexel.Configurables
                 {
                     builder.Append(newline);
 
-                    foreach (string value in values)
+                    for (int index = 0; index < values.Length; index++)
                     {
-                        if (value == null)
+                        builder.Append("\t\t");
+                        if (values[index] == null)
                         {
-                            builder.Append("\t\t");
-                            if (value == null)
+                                builder.Append(@null);
+                        }
+                        else
+                        {
+                            builder.Append('"');
+                            builder.Append(JsonEscape(values[index]));
+                            builder.Append("\"");
+
+                            if (index != values.Length - 1)
                             {
-                                builder.Append("null");
+                                builder.Append(",");
                             }
-                            else
-                            {
-                                builder.Append('"');
-                                builder.Append(JsonEscape(value));
-                                builder.Append("\",");
-                                builder.Append(newline);
-                            }
+
+                            builder.Append(newline);
                         }
                     }
 

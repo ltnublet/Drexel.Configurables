@@ -77,7 +77,17 @@ namespace Drexel.Configurables.Demo
             //     3. The website was invalid (ex. we only want to allow "https", and the user specified "http")
             // The IConfigurationRequirement defines how to check if the binding is invalid, so it really depends on
             // our implementations.
-            return new BoundConfiguration(this, bindings);
+
+            // The IConfigurable contract defines that we need to throw an ArgumentException is the supplied
+            // bindings are invalid, so we wrap the AggregateException that BoundConfiguration throws.
+            try
+            {
+                return new BoundConfiguration(this, bindings);
+            }
+            catch (AggregateException e)
+            {
+                throw new ArgumentException("The supplied bindings were invalid.", e);
+            }
         }
     }
 }

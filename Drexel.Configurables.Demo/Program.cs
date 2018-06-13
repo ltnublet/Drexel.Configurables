@@ -17,7 +17,7 @@ namespace Drexel.Configurables.Demo
             // [~1]. Instantiate the DemoConfigurator.
             // The DemoConfigurator implements the IConfigurable interface.
             // The DemoConfigurator is what defines the requirements for the DemoConfigurable objects.
-            DemoConfigurator configurator = new DemoConfigurator();
+            IConfigurable configurator = new DemoConfigurator();
 
             Console.WriteLine(new string('=', 79));
             Console.WriteLine("Drexel.Configurables.Demo");
@@ -56,12 +56,28 @@ namespace Drexel.Configurables.Demo
                 // doesn't tell us what - which will give us back an IBoundConfiguration.
                 configuration = configurator.Configure(bindings);
             }
-            catch (AggregateException e)
+            catch (ArgumentException e)
             {
-                string flattenedMessages = string.Join(
-                    ", ",
-                    e.Flatten().InnerExceptions.Select(x => x.Message));
-                Console.WriteLine($"Exception(s) while configuring bindings: {flattenedMessages}");
+                StringBuilder errorMessage = new StringBuilder();
+                errorMessage.AppendLine(e.Message);
+
+                if (e.InnerException != null)
+                {
+                    errorMessage.AppendLine("Inner exception(s):");
+                    if (e.InnerException is AggregateException aggregate)
+                    {
+                        foreach (Exception innerException in aggregate.InnerExceptions)
+                        {
+                            errorMessage.AppendLine(innerException.Message);
+                        }
+                    }
+                    else
+                    {
+                        errorMessage.AppendLine(e.InnerException.Message);
+                    }
+                }
+
+                Console.WriteLine($"Exception(s) while configuring bindings: {errorMessage.ToString()}");
             }
             catch (Exception e)
             {
