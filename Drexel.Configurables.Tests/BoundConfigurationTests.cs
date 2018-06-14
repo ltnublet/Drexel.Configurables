@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.Tests.Mocks;
 using Drexel.Configurables.Tests.Common;
@@ -31,6 +29,33 @@ namespace Drexel.Configurables.Tests
                     .ToDictionary(
                         x => x.Key,
                         x => x.Value);
+
+            BoundConfiguration boundConfiguration = new BoundConfiguration(configurable, validObjects);
+            Assert.IsNotNull(boundConfiguration);
+        }
+
+        [TestMethod]
+        public void BoundConfiguration_Ctor_MissingOptionalRequirement_Succeeds()
+        {
+            const int requirementCount = 50;
+
+            IEnumerable<IConfigurationRequirement> requirements =
+                TestUtil.CreateIConfigurationRequirementCollection(requirementCount, true, areOptional: true);
+            MockConfigurable configurable = new MockConfigurable(requirements);
+
+            Dictionary<IConfigurationRequirement, object> validObjects =
+                requirements
+                    .Select(x =>
+                        new KeyValuePair<IConfigurationRequirement, object>(
+                            x,
+                            TestUtil.GetDefaultValidObjectForRequirement(x)))
+                    .ToDictionary(
+                        x => x.Key,
+                        x => x.Value);
+
+            // Remove one of the requirements that we're supplying to the constructor. Because they're all optional,
+            // this shouldn't cause any problems.
+            validObjects.Remove(validObjects.First().Key);
 
             BoundConfiguration boundConfiguration = new BoundConfiguration(configurable, validObjects);
             Assert.IsNotNull(boundConfiguration);

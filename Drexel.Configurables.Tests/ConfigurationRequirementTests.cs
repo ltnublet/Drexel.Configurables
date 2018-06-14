@@ -79,6 +79,7 @@ namespace Drexel.Configurables.Tests
         {
             const string name = "ConfigurationRequirementName";
             const string description = "Configuration requirement description.";
+            const bool isOptional = true;
             const long badInput = 8675309L;
             SecureString[] goodInput =
                 new SecureString[]
@@ -96,15 +97,17 @@ namespace Drexel.Configurables.Tests
                 name,
                 description,
                 ConfigurationRequirementType.SecureString,
+                isOptional,
                 collectionInfo,
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.SecureString(
                     name,
                     description,
-                    collectionInfo: collectionInfo,
-                    dependsOn: dependsOn,
-                    exclusiveWith: exclusiveWith),
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
                 badInput,
                 goodInput);
         }
@@ -131,6 +134,7 @@ namespace Drexel.Configurables.Tests
         {
             const string name = "ConfigurationRequirementName";
             const string description = "Configuration requirement description.";
+            const bool isOptional = true;
             const long badInput = 8675309L;
             string[] goodInput =
                 new string[]
@@ -148,15 +152,17 @@ namespace Drexel.Configurables.Tests
                 name,
                 description,
                 ConfigurationRequirementType.String,
+                isOptional,
                 collectionInfo,
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.String(
                     name,
                     description,
-                    collectionInfo: collectionInfo,
-                    dependsOn: dependsOn,
-                    exclusiveWith: exclusiveWith),
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
                 badInput,
                 goodInput);
         }
@@ -183,6 +189,7 @@ namespace Drexel.Configurables.Tests
         {
             const string name = "ConfigurationRequirementName";
             const string description = "Configuration requirement description.";
+            const bool isOptional = true;
             const long badInput = 8675309L;
             Uri[] goodInput =
                 new Uri[]
@@ -200,15 +207,17 @@ namespace Drexel.Configurables.Tests
                 name,
                 description,
                 ConfigurationRequirementType.Uri,
+                isOptional,
                 collectionInfo,
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.Uri(
                     name,
                     description,
-                    collectionInfo: collectionInfo,
-                    dependsOn: dependsOn,
-                    exclusiveWith: exclusiveWith),
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
                 badInput,
                 goodInput);
         }
@@ -235,6 +244,7 @@ namespace Drexel.Configurables.Tests
         {
             const string name = "ConfigurationRequirementName";
             const string description = "Configuration requirement description.";
+            const bool isOptional = true;
             const string badInput = "Bad input";
             FilePath[] goodInput =
                 new FilePath[]
@@ -252,15 +262,129 @@ namespace Drexel.Configurables.Tests
                 name,
                 description,
                 ConfigurationRequirementType.FilePath,
+                isOptional,
                 collectionInfo,
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.FilePath(
                     name,
                     description,
-                    collectionInfo: collectionInfo,
-                    dependsOn: dependsOn,
-                    exclusiveWith: exclusiveWith),
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Bool_Success()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const string badInput = "Bad input";
+            const bool goodInput = true;
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Bool,
+                () => ConfigurationRequirement.Bool(name, description),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Bool_PropagatesInfo()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const bool isOptional = true;
+            const string badInput = "Bad input";
+            bool[] goodInput =
+                new bool[]
+                {
+                    true,
+                    false,
+                    true
+                };
+            CollectionInfo collectionInfo = new CollectionInfo(1, 4);
+
+            IEnumerable<IConfigurationRequirement> dependsOn =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+            IEnumerable<IConfigurationRequirement> exclusiveWith =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Bool,
+                isOptional,
+                collectionInfo,
+                dependsOn,
+                exclusiveWith,
+                () => ConfigurationRequirement.Bool(
+                    name,
+                    description,
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Int32_Success()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const string badInput = "Bad input";
+            const int goodInput = 8675309;
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Int32,
+                () => ConfigurationRequirement.Int32(name, description),
+                badInput,
+                goodInput);
+        }
+
+        [TestMethod]
+        public void ConfigurationRequirement_Int32_PropagatesInfo()
+        {
+            const string name = "ConfigurationRequirementName";
+            const string description = "Configuration requirement description.";
+            const bool isOptional = true;
+            const string badInput = "Bad input";
+            int[] goodInput =
+                new int[]
+                {
+                    8675309
+                };
+            CollectionInfo collectionInfo = new CollectionInfo(1, 4);
+
+            IEnumerable<IConfigurationRequirement> dependsOn =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+            IEnumerable<IConfigurationRequirement> exclusiveWith =
+                TestUtil.CreateIConfigurationRequirementCollection(3);
+
+            AssertUtil.Compare(
+                name,
+                description,
+                ConfigurationRequirementType.Int32,
+                isOptional,
+                collectionInfo,
+                dependsOn,
+                exclusiveWith,
+                () => ConfigurationRequirement.Int32(
+                    name,
+                    description,
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
                 badInput,
                 goodInput);
         }
@@ -287,6 +411,7 @@ namespace Drexel.Configurables.Tests
         {
             const string name = "ConfigurationRequirementName";
             const string description = "Configuration requirement description.";
+            const bool isOptional = true;
             const string badInput = "Bad input";
             long[] goodInput =
                 new long[]
@@ -304,15 +429,17 @@ namespace Drexel.Configurables.Tests
                 name,
                 description,
                 ConfigurationRequirementType.Int64,
+                isOptional,
                 collectionInfo,
                 dependsOn,
                 exclusiveWith,
                 () => ConfigurationRequirement.Int64(
                     name,
                     description,
-                    collectionInfo: collectionInfo,
-                    dependsOn: dependsOn,
-                    exclusiveWith: exclusiveWith),
+                    isOptional,
+                    collectionInfo,
+                    dependsOn,
+                    exclusiveWith),
                 badInput,
                 goodInput);
         }

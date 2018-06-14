@@ -34,6 +34,7 @@ namespace Drexel.Configurables.Tests
             string expectedName,
             string expectedDescription,
             ConfigurationRequirementType expectedType,
+            bool expectedOptionality,
             CollectionInfo collectionInfo,
             IEnumerable<IConfigurationRequirement> dependsOn,
             IEnumerable<IConfigurationRequirement> exclusiveWith,
@@ -46,6 +47,7 @@ namespace Drexel.Configurables.Tests
             Assert.AreEqual(expectedName, requirement.Name);
             Assert.AreEqual(expectedDescription, requirement.Description);
             Assert.AreEqual(expectedType, requirement.OfType);
+            Assert.AreEqual(expectedOptionality, requirement.IsOptional);
             Assert.AreEqual(collectionInfo, requirement.CollectionInfo);
             CollectionAssert.AreEquivalent(dependsOn.ToArray(), requirement.DependsOn.ToArray());
             CollectionAssert.AreEquivalent(exclusiveWith.ToArray(), requirement.ExclusiveWith.ToArray());

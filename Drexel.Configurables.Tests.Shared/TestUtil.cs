@@ -57,10 +57,12 @@ namespace Drexel.Configurables.Tests.Common
 
         public static IEnumerable<IConfigurationRequirement> CreateIConfigurationRequirementCollection(
             int count,
-            bool randomTypes = false) =>
+            bool randomTypes = false,
+            bool areOptional = false) =>
             Enumerable
                 .Range(0, count)
                 .Select(x => TestUtil.CreateConfigurationRequirement(
+                    isOptional: areOptional,
                     type: randomTypes
                         ? ConfigurationRequirementType.Types[TestUtil.random.Next(0, ConfigurationRequirementType.Types.Count)]
                         : null))
