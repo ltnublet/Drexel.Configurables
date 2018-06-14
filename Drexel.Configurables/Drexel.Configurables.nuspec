@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Drexel.Configurables</id>
-    <version>0.1.6738.1</version>
+    <version>0.2.6738</version>
     <title>Drexel.Configurables</title>
     <authors>Max Drexel</authors>
     <owners>Max Drexel</owners>
@@ -11,6 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Implementations for configurable resources.</description>
     <releaseNotes>
+0.2.6738: Expose isOptional parameter, and provide additional ConfigurationRequirement helpers
 0.1.6738: Initial release
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
