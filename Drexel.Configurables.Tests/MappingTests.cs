@@ -6,28 +6,28 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Drexel.Configurables.Tests
 {
     [TestClass]
-    public class BindingTests
+    public class MappingTests
     {
         [TestMethod]
-        public void Binding_Ctor_Success()
+        public void Mapping_Ctor_Success()
         {
             const string value = "Valid";
             IConfigurationRequirement requirement = ConfigurationRequirement.String("Name", "Description");
 
-            Mapping binding = new Mapping(requirement, value);
+            Mapping mapping = new Mapping(requirement, value);
 
-            Assert.AreEqual(requirement, binding.Requirement);
-            Assert.AreEqual(value, binding.Value);
+            Assert.AreEqual(requirement, mapping.Requirement);
+            Assert.AreEqual(value, mapping.Value);
         }
 
         [TestMethod]
-        public void Binding_Ctor_NullRequirement_ThrowsArgumentNull()
+        public void Mapping_Ctor_NullRequirement_ThrowsArgumentNull()
         {
             Assert.ThrowsException<ArgumentNullException>(() => new Mapping(null, "NotNull"));
         }
 
         [TestMethod]
-        public void Binding_Equals_Succeeds()
+        public void Mapping_Equals_Succeeds()
         {
             const string value = "Hello World";
             IConfigurationRequirement requirement = ConfigurationRequirement.String("Name", "Description");
@@ -40,23 +40,23 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Binding_Equals_Null_ReturnsFalse()
+        public void Mapping_Equals_Null_ReturnsFalse()
         {
-            Mapping binding = new Mapping(ConfigurationRequirement.String("Name", "Description"), "Hello World");
+            Mapping mapping = new Mapping(ConfigurationRequirement.String("Name", "Description"), "Hello World");
 
-            Assert.IsFalse(binding.Equals(null));
+            Assert.IsFalse(mapping.Equals(null));
         }
 
         [TestMethod]
-        public void Binding_Equals_NotBinding_ReturnsFalse()
+        public void Mapping_Equals_NotMapping_ReturnsFalse()
         {
-            Mapping binding = new Mapping(ConfigurationRequirement.String("Name", "Description"), "Hello World");
+            Mapping mapping = new Mapping(ConfigurationRequirement.String("Name", "Description"), "Hello World");
 
-            Assert.IsFalse(binding.Equals("Hello world"));
+            Assert.IsFalse(mapping.Equals("Hello world"));
         }
 
         [TestMethod]
-        public void Binding_Equals_ValuesDoNotMatch_ReturnsFalse()
+        public void Mapping_Equals_ValuesDoNotMatch_ReturnsFalse()
         {
             IConfigurationRequirement requirement = ConfigurationRequirement.String("Name", "Description");
             Mapping first = new Mapping(requirement, "Hello World");
@@ -67,7 +67,7 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Binding_Equals_OneHasValueNull_ReturnsFalse()
+        public void Mapping_Equals_OneHasValueNull_ReturnsFalse()
         {
             IConfigurationRequirement requirement = ConfigurationRequirement.String("Name", "Description");
             Mapping first = new Mapping(requirement, "Hello World");
@@ -78,7 +78,7 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Binding_Equals_RequirementsDoNotMatch_ReturnsFalse()
+        public void Mapping_Equals_RequirementsDoNotMatch_ReturnsFalse()
         {
             const string value = "Hello World";
             IConfigurationRequirement requirement1 = ConfigurationRequirement.String("Name1", "Description");
@@ -94,14 +94,14 @@ namespace Drexel.Configurables.Tests
         [DataTestMethod]
         [DataRow(null)]
         [DataRow("Hello World")]
-        public void Binding_GetHashCode_Success(object value)
+        public void Mapping_GetHashCode_Success(object value)
         {
-            Mapping binding = new Mapping(TestUtil.CreateConfigurationRequirement(), value);
-            binding.GetHashCode();
+            Mapping mapping = new Mapping(TestUtil.CreateConfigurationRequirement(), value);
+            mapping.GetHashCode();
         }
 
         [TestMethod]
-        public void Binding_GetHashCode_DifferentInstances_ReturnsSameHash()
+        public void Mapping_GetHashCode_DifferentInstances_ReturnsSameHash()
         {
             IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
             object value = "Hello world";

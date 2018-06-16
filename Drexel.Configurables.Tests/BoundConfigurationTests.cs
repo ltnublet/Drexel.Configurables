@@ -18,7 +18,7 @@ namespace Drexel.Configurables.Tests
 
             IEnumerable<IConfigurationRequirement> requirements =
                 TestUtil.CreateIConfigurationRequirementCollection(requirementCount, true);
-            MockConfigurable configurable = new MockConfigurable(requirements);
+            MockRequirementSource configurable = new MockRequirementSource(requirements);
 
             Dictionary<IConfigurationRequirement, object> validObjects =
                 requirements
@@ -41,7 +41,7 @@ namespace Drexel.Configurables.Tests
 
             IEnumerable<IConfigurationRequirement> requirements =
                 TestUtil.CreateIConfigurationRequirementCollection(requirementCount, true, areOptional: true);
-            MockConfigurable configurable = new MockConfigurable(requirements);
+            MockRequirementSource configurable = new MockRequirementSource(requirements);
 
             Dictionary<IConfigurationRequirement, object> validObjects =
                 requirements
@@ -74,7 +74,7 @@ namespace Drexel.Configurables.Tests
         {
             ArgumentNullException exception = Assert.ThrowsException<ArgumentNullException>(() =>
                 new Configuration(
-                    new MockConfigurable(new IConfigurationRequirement[0]),
+                    new MockRequirementSource(new IConfigurationRequirement[0]),
                     null));
             StringAssert.Contains(exception.Message, "Parameter name: bindings");
         }
@@ -84,7 +84,7 @@ namespace Drexel.Configurables.Tests
         {
             ArgumentException exception = Assert.ThrowsException<ArgumentException>(() =>
                 new Configuration(
-                    new MockConfigurable(null),
+                    new MockRequirementSource(null),
                     new Dictionary<IConfigurationRequirement, object>()));
             StringAssert.Contains(exception.Message, Configuration.ConfigurableRequirementsMustNotBeNull);
         }
@@ -315,7 +315,7 @@ namespace Drexel.Configurables.Tests
                     [child] = TestUtil.GetDefaultValidObjectForRequirement(child)
                 };
 
-            MockConfigurable configurable = new MockConfigurable(new IConfigurationRequirement[] { parent, child });
+            MockRequirementSource configurable = new MockRequirementSource(new IConfigurationRequirement[] { parent, child });
             Configuration configuration = new Configuration(configurable, supplied);
 
             Assert.IsNotNull(configuration);
@@ -368,7 +368,7 @@ namespace Drexel.Configurables.Tests
                     [child3] = TestUtil.GetDefaultValidObjectForRequirement(child3)
                 };
 
-            MockConfigurable configurable = new MockConfigurable(
+            MockRequirementSource configurable = new MockRequirementSource(
                 new IConfigurationRequirement[]
                 {
                     parent1,
@@ -578,7 +578,7 @@ namespace Drexel.Configurables.Tests
         }
 
         private static IConfigurable CreateConfigurable(params IConfigurationRequirement[] required) =>
-            new MockConfigurable(required);
+            new MockRequirementSource(required);
 
         private static Configuration CreateConfiguration(
             Func<IConfigurationRequirement, object> valueFactory,

@@ -56,12 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertUtil.cs" />
-    <Compile Include="BindingTests.cs" />
+    <Compile Include="MappingTests.cs" />
     <Compile Include="BoundConfigurationTests.cs" />
     <Compile Include="ConfigurationRequirementTypeTests.cs" />
     <Compile Include="JsonCompare.cs" />
     <Compile Include="ConfigurationRequirementTests.cs" />
-    <Compile Include="Mocks\MockConfigurable.cs" />
+    <Compile Include="Mocks\MockConfigurator.cs" />
+    <Compile Include="Mocks\MockRequirementSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
