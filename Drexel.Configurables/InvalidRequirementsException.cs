@@ -39,6 +39,11 @@ namespace Drexel.Configurables
         /// <param name="paramName">
         /// The name of the parameter that caused the current <see cref="InvalidRequirementsException"/>.
         /// </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "param",
+            Justification = "Following pre-existing naming convention.")]
         public InvalidRequirementsException(string message, string paramName)
             : base(message, paramName)
         {
@@ -61,7 +66,6 @@ namespace Drexel.Configurables
         {
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidRequirementsException"/> class with a specified error
         /// <paramref name="message"/>, the parameter name <paramref name="paramName"/>, and a reference to the inner
@@ -78,6 +82,11 @@ namespace Drexel.Configurables
         /// The <see cref="Exception"/> that is the cause of the current <see cref="InvalidRequirementsException"/>, or
         /// <see langword="null"/> if no inner <see cref="Exception"/> is specified.
         /// </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "param",
+            Justification = "Following pre-existing naming convention.")]
         public InvalidRequirementsException(string message, string paramName, Exception innerException)
             : base(message, paramName, innerException)
         {

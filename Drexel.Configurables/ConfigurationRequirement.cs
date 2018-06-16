@@ -568,6 +568,21 @@ namespace Drexel.Configurables
                 additionalValidation);
         }
 
+        /// <summary>
+        /// Validates the supplied <see cref="object"/> for this requirement.
+        /// </summary>
+        /// <param name="instance">
+        /// The <see cref="object"/> to perform validation upon.
+        /// </param>
+        /// <param name="dependentMappings">
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// <see cref="IConfigurationRequirement"/>s in this requirement's
+        /// <see cref="IConfigurationRequirement.DependsOn"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="null"/> if the supplied <see cref="object"/> <paramref name="instance"/> passed validation;
+        /// an <see cref="Exception"/> describing the validation failure otherwise.
+        /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",

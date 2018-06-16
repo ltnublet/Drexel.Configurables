@@ -10,6 +10,14 @@ namespace Drexel.Configurables
     /// <summary>
     /// A simple implementation of <see cref="IConfiguration"/>.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Naming",
+        "CA1724:TypeNamesShouldNotMatchNamespaces",
+        Justification = "Renaming would reduce usability.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Naming",
+        "CA1710:IdentifiersShouldHaveCorrectSuffix",
+        Justification = "Not applicable.")]
     public class Configuration : IConfiguration
     {
         /// <summary>
@@ -65,6 +73,10 @@ namespace Drexel.Configurables
         /// <exception cref="InvalidMappingsException">
         /// Occurs when the supplied <paramref name="mappings"/> are invalid.
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Maintainability",
+            "CA1502:AvoidExcessiveComplexity",
+            Justification = "Intentional.")]
         public Configuration(
             IRequirementSource requirementSource,
             IReadOnlyDictionary<IConfigurationRequirement, object> mappings,
@@ -197,13 +209,73 @@ namespace Drexel.Configurables
             this.backingConfiguration = new SimpleConfiguration(completed, configurator);
         }
 
+        /// <summary>
+        /// The <see cref="IConfigurator"/> which produced this <see cref="Configuration"/>, or <see langword="null"/>
+        /// if this <see cref="Configuration"/> was initialized without one being specified.
+        /// </summary>
         public IConfigurator Configurator => this.backingConfiguration.Configurator;
 
+        /// <summary>
+        /// Gets the <see cref="object"/> mapped to the specified <paramref name="requirement"/>.
+        /// </summary>
+        /// <param name="requirement">
+        /// The <see cref="IConfigurationRequirement"/>.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/> mapped to the specified <paramref name="requirement"/>.
+        /// </returns>
+        /// <exception cref="KeyNotFoundException">
+        /// Occurs when the <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is not contained
+        /// by this <see cref="Configuration"/>.
+        /// </exception>
         public object this[IConfigurationRequirement requirement] => this.backingConfiguration[requirement];
 
+        /// <summary>
+        /// If the specified <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is contained by
+        /// this <see cref="Configuration"/>, returns the mapped <see cref="object"/>; otherwise, returns the result
+        /// of invoking the supplied <paramref name="defaultValueFactory"/>.
+        /// </summary>
+        /// <param name="requirement">
+        /// The <see cref="IConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="defaultValueFactory">
+        /// The default value factory.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/> mapped to the specified <see cref="IConfigurationRequirement"/> if it is
+        /// contained by this <see cref="Configuration"/>; otherwise, the value returned by
+        /// <paramref name="defaultValueFactory"/>.
+        /// </returns>
         public object GetOrDefault(IConfigurationRequirement requirement, Func<object> defaultValueFactory) =>
             this.backingConfiguration.GetOrDefault(requirement, defaultValueFactory);
 
+        /// <summary>
+        /// If this <see cref="Configuration"/> contains a mapping for the specified
+        /// <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> and the mapped <see cref="object"/>
+        /// is of type <typeparamref name="T"/>, <paramref name="result"/> is set to the mapped <see cref="object"/>
+        /// and <see langword="true"/> is returned. Otherwise, <paramref name="result"/> is set to the return value of
+        /// invoking the <paramref name="defaultValueFactory"/>, and <see langword="false"/> is returned.
+        /// </summary>
+        /// <param name="requirement">
+        /// The <see cref="IConfigurationRequirement"/>.
+        /// </param>
+        /// <param name="defaultValueFactory">
+        /// The default value factory.
+        /// </param>
+        /// <param name="result">
+        /// The result.
+        /// </param>
+        /// <typeparam name="T">
+        /// The expected <see cref="Type"/> of the <see cref="object"/> to return. If the specified
+        /// <see cref="IConfigurationRequirement"/> is contained by this <see cref="Configuration"/>, but the mapped
+        /// <see cref="object"/> is of a <see cref="Type"/> not compatible with <typeparamref name="T"/>, then the
+        /// <paramref name="defaultValueFactory"/> will be invoked.
+        /// </typeparam>
+        /// <returns>
+        /// <see langword="true"/> if the <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is
+        /// contained by this <see cref="Configuration"/>, and <paramref name="result"/> is able to be
+        /// set to the expected <see cref="Type"/> <typeparamref name="T"/>; otherwise, <see langword="false"/>.
+        /// </returns>
         public bool TryGetOrDefault<T>(
             IConfigurationRequirement requirement,
             Func<T> defaultValueFactory,
@@ -212,8 +284,20 @@ namespace Drexel.Configurables
             return this.backingConfiguration.TryGetOrDefault<T>(requirement, defaultValueFactory, out result);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Configuration"/>.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<IMapping> GetEnumerator() => this.backingConfiguration.GetEnumerator();
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Configuration"/>.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
