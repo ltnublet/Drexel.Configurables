@@ -46,10 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding.cs" />
-    <Compile Include="BoundConfiguration.cs" />
+    <Compile Include="InvalidRequirementsException.cs" />
+    <Compile Include="Mapping.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationRequirement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj">

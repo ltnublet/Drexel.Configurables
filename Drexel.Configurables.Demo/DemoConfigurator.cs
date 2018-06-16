@@ -63,7 +63,7 @@ namespace Drexel.Configurables.Demo
 
         public IReadOnlyList<IConfigurationRequirement> Requirements => DemoConfigurator.BackingRequirements;
 
-        public IBoundConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> bindings)
+        public IConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> bindings)
         {
             // [~7]. For the demo, we just use the canonical implementation of the IBoundConfiguration interface,
             // which is the BoundConfiguration.
@@ -82,7 +82,7 @@ namespace Drexel.Configurables.Demo
             // bindings are invalid, so we wrap the AggregateException that BoundConfiguration throws.
             try
             {
-                return new BoundConfiguration(this, bindings);
+                return new Configuration(this, bindings);
             }
             catch (AggregateException e)
             {

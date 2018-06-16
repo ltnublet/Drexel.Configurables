@@ -11,7 +11,7 @@ namespace Drexel.Configurables.Tests.Mocks
             "Microsoft.Design",
             "CA1034:NestedTypesShouldNotBeVisible",
             Justification = "By design.")]
-        public delegate IBoundConfiguration ConfigureFunc(
+        public delegate IConfiguration ConfigureFunc(
             IConfigurable self,
             IReadOnlyDictionary<IConfigurationRequirement, object> collection);
 
@@ -28,7 +28,7 @@ namespace Drexel.Configurables.Tests.Mocks
 
         public IReadOnlyList<IConfigurationRequirement> Requirements => this.requirements.Value;
 
-        public IBoundConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> bindings) =>
+        public IConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> bindings) =>
             this.configureFunc?.Invoke(this, bindings);
     }
 }

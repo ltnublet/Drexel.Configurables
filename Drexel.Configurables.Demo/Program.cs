@@ -49,7 +49,7 @@ namespace Drexel.Configurables.Demo
                 bindings.Add(requirement, Program.ReadForType(requirement.OfType.Type));
             }
 
-            IBoundConfiguration configuration = null;
+            IConfiguration configuration = null;
             try
             {
                 // [~6]. Call the Configure method of the configurator. This will do something - the interface

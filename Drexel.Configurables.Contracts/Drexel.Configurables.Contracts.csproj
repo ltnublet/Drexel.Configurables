@@ -48,10 +48,12 @@
   <ItemGroup>
     <Compile Include="CollectionInfo.cs" />
     <Compile Include="ConfigurationRequirementType.cs" />
-    <Compile Include="IBinding.cs" />
-    <Compile Include="IBoundConfiguration.cs" />
-    <Compile Include="IConfigurable.cs" />
+    <Compile Include="IMapping.cs" />
+    <Compile Include="IConfiguration.cs" />
+    <Compile Include="IConfigurator.cs" />
+    <Compile Include="IRequirementSource.cs" />
     <Compile Include="IConfigurationRequirement.cs" />
+    <Compile Include="InvalidMappingsException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

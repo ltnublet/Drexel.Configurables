@@ -30,7 +30,7 @@ namespace Drexel.Configurables.Tests
                         x => x.Key,
                         x => x.Value);
 
-            BoundConfiguration boundConfiguration = new BoundConfiguration(configurable, validObjects);
+            Configuration boundConfiguration = new Configuration(configurable, validObjects);
             Assert.IsNotNull(boundConfiguration);
         }
 
@@ -57,7 +57,7 @@ namespace Drexel.Configurables.Tests
             // this shouldn't cause any problems.
             validObjects.Remove(validObjects.First().Key);
 
-            BoundConfiguration boundConfiguration = new BoundConfiguration(configurable, validObjects);
+            Configuration boundConfiguration = new Configuration(configurable, validObjects);
             Assert.IsNotNull(boundConfiguration);
         }
 
@@ -65,7 +65,7 @@ namespace Drexel.Configurables.Tests
         public void BoundConfiguration_Ctor_ConfigurableNull_ThrowsArgumentNull()
         {
             ArgumentNullException exception = Assert.ThrowsException<ArgumentNullException>(() =>
-                new BoundConfiguration(null, new Dictionary<IConfigurationRequirement, object>()));
+                new Configuration(null, new Dictionary<IConfigurationRequirement, object>()));
             StringAssert.Contains(exception.Message, "Parameter name: configurable");
         }
 
@@ -73,7 +73,7 @@ namespace Drexel.Configurables.Tests
         public void BoundConfiguration_Ctor_BindingsNull_ThrowsArgumentNull()
         {
             ArgumentNullException exception = Assert.ThrowsException<ArgumentNullException>(() =>
-                new BoundConfiguration(
+                new Configuration(
                     new MockConfigurable(new IConfigurationRequirement[0]),
                     null));
             StringAssert.Contains(exception.Message, "Parameter name: bindings");
@@ -83,10 +83,10 @@ namespace Drexel.Configurables.Tests
         public void BoundConfiguration_Ctor_ConfigurableRequirementsNull_ThrowsArgument()
         {
             ArgumentException exception = Assert.ThrowsException<ArgumentException>(() =>
-                new BoundConfiguration(
+                new Configuration(
                     new MockConfigurable(null),
                     new Dictionary<IConfigurationRequirement, object>()));
-            StringAssert.Contains(exception.Message, BoundConfiguration.ConfigurableRequirementsMustNotBeNull);
+            StringAssert.Contains(exception.Message, Configuration.ConfigurableRequirementsMustNotBeNull);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace Drexel.Configurables.Tests
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(required);
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(configurable, new Dictionary<IConfigurationRequirement, object>()));
+                new Configuration(configurable, new Dictionary<IConfigurationRequirement, object>()));
             Assert.AreEqual(1, exception.InnerExceptions.Count);
             StringAssert.Contains(exception.InnerExceptions.Single().Message, "Missing required requirement");
         }
@@ -114,7 +114,7 @@ namespace Drexel.Configurables.Tests
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(required);
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(
+                new Configuration(
                     configurable,
                     new Dictionary<IConfigurationRequirement, object>()
                     {
@@ -136,7 +136,7 @@ namespace Drexel.Configurables.Tests
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(dependedUpon, dependsOn);
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(
+                new Configuration(
                     configurable,
                     new Dictionary<IConfigurationRequirement, object>()
                     {
@@ -158,7 +158,7 @@ namespace Drexel.Configurables.Tests
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(first, second);
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(
+                new Configuration(
                     configurable,
                     new Dictionary<IConfigurationRequirement, object>()
                     {
@@ -193,7 +193,7 @@ namespace Drexel.Configurables.Tests
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(dependsOns);
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(configurable, values));
+                new Configuration(configurable, values));
             Assert.AreEqual(numberOfMissingDependedUpons, exception.InnerExceptions.Count);
             Assert.IsTrue(
                 exception
@@ -229,7 +229,7 @@ namespace Drexel.Configurables.Tests
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirements.ToArray());
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(configurable, values));
+                new Configuration(configurable, values));
             Assert.AreEqual(numberOfConflictingRequirements, exception.InnerExceptions.Count);
             Assert.IsTrue(
                 exception
@@ -276,7 +276,7 @@ namespace Drexel.Configurables.Tests
                     .ToDictionary(x => x.Key, x => x.Value); 
 
             AggregateException exception = Assert.ThrowsException<AggregateException>(() =>
-                new BoundConfiguration(configurable, bindings));
+                new Configuration(configurable, bindings));
             Assert.AreEqual(expectedFailureCount, exception.InnerExceptions.Count);
             Assert.IsNotNull(
                 exception
@@ -316,11 +316,11 @@ namespace Drexel.Configurables.Tests
                 };
 
             MockConfigurable configurable = new MockConfigurable(new IConfigurationRequirement[] { parent, child });
-            BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
+            Configuration configuration = new Configuration(configurable, supplied);
 
             Assert.IsNotNull(configuration);
             CollectionAssert.AreEquivalent(
-                supplied.Select(x => new Binding(x.Key, x.Value)).ToArray(),
+                supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray(),
                 configuration.Bindings.ToArray());
         }
 
@@ -377,11 +377,11 @@ namespace Drexel.Configurables.Tests
                     child2,
                     child3
                 });
-            BoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
+            Configuration configuration = new Configuration(configurable, supplied);
 
             Assert.IsNotNull(configuration);
             CollectionAssert.AreEquivalent(
-                supplied.Select(x => new Binding(x.Key, x.Value)).ToArray(),
+                supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray(),
                 configuration.Bindings.ToArray());
         }
 
@@ -400,12 +400,12 @@ namespace Drexel.Configurables.Tests
                         x,
                         TestUtil.GetDefaultValidObjectForRequirement(x)))
                 .ToDictionary(x => x.Key, x => x.Value);
-            IBinding[] expected = supplied.Select(x => new Binding(x.Key, x.Value)).ToArray();
+            IMapping[] expected = supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray();
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirements);
 
-            IBoundConfiguration configuration = new BoundConfiguration(configurable, supplied);
-            IBinding[] actual = configuration.Bindings.ToArray();
+            IConfiguration configuration = new Configuration(configurable, supplied);
+            IMapping[] actual = configuration.Bindings.ToArray();
 
             CollectionAssert.AreEquivalent(expected, actual);
         }
@@ -423,7 +423,7 @@ namespace Drexel.Configurables.Tests
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
 
-            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
+            Configuration configuration = new Configuration(configurable, bindings);
 
             Assert.AreEqual(expected, configuration[requirement]);
         }
@@ -431,7 +431,7 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void BoundConfiguration_GetOrDefault_RequirementNull_ThrowsArgumentNull()
         {
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement requirement);
             Assert.ThrowsException<ArgumentNullException>(() => configuration.GetOrDefault(null, () => null));
@@ -440,7 +440,7 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void BoundConfiguration_GetOrDefault_ValueFactoryNull_ThrowsArgumentNull()
         {
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement requirement);
             Assert.ThrowsException<ArgumentNullException>(() => configuration.GetOrDefault(requirement, null));
@@ -457,7 +457,7 @@ namespace Drexel.Configurables.Tests
                     return expected;
                 };
 
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 valueFactory,
                 out IConfigurationRequirement requirement);
 
@@ -480,7 +480,7 @@ namespace Drexel.Configurables.Tests
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(notPresent);
 
-            BoundConfiguration configuration = new BoundConfiguration(configurable, bindings);
+            Configuration configuration = new Configuration(configurable, bindings);
 
             Assert.AreEqual(fallbackValue, configuration.GetOrDefault(notPresent, () => fallbackValue));
         }
@@ -488,7 +488,7 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void BoundConfiguration_TryGetOrDefault_RequirementNull_ThrowsArgumentNull()
         {
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement requirement);
             Assert.ThrowsException<ArgumentNullException>(
@@ -498,7 +498,7 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void BoundConfiguration_TryGetOrDefault_ValueFactoryNull_ThrowsArgumentNull()
         {
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement requirement);
             Assert.ThrowsException<ArgumentNullException>(
@@ -513,7 +513,7 @@ namespace Drexel.Configurables.Tests
 
             bool expected = false;
 
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 x =>
                 {
                     // Use the inverse of the default value for our expected (just in case the default somehow slips in)
@@ -532,7 +532,7 @@ namespace Drexel.Configurables.Tests
         {
             ConfigurationRequirementType type = ConfigurationRequirementType.Uri;
 
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement present);
             IConfigurationRequirement notPresent = TestUtil.CreateConfigurationRequirement(type: type);
@@ -551,7 +551,7 @@ namespace Drexel.Configurables.Tests
             // `expected` must be of a different type than `type`
             ConfigurationRequirementType type = ConfigurationRequirementType.Int32;
 
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 TestUtil.GetDefaultValidObjectForRequirement,
                 out IConfigurationRequirement requirement,
                 () => TestUtil.CreateConfigurationRequirement(type: type));
@@ -568,7 +568,7 @@ namespace Drexel.Configurables.Tests
 
             ConfigurationRequirementType type = ConfigurationRequirementType.Int32;
 
-            BoundConfiguration configuration = BoundConfigurationTests.CreateConfiguration(
+            Configuration configuration = BoundConfigurationTests.CreateConfiguration(
                 x => expected,
                 out IConfigurationRequirement requirement,
                 () => TestUtil.CreateConfigurationRequirement(type: type));
@@ -580,7 +580,7 @@ namespace Drexel.Configurables.Tests
         private static IConfigurable CreateConfigurable(params IConfigurationRequirement[] required) =>
             new MockConfigurable(required);
 
-        private static BoundConfiguration CreateConfiguration(
+        private static Configuration CreateConfiguration(
             Func<IConfigurationRequirement, object> valueFactory,
             out IConfigurationRequirement requirement,
             Func<IConfigurationRequirement> requirementFactory = null)
@@ -594,7 +594,7 @@ namespace Drexel.Configurables.Tests
 
             IConfigurable configurable = BoundConfigurationTests.CreateConfigurable(requirement);
 
-            return new BoundConfiguration(configurable, bindings);
+            return new Configuration(configurable, bindings);
         }
     }
 }

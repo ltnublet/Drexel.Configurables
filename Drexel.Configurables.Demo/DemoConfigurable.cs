@@ -19,7 +19,7 @@ namespace Drexel.Configurables.Demo
         private readonly string username;
         private readonly SecureString password;
 
-        public DemoConfigurable(IBoundConfiguration configuration)
+        public DemoConfigurable(IConfiguration configuration)
         {
             // [~9]. Try to retrieve the information we need from the IBoundConfiguration. Using the
             // information that we retrieve, set some fields on our DemoConfigurable.

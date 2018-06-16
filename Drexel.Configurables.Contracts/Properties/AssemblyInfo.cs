@@ -10,6 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(true)]
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("0.3.*")]
 
 [assembly: Guid("16bec067-8e98-468c-895d-9c71ddec402c")]
