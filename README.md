@@ -8,8 +8,9 @@ Drexel.Configurables consists of three projects:
    `IConfigurator`, `IConfiguration`, and `IMapping`.) Some simple contract classes are also included, such as
    `ConfigurationRequirementType` and `CollectionInfo`.
 3. `Drexel.Configurables`: Implements the contracts defined by `Drexel.Configurables.Contracts` with some canonical
-   defaults. The canonical implementations are designed to function in simplel use-cases. **This is probably the
+   defaults. The canonical implementations are designed to function in simple use-cases. **This is probably the
    package you're interested in.**
+
 Other noteable projects include:
 * `Drexel.Configurables.Sample`: Sample project demonstrating a simple example of using `Drexel.Configurables`.
 * `Drexel.Configurables.Tests`: Contains the tests for the `Drexel.Configurables` namespace. ~92% code coverage.
