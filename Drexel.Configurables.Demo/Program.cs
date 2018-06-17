@@ -5,7 +5,7 @@ using System.Security;
 using System.Text;
 using Drexel.Configurables.Contracts;
 
-namespace Drexel.Configurables.Demo
+namespace Drexel.Configurables.Sample
 {
     public class Program
     {

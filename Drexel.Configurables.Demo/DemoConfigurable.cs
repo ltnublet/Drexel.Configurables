@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security;
 
-namespace Drexel.Configurables.Demo
+namespace Drexel.Configurables.Sample
 {
     public class DemoConfigurable
     {
@@ -36,13 +36,10 @@ namespace Drexel.Configurables.Demo
             {
                 throw new InvalidOperationException($"Failed to connect to website '{this.website}'.");
             }
-            else if (this.username != DemoConfigurable.ExpectedUsername)
+            else if (this.username != DemoConfigurable.ExpectedUsername
+                || !this.password.IsEqual(DemoConfigurable.ExpectedPassword))
             {
-                throw new InvalidOperationException($"Unrecognized username '{this.username}'.");
-            }
-            else if (!this.password.IsEqual(DemoConfigurable.ExpectedPassword))
-            {
-                throw new InvalidOperationException("Wrong password.");
+                throw new InvalidOperationException($"Unrecognized username/password.");
             }
             else
             {

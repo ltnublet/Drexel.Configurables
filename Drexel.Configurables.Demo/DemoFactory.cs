@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Security;
 using Drexel.Configurables.Contracts;
 
-namespace Drexel.Configurables.Demo
+namespace Drexel.Configurables.Sample
 {
     public class DemoFactory : IRequirementSource, IConfigurator
     {

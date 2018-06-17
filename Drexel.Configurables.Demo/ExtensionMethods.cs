@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Drexel.Configurables.Demo
+namespace Drexel.Configurables.Sample
 {
     internal static class ExtensionMethods
     {
