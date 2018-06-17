@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Drexel.Configurables.Contracts
 {
     /// <summary>
-    /// Represents a configuration requirement of an <see cref="IConfigurable"/>.
+    /// Represents a configuration requirement.
     /// </summary>
     public interface IConfigurationRequirement
     {
@@ -37,8 +37,8 @@ namespace Drexel.Configurables.Contracts
         bool IsOptional { get; }
 
         /// <summary>
-        /// The type of this requirement. This indicates what the expected type of the input to
-        /// <see cref="Validate(object, IReadOnlyDictionary{IConfigurationRequirement, IBinding})"/> is.
+        /// The type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
+        /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
         ConfigurationRequirementType OfType { get; }
 
@@ -53,15 +53,15 @@ namespace Drexel.Configurables.Contracts
         /// <param name="instance">
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
-        /// <param name="dependentBindings">
-        /// The set of bindings upon which this requirement is dependent, and the associated <b>validated</b> values.
+        /// <param name="dependentMappings">
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// <see cref="IConfigurationRequirement"/>s in this requirement's
+        /// <see cref="IConfigurationRequirement.DependsOn"/>.
         /// </param>
         /// <returns>
         /// <see langword="null"/> if the supplied <see cref="object"/> <paramref name="instance"/> passed validation;
         /// an <see cref="Exception"/> describing the validation failure otherwise.
         /// </returns>
-        Exception Validate(
-            object instance,
-            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null);
+        Exception Validate(object instance, IConfiguration dependentMappings = null);
     }
 }

@@ -12,23 +12,23 @@ namespace Drexel.Configurables
     /// <summary>
     /// Validates a supplied <see cref="object"/>.
     /// </summary>
-    /// <param name="collectionInfo">
-    /// The <see cref="CollectionInfo"/> associated with this validation.
-    /// </param>
     /// <param name="instance">
     /// The <see cref="object"/> to validate.
     /// </param>
-    /// <param name="dependentBindings">
-    /// The set of bindings upon which this validation is dependent, and the associated <b>validated</b> values.
+    /// <param name="requirement">
+    /// The <see cref="IConfigurationRequirement"/> being validated.
+    /// </param>
+    /// <param name="dependentMappings">
+    /// The set of mappings upon which this validation is dependent, and the associated <b>validated</b> values.
     /// </param>
     /// <returns>
     /// <see langword="null"/> if the object passed validation; else, an <see cref="Exception"/> describing why the
     /// supplied <paramref name="instance"/> failed validation.
     /// </returns>
     public delegate Exception Validator(
-        CollectionInfo collectionInfo,
         object instance,
-        IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings);
+        IConfigurationRequirement requirement,
+        IConfiguration dependentMappings);
 
     /// <summary>
     /// A simple <see cref="IConfigurationRequirement"/> implementation.
@@ -132,8 +132,8 @@ namespace Drexel.Configurables
         public bool IsOptional { get; private set; }
 
         /// <summary>
-        /// The type of this requirement. This indicates what the expected type of the input to
-        /// <see cref="Validate(object, IReadOnlyDictionary{IConfigurationRequirement, IBinding})"/> is.
+        /// The type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
+        /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
         public ConfigurationRequirementType OfType { get; private set; }
 
@@ -560,11 +560,11 @@ namespace Drexel.Configurables
             ConfigurationRequirementType type,
             Validator additionalValidation = null)
         {
-            return (info, instance, dependentBindings) => ConfigurationRequirement.SimpleValidator(
+            return (instance, requirement, dependentMappings) => ConfigurationRequirement.SimpleValidator(
                 type,
-                info,
                 instance,
-                dependentBindings,
+                requirement,
+                dependentMappings,
                 additionalValidation);
         }
 
@@ -574,8 +574,10 @@ namespace Drexel.Configurables
         /// <param name="instance">
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
-        /// <param name="dependentBindings">
-        /// The set of bindings upon which this requirement is dependent, and the associated <b>validated</b> values.
+        /// <param name="dependentMappings">
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// <see cref="IConfigurationRequirement"/>s in this requirement's
+        /// <see cref="IConfigurationRequirement.DependsOn"/>.
         /// </param>
         /// <returns>
         /// <see langword="null"/> if the supplied <see cref="object"/> <paramref name="instance"/> passed validation;
@@ -585,13 +587,11 @@ namespace Drexel.Configurables
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "By design, no exception should escape the validation call.")]
-        public Exception Validate(
-            object instance,
-            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null)
+        public Exception Validate(object instance, IConfiguration dependentMappings = null)
         {
             try
             {
-                return this.validator.Invoke(this.CollectionInfo, instance, dependentBindings);
+                return this.validator.Invoke(instance, this, dependentMappings);
             }
             catch (Exception e)
             {
@@ -815,13 +815,13 @@ namespace Drexel.Configurables
         /// <param name="type">
         /// This field intentionally left blank.
         /// </param>
-        /// <param name="info">
-        /// This field intentionally left blank.
-        /// </param>
         /// <param name="instance">
         /// This field intentionally left blank.
         /// </param>
-        /// <param name="dependentBindings">
+        /// <param name="requirement">
+        /// This field intentionally left blank.
+        /// </param>
+        /// <param name="dependentMappings">
         /// This field intentionally left blank.
         /// </param>
         /// <param name="additionalValidation">
@@ -836,16 +836,16 @@ namespace Drexel.Configurables
             Justification = "We don't control what types of exceptions validation can raise.")]
         internal static Exception SimpleValidator(
             ConfigurationRequirementType type,
-            CollectionInfo info,
             object instance,
-            IReadOnlyDictionary<IConfigurationRequirement, IBinding> dependentBindings = null,
+            IConfigurationRequirement requirement,
+            IConfiguration dependentMappings,
             Validator additionalValidation = null)
         {
             if (instance == null)
             {
                 return new ArgumentNullException(nameof(instance));
             }
-            else if (info == null)
+            else if (requirement.CollectionInfo == null)
             {
                 if (!type.Type.IsAssignableFrom(instance.GetType()))
                 {
@@ -857,7 +857,7 @@ namespace Drexel.Configurables
                         nameof(instance));
                 }
             }
-            else if (info != null)
+            else if (requirement.CollectionInfo != null)
             {
 #pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
                 if (!(instance is IEnumerable enumerable))
@@ -869,22 +869,24 @@ namespace Drexel.Configurables
                 }
 
                 object[] array = enumerable.Cast<object>().ToArray();
-                if (array.Length < info.MinimumCount
-                    || (info.MaximumCount.HasValue ? array.Length > info.MaximumCount.Value : false))
+                if (array.Length < requirement.CollectionInfo.MinimumCount
+                    || (requirement.CollectionInfo.MaximumCount.HasValue
+                        ? array.Length > requirement.CollectionInfo.MaximumCount.Value
+                        : false))
                 {
                     return new ArgumentException(
                         string.Format(
                             CultureInfo.InvariantCulture,
                             ConfigurationRequirement.SuppliedCollectionOfInvalidSize,
                             array.Length,
-                            info.MinimumCount,
-                            info.MaximumCount.HasValue
-                                ? info.MaximumCount.Value.ToString(CultureInfo.InvariantCulture)
+                            requirement.CollectionInfo.MinimumCount,
+                            requirement.CollectionInfo.MaximumCount.HasValue
+                                ? requirement.CollectionInfo.MaximumCount.Value.ToString(CultureInfo.InvariantCulture)
                                 : "null"),
                         nameof(instance));
                 }
 
-                if (array.Length > 0 && !type.Type.IsAssignableFrom(array[0].GetType()))
+                if (array.Any(x => !type.Type.IsAssignableFrom(x.GetType())))
                 {
                     return new ArgumentException(
                         string.Format(
@@ -897,7 +899,7 @@ namespace Drexel.Configurables
 
             try
             {
-                return additionalValidation?.Invoke(info, instance, dependentBindings);
+                return additionalValidation?.Invoke(instance, requirement, dependentMappings);
             }
             catch (Exception e)
             {

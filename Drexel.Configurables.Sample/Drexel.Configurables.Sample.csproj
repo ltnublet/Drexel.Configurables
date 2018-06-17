@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4CC1602F-7BF3-456C-9539-3B4535021763}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Drexel.Configurables.Demo</RootNamespace>
-    <AssemblyName>Drexel.Configurables.Demo</AssemblyName>
+    <RootNamespace>Drexel.Configurables.Sample</RootNamespace>
+    <AssemblyName>Drexel.Configurables.Sample</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoConfigurable.cs" />
-    <Compile Include="DemoConfigurator.cs" />
+    <Compile Include="DemoFactory.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

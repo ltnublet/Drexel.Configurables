@@ -6,6 +6,7 @@ using Drexel.Configurables.Contracts;
 using Drexel.Configurables.External;
 using Drexel.Configurables.Tests.Common;
 using Drexel.Configurables.Tests.Common.Mocks;
+using Drexel.Configurables.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Drexel.Configurables.Tests
@@ -447,124 +448,175 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_NullObject()
         {
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
+
             Assert.AreEqual(
                 typeof(ArgumentNullException),
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
+                        requirement.OfType,
                         null,
-                        null)
+                        requirement,
+                        new MockConfiguration())
                     ?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_NotCollection_ValidObject()
         {
+            const string value = "Valid";
+            ConfigurationRequirementType type = ConfigurationRequirementType.String;
+
             Assert.IsNull(
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        null,
-                        "Valid"));
+                        type,
+                        value,
+                        TestUtil.CreateConfigurationRequirement(type: type),
+                        new MockConfiguration()));
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_NotCollection_InvalidObject()
         {
+            const long value = 8675309L;
+            ConfigurationRequirementType type = ConfigurationRequirementType.String;
+
             Assert.AreEqual(
                 typeof(ArgumentException),
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        null,
-                        8675309L)
+                        type,
+                        value,
+                        TestUtil.CreateConfigurationRequirement(),
+                        new MockConfiguration())
                     ?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_ValidObject()
         {
+            IConfigurationRequirement requirement =
+                TestUtil.CreateConfigurationRequirement(collectionInfo: new CollectionInfo(1));
+            object value = TestUtil.GetDefaultValidObjectForRequirement(requirement);
+
             Assert.IsNull(
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        new CollectionInfo(1),
-                        new string[] { "Valid" }));
+                        requirement.OfType,
+                        value,
+                        requirement,
+                        new MockConfiguration()));
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_ObjectIsNotCollection()
         {
+            const string value = "Invalid";
+            ConfigurationRequirementType type = ConfigurationRequirementType.String;
+            IConfigurationRequirement requirement =
+                TestUtil.CreateConfigurationRequirement(
+                    type: type,
+                    collectionInfo: new CollectionInfo(1));
+
             Assert.AreEqual(
                 typeof(ArgumentException),
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        new CollectionInfo(1),
-                        "Invalid")
+                        type,
+                        value,
+                        requirement,
+                        new MockConfiguration())
                     ?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionTooSmall()
         {
+            string[] value = new string[] { "Too small" };
+            ConfigurationRequirementType type = ConfigurationRequirementType.String;
+            IConfigurationRequirement requirement =
+                TestUtil.CreateConfigurationRequirement(
+                    type: type,
+                    collectionInfo: new CollectionInfo(2));
+
             Assert.AreEqual(
                 typeof(ArgumentException),
                 ConfigurationRequirement
                     .SimpleValidator(
                         ConfigurationRequirementType.String,
-                        new CollectionInfo(2),
-                        new string[] { "Too small" })
+                        value,
+                        requirement,
+                        new MockConfiguration())
                     ?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionIsRightSizeButContainsWrongType()
         {
-            Assert.AreEqual(
-                typeof(ArgumentException),
-                ConfigurationRequirement
-                    .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        new CollectionInfo(1, 3),
-                        new object[] { 8675309L, "Right type" })
-                    ?.GetType());
+            object[] value = new object[] { 8675309L, "Not assignable to expected type" };
+            ConfigurationRequirementType type = ConfigurationRequirementType.Int64;
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
+                type: type,
+                collectionInfo: new CollectionInfo(1, 3));
+
+            Exception result = ConfigurationRequirement.SimpleValidator(
+                type,
+                value,
+                requirement,
+                new MockConfiguration());
+
+            Assert.AreEqual(typeof(ArgumentException), result?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionTooLarge()
         {
+            string[] value = new string[] { "Too big", "Too big", "Too big" };
+            ConfigurationRequirementType type = ConfigurationRequirementType.String;
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
+                type: type,
+                collectionInfo: new CollectionInfo(1, 2));
+
             Assert.AreEqual(
                 typeof(ArgumentException),
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        new CollectionInfo(1, 2),
-                        new string[] { "Too big", "Too big", "Too big" })
+                        type,
+                        value,
+                        requirement,
+                        new MockConfiguration())
                     ?.GetType());
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionIsEmpty()
         {
-            Assert.IsNull(
-                ConfigurationRequirement
-                    .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        new CollectionInfo(0, 5),
-                        new object[0]));
+            object[] value = new object[0];
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
+                collectionInfo: new CollectionInfo(0));
+
+            Exception result = ConfigurationRequirement.SimpleValidator(
+                requirement.OfType,
+                value,
+                requirement,
+                new MockConfiguration());
+
+            Assert.IsNull(result);
         }
 
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_AdditionalValidation_ReturnsNull()
         {
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
+
             Assert.IsNull(
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        null,
-                        "Valid",
-                        null,
+                        requirement.OfType,
+                        TestUtil.GetDefaultValidObjectForRequirement(requirement),
+                        requirement,
+                        new MockConfiguration(),
                         (x, y, z) => null));
         }
 
@@ -572,15 +624,16 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_SimpleValidator_AdditionalValidation_ReturnsException()
         {
             Exception toReturn = new Exception("CONFIGURATIONREQUIREMENTTESTS_AdditionalValidation");
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
 
             Assert.AreEqual(
                 toReturn.Message,
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        null,
-                        "Valid",
-                        null,
+                        requirement.OfType,
+                        TestUtil.GetDefaultValidObjectForRequirement(requirement),
+                        requirement,
+                        new MockConfiguration(),
                         (x, y, z) => toReturn)
                     .Message);
         }
@@ -589,15 +642,16 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_SimpleValidator_AdditionalValidation_ThrowsException()
         {
             Exception toReturn = new Exception("CONFIGURATIONREQUIREMENTTESTS_AdditionalValidation");
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
 
             Assert.AreEqual(
                 toReturn.Message,
                 ConfigurationRequirement
                     .SimpleValidator(
-                        ConfigurationRequirementType.String,
-                        null,
-                        "Valid",
-                        null,
+                        requirement.OfType,
+                        TestUtil.GetDefaultValidObjectForRequirement(requirement),
+                        requirement,
+                        new MockConfiguration(),
                         (x, y, z) => throw toReturn)
                     .Message);
         }
