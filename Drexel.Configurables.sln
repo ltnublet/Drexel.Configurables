@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".StyleCop", ".StyleCop", "{
 		.StyleCop\stylecop.json = .StyleCop\stylecop.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Sample", "Drexel.Configurables.Demo\Drexel.Configurables.Sample.csproj", "{4CC1602F-7BF3-456C-9539-3B4535021763}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Sample", "Drexel.Configurables.Sample\Drexel.Configurables.Sample.csproj", "{4CC1602F-7BF3-456C-9539-3B4535021763}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
