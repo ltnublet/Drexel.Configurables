@@ -84,7 +84,20 @@ namespace Drexel.Configurables.Tests.Common
                         requirement.OfType.Type.ToString()));
             }
 
-            return result;
+            if (requirement.CollectionInfo == null)
+            {
+                return result;
+            }
+            else
+            {
+                object[] buffer = new object[requirement.CollectionInfo.MinimumCount];
+                for (int counter = 0; counter < buffer.Length; counter++)
+                {
+                    buffer[counter] = result;
+                }
+
+                return buffer;
+            }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(

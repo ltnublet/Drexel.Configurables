@@ -560,11 +560,11 @@ namespace Drexel.Configurables
             ConfigurationRequirementType type,
             Validator additionalValidation = null)
         {
-            return (info, instance, dependentBindings) => ConfigurationRequirement.SimpleValidator(
+            return (instance, requirement, dependentMappings) => ConfigurationRequirement.SimpleValidator(
                 type,
-                info,
                 instance,
-                dependentBindings,
+                requirement,
+                dependentMappings,
                 additionalValidation);
         }
 

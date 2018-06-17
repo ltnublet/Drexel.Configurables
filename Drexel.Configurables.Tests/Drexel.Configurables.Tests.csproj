@@ -61,6 +61,7 @@
     <Compile Include="ConfigurationRequirementTypeTests.cs" />
     <Compile Include="JsonCompare.cs" />
     <Compile Include="ConfigurationRequirementTests.cs" />
+    <Compile Include="Mocks\MockConfiguration.cs" />
     <Compile Include="Mocks\MockConfigurator.cs" />
     <Compile Include="Mocks\MockRequirementSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
