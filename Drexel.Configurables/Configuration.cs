@@ -21,9 +21,9 @@ namespace Drexel.Configurables
     public class Configuration : IConfiguration
     {
         /// <summary>
-        /// Exception message for when a configuration requirements are null.
+        /// Exception message for when configuration requirements are null.
         /// </summary>
-        internal const string ConfigurableRequirementsMustNotBeNull =
+        internal const string ConfigurationRequirementsMustNotBeNull =
             "Configuration requirements must not be null.";
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Drexel.Configurables
             if (requirementSource.Requirements == null)
             {
                 throw new InvalidRequirementsException(
-                    Configuration.ConfigurableRequirementsMustNotBeNull,
+                    Configuration.ConfigurationRequirementsMustNotBeNull,
                     nameof(requirementSource));
             }
 
@@ -214,6 +214,11 @@ namespace Drexel.Configurables
         /// if this <see cref="Configuration"/> was initialized without one being specified.
         /// </summary>
         public IConfigurator Configurator => this.backingConfiguration.Configurator;
+
+        /// <summary>
+        /// The set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="Configuration"/>.
+        /// </summary>
+        public IReadOnlyList<IConfigurationRequirement> Keys => this.backingConfiguration.Keys;
 
         /// <summary>
         /// Gets the <see cref="object"/> mapped to the specified <paramref name="requirement"/>.

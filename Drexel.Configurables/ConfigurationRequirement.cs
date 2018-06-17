@@ -886,7 +886,7 @@ namespace Drexel.Configurables
                         nameof(instance));
                 }
 
-                if (array.Length > 0 && !type.Type.IsAssignableFrom(array[0].GetType()))
+                if (array.Any(x => !type.Type.IsAssignableFrom(x.GetType())))
                 {
                     return new ArgumentException(
                         string.Format(

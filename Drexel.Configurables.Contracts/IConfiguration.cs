@@ -19,6 +19,11 @@ namespace Drexel.Configurables.Contracts
         IConfigurator Configurator { get; }
 
         /// <summary>
+        /// The set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="IConfiguration"/>.
+        /// </summary>
+        IReadOnlyList<IConfigurationRequirement> Keys { get; }
+
+        /// <summary>
         /// Gets the <see cref="object"/> mapped to the specified <paramref name="requirement"/>.
         /// </summary>
         /// <param name="requirement">

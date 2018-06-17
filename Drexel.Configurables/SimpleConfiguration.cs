@@ -12,6 +12,7 @@ namespace Drexel.Configurables
     internal sealed class SimpleConfiguration : IConfiguration
     {
         private readonly IReadOnlyDictionary<IConfigurationRequirement, object> backingDictionary;
+        private readonly IReadOnlyList<IConfigurationRequirement> backingKeys;
         private readonly IEnumerable<IMapping> backingMappings;
 
         /// <summary>
@@ -28,6 +29,7 @@ namespace Drexel.Configurables
             IConfigurator configurator = null)
         {
             this.backingDictionary = mappings.ToDictionary(x => x.Key, x => x.Value);
+            this.backingKeys = mappings.Keys.ToList();
             this.backingMappings = mappings.Select(x => new Mapping(x.Key, x.Value)).ToList();
             this.Configurator = configurator;
         }
@@ -36,6 +38,11 @@ namespace Drexel.Configurables
         /// Internal.
         /// </summary>
         public IConfigurator Configurator { get; private set; }
+
+        /// <summary>
+        /// Internal.
+        /// </summary>
+        public IReadOnlyList<IConfigurationRequirement> Keys => this.backingKeys;
 
         /// <summary>
         /// Internal.

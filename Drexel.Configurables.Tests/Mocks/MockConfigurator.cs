@@ -5,6 +5,10 @@ namespace Drexel.Configurables.Tests.Mocks
 {
     public class MockConfigurator : IConfigurator
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1034:NestedTypesShouldNotBeVisible",
+            Justification = "Test code.")]
         public delegate IConfiguration ConfigureFunc(
             IRequirementSource source,
             IReadOnlyDictionary<IConfigurationRequirement, object> bindings);
@@ -18,7 +22,7 @@ namespace Drexel.Configurables.Tests.Mocks
             this.configureFunc = configureFunc;
         }
 
-        public IConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> bindings) =>
-            this.configureFunc?.Invoke(this.source, bindings);
+        public IConfiguration Configure(IReadOnlyDictionary<IConfigurationRequirement, object> mappings) =>
+            this.configureFunc?.Invoke(this.source, mappings);
     }
 }

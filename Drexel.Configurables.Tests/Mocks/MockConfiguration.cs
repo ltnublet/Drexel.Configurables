@@ -6,6 +6,10 @@ using Drexel.Configurables.Contracts;
 
 namespace Drexel.Configurables.Tests.Mocks
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Naming",
+        "CA1710:IdentifiersShouldHaveCorrectSuffix",
+        Justification = "Test code.")]
     public class MockConfiguration : IConfiguration
     {
         private IReadOnlyDictionary<IConfigurationRequirement, object> backingMappings;
@@ -18,9 +22,11 @@ namespace Drexel.Configurables.Tests.Mocks
             this.backingMappings = mappings;
         }
 
-        public object this[IConfigurationRequirement requirement] => this.backingMappings[requirement];
-
         public IConfigurator Configurator { get; private set; }
+
+        public IReadOnlyList<IConfigurationRequirement> Keys => this.backingMappings.Keys.ToList();
+
+        public object this[IConfigurationRequirement requirement] => this.backingMappings[requirement];
 
         public IEnumerator<IMapping> GetEnumerator() =>
             this.backingMappings.Select(x => new Mapping(x.Key, x.Value)).GetEnumerator();

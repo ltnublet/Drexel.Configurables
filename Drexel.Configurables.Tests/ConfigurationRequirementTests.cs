@@ -554,21 +554,19 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionIsRightSizeButContainsWrongType()
         {
-            object[] value = new object[] { 8675309L, 123456 };
+            object[] value = new object[] { 8675309L, "Not assignable to expected type" };
             ConfigurationRequirementType type = ConfigurationRequirementType.Int64;
             IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
                 type: type,
                 collectionInfo: new CollectionInfo(1, 3));
 
-            Assert.AreEqual(
-                typeof(ArgumentException),
-                ConfigurationRequirement
-                    .SimpleValidator(
-                        type,
-                        value,
-                        requirement,
-                        new MockConfiguration())
-                    ?.GetType());
+            Exception result = ConfigurationRequirement.SimpleValidator(
+                type,
+                value,
+                requirement,
+                new MockConfiguration());
+
+            Assert.AreEqual(typeof(ArgumentException), result?.GetType());
         }
 
         [TestMethod]
@@ -595,15 +593,16 @@ namespace Drexel.Configurables.Tests
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionIsEmpty()
         {
             object[] value = new object[0];
-            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement();
+            IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
+                collectionInfo: new CollectionInfo(0));
 
-            Assert.IsNull(
-                ConfigurationRequirement
-                    .SimpleValidator(
-                        requirement.OfType,
-                        value,
-                        requirement,
-                        new MockConfiguration()));
+            Exception result = ConfigurationRequirement.SimpleValidator(
+                requirement.OfType,
+                value,
+                requirement,
+                new MockConfiguration());
+
+            Assert.IsNull(result);
         }
 
         [TestMethod]

@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="AssertUtil.cs" />
     <Compile Include="MappingTests.cs" />
-    <Compile Include="BoundConfigurationTests.cs" />
+    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="ConfigurationRequirementTypeTests.cs" />
     <Compile Include="JsonCompare.cs" />
     <Compile Include="ConfigurationRequirementTests.cs" />
