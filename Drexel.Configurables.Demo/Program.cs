@@ -14,18 +14,18 @@ namespace Drexel.Configurables.Demo
             // Running the program before looking at the source code is recommended. Running the program
             // first will make understanding the code easier.
 
-            // [~1]. Instantiate the DemoConfigurator.
-            // The DemoConfigurator implements the IConfigurable interface.
-            // The DemoConfigurator is what defines the requirements for the DemoConfigurable objects.
-            IConfigurable configurator = new DemoConfigurator();
+            // [~1]. Instantiate the DemoFactory.
+            // The DemoFactory implements the IRequirementSource interface, so we know its requirements.
+            // The DemoFactory implements the IConfigurator interface, so it can turn user input into a Configuration.
+            DemoFactory demoFactory = new DemoFactory();
 
             Console.WriteLine(new string('=', 79));
             Console.WriteLine("Drexel.Configurables.Demo");
             Console.WriteLine(new string('=', 79));
             Console.WriteLine("Demo configuration properties:");
 
-            // [~3]. Demonstrate the ability to iterate over the requirements that an IConfigurable exposes.
-            foreach (IConfigurationRequirement requirement in configurator.Requirements)
+            // [~3]. Demonstrate the ability to iterate over the requirements that an IRequirementSource exposes.
+            foreach (IConfigurationRequirement requirement in demoFactory.Requirements)
             {
                 StringBuilder builder = new StringBuilder();
                 builder.Append($"Name: '{requirement.Name}', ");
@@ -34,29 +34,40 @@ namespace Drexel.Configurables.Demo
                 Console.WriteLine(builder.ToString());
             }
 
-            Console.WriteLine("For connection to succeed, enter:");
+            Console.WriteLine("For demo 'connection' to succeed, enter:");
             Console.WriteLine($"\tUsername: {DemoConfigurable.ExpectedUsername}");
             Console.WriteLine($"\tPassword: {DemoConfigurable.ExpectedPasswordPlaintext}");
             Console.WriteLine($"\tWebsite: {DemoConfigurable.ExpectedWebsite}");
 
-            // [~4]. For each requirement on the DemoConfigurator, read the user's input.
+            // [~4]. For each requirement on the DemoFactory, read the user's input.
             // Add the user's input to a dictionary, so that we know what was entered for each requirement.
             Dictionary<IConfigurationRequirement, object> bindings =
                 new Dictionary<IConfigurationRequirement, object>();
-            foreach (IConfigurationRequirement requirement in configurator.Requirements)
+            foreach (IConfigurationRequirement requirement in demoFactory.Requirements)
             {
-                Console.Write($"Enter value for '{requirement.Name}': ");
-                bindings.Add(requirement, Program.ReadForType(requirement.OfType.Type));
+                while (!bindings.ContainsKey(requirement))
+                {
+                    Console.Write($"Enter value for '{requirement.Name}': ");
+
+                    try
+                    {
+                        bindings.Add(requirement, Program.ReadForType(requirement.OfType.Type));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Exception encountered processing input: {e.Message}");
+                    }
+                }
             }
 
             IConfiguration configuration = null;
             try
             {
-                // [~6]. Call the Configure method of the configurator. This will do something - the interface
-                // doesn't tell us what - which will give us back an IBoundConfiguration.
-                configuration = configurator.Configure(bindings);
+                // [~6]. Call the Configure method of the IConfigurator. This will do something - the interface
+                // doesn't tell us what - which will give us back an IConfiguration.
+                configuration = demoFactory.Configure(bindings);
             }
-            catch (ArgumentException e)
+            catch (InvalidMappingsException e)
             {
                 StringBuilder errorMessage = new StringBuilder();
                 errorMessage.AppendLine(e.Message);
@@ -77,6 +88,7 @@ namespace Drexel.Configurables.Demo
                     }
                 }
 
+                Console.WriteLine();
                 Console.WriteLine($"Exception(s) while configuring bindings: {errorMessage.ToString()}");
             }
             catch (Exception e)
@@ -86,15 +98,19 @@ namespace Drexel.Configurables.Demo
 
             if (configuration != null)
             {
-                // [~8]. If the configurator was able to create an IBoundConfiguration, then we should be able
-                // to instantiate the DemoConfigurable using it.
-                // In a real program, it would probably make sense to hide this constructor behind a factory.
-                DemoConfigurable configurable = new DemoConfigurable(configuration);
+                // [~8]. If the configurator was able to create an IConfiguration, then the DemoFactory should be able
+                // to produce a DemoConfigurable for us.
+                // In a real program, the DemoFactory would probably not expose the IConfigurator interface publically,
+                // so that callers can't pass in illegal IConfiguration objects. For the demo, just add a check inside
+                // the DemoFactory.GetInstance method.
+                DemoConfigurable configurable = demoFactory.GetInstance(configuration);
 
                 Console.WriteLine($"Configurable is connected: '{configurable.IsConnected}'.");
 
                 try
                 {
+                    Console.WriteLine("Trying to connect with the demo configurable...");
+
                     // [~10]. Try to "connect" with our DemoConfigurable.
                     configurable.Connect();
                     Console.WriteLine($"Configurable is connected: '{configurable.IsConnected}'.");
@@ -105,7 +121,8 @@ namespace Drexel.Configurables.Demo
                 }
             }
 
-            Console.WriteLine("\r\nStrike enter to exit...");
+            Console.WriteLine();
+            Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
         }
 

@@ -188,7 +188,7 @@ namespace Drexel.Configurables
 
                 if (failure == null)
                 {
-                    completed.Add(requirement, new Mapping(requirement, value));
+                    completed.Add(requirement, value);
                 }
                 else
                 {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Security;
-using Drexel.Configurables.Contracts;
 
 namespace Drexel.Configurables.Demo
 {
@@ -10,8 +8,6 @@ namespace Drexel.Configurables.Demo
         public const string ExpectedUsername = "ExpectedUsername";
         public const string ExpectedPasswordPlaintext = "ExpectedPassword!123";
 
-        private const string RequirementMissingTemplate = "Missing requirement '{0}'.";
-
         public static SecureString ExpectedPassword = DemoConfigurable.ExpectedPasswordPlaintext.ToSecureString();
         public static Uri ExpectedWebsite = new Uri("https://www.expected.com");
 
@@ -19,34 +15,11 @@ namespace Drexel.Configurables.Demo
         private readonly string username;
         private readonly SecureString password;
 
-        public DemoConfigurable(IConfiguration configuration)
+        public DemoConfigurable(Uri website, string username, SecureString password)
         {
-            // [~9]. Try to retrieve the information we need from the IBoundConfiguration. Using the
-            // information that we retrieve, set some fields on our DemoConfigurable.
-            if (!configuration.TryGetOrDefault(DemoConfigurator.Website, () => null, out this.website))
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurator.Website)));
-            }
-            else if (!configuration.TryGetOrDefault(DemoConfigurator.Username, () => null, out this.username))
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurator.Username)));
-            }
-            else if (!configuration.TryGetOrDefault(DemoConfigurator.Password, () => null, out this.password))
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        DemoConfigurable.RequirementMissingTemplate,
-                        nameof(DemoConfigurator.Password)));
-            }
+            this.website = website;
+            this.username = username;
+            this.password = password;
 
             this.IsConnected = false;
         }
