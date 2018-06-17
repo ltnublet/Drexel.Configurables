@@ -388,7 +388,44 @@ namespace Drexel.Configurables.Tests
         }
 
         [TestMethod]
-        public void Configuration_Mappings_Succeeds()
+        public void Configuration_Ctor_Configurator_Propagates()
+        {
+            MockRequirementSource source = new MockRequirementSource(Enumerable.Empty<IConfigurationRequirement>());
+            MockConfigurator configurator = new MockConfigurator(source, (x, y) => null);
+
+            Configuration configuration = new Configuration(
+                source,
+                new Dictionary<IConfigurationRequirement, object>(),
+                configurator);
+
+            Assert.AreSame(configurator, configuration.Configurator);
+        }
+
+        [TestMethod]
+        public void Configuration_Keys_Succeeds()
+        {
+            const int numberOfRequirements = 50;
+
+            IConfigurationRequirement[] requirements = TestUtil
+                .CreateIConfigurationRequirementCollection(numberOfRequirements, randomTypes: true)
+                .ToArray();
+
+            Dictionary<IConfigurationRequirement, object> supplied = requirements
+                .Select(x =>
+                    new KeyValuePair<IConfigurationRequirement, object>(
+                        x,
+                        TestUtil.GetDefaultValidObjectForRequirement(x)))
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            IRequirementSource requirementSource = ConfigurationTests.CreateRequirementSource(requirements);
+
+            Configuration configuration = new Configuration(requirementSource, supplied);
+
+            CollectionAssert.AreEquivalent(supplied.Keys, configuration.Keys.ToArray());
+        }
+
+        [TestMethod]
+        public void Configuration_CanBeEnumerated_Succeeds()
         {
             const int numberOfRequirements = 50;
 
@@ -404,9 +441,9 @@ namespace Drexel.Configurables.Tests
                 .ToDictionary(x => x.Key, x => x.Value);
             IMapping[] expected = supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray();
 
-            IRequirementSource configurable = ConfigurationTests.CreateRequirementSource(requirements);
+            IRequirementSource requirementSource = ConfigurationTests.CreateRequirementSource(requirements);
 
-            IConfiguration configuration = new Configuration(configurable, supplied);
+            IConfiguration configuration = new Configuration(requirementSource, supplied);
             IMapping[] actual = configuration.ToArray();
 
             CollectionAssert.AreEquivalent(expected, actual);
