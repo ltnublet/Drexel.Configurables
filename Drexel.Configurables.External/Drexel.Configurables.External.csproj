@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Max Drexel</Authors>
+    <Description>External code for configurable resources.</Description>
+    <Version>0.2.0</Version>
+    <Copyright>Copyright 2018</Copyright>
+    <PackageReleaseNotes>0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
+0.1.6738: Initial release</PackageReleaseNotes>
+    <PackageLicenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ltnublet/Drexel.Configurables</PackageProjectUrl>
+    <PackageTags>configurables configuration configure drexel</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
