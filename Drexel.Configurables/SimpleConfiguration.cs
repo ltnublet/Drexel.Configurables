@@ -15,7 +15,7 @@ namespace Drexel.Configurables
         private readonly IEnumerable<IMapping> backingMappings;
 
         /// <summary>
-        /// Internal.
+        /// Initializes a new instance of the <see cref="SimpleConfiguration"/> class.
         /// </summary>
         /// <param name="mappings">
         /// Internal.
@@ -34,12 +34,12 @@ namespace Drexel.Configurables
         }
 
         /// <summary>
-        /// Internal.
+        /// Gets the configurator.
         /// </summary>
         public IConfigurator Configurator { get; private set; }
 
         /// <summary>
-        /// Internal.
+        /// Gets the keys.
         /// </summary>
         public IReadOnlyList<IConfigurationRequirement> Keys { get; }
 

@@ -27,12 +27,12 @@ namespace Drexel.Configurables
         }
 
         /// <summary>
-        /// The mapped <see cref="IConfigurationRequirement"/>.
+        /// Gets the mapped <see cref="IConfigurationRequirement"/>.
         /// </summary>
         public IConfigurationRequirement Requirement { get; private set; }
 
         /// <summary>
-        /// The mapped <see cref="object"/>.
+        /// Gets the mapped <see cref="object"/>.
         /// </summary>
         public object Value { get; private set; }
 

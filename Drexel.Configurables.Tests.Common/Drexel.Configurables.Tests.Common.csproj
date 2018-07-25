@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
+    <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
+    <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj" />
+  </ItemGroup>
+
+</Project>

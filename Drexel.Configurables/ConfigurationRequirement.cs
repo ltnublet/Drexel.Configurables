@@ -49,7 +49,8 @@ namespace Drexel.Configurables
         private string cachedToString;
 
         /// <summary>
-        /// Instantiates a new <see cref="ConfigurationRequirement"/> instance using the supplied parameters.
+        /// Initializes a new instance of the <see cref="ConfigurationRequirement"/> class using the supplied
+        /// parameters.
         /// </summary>
         /// <param name="name">
         /// The name of the <see cref="ConfigurationRequirement"/>.
@@ -96,49 +97,48 @@ namespace Drexel.Configurables
             this.OfType = ofType;
             this.IsOptional = isOptional;
             this.CollectionInfo = collectionInfo;
-            this.DependsOn = dependsOn ?? new IConfigurationRequirement[0];
-            this.ExclusiveWith = exclusiveWith ?? new IConfigurationRequirement[0];
+            this.DependsOn = dependsOn ?? Array.Empty<IConfigurationRequirement>();
+            this.ExclusiveWith = exclusiveWith ?? Array.Empty<IConfigurationRequirement>();
 
             this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
             this.cachedToString = null;
         }
 
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
         /// </summary>
         public IEnumerable<IConfigurationRequirement> DependsOn { get; private set; }
 
         /// <summary>
-        /// The description of this requirement.
+        /// Gets the description of this requirement.
         /// </summary>
         public string Description { get; private set; }
 
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this requirement.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this
+        /// requirement.
         /// </summary>
         public IEnumerable<IConfigurationRequirement> ExclusiveWith { get; private set; }
 
         /// <summary>
-        /// <see langword="null"/> if this requirement expects a single instance of
-        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; else, the constraints of the required
-        /// collection are described by the <see cref="CollectionInfo"/>.
+        /// Gets the collection constraints of this requirement, or <see langword="null"/> if none exist.
         /// </summary>
         public CollectionInfo CollectionInfo { get; private set; }
 
         /// <summary>
-        /// <see langword="true"/> if this requirement is optional; <see langword="false"/> if this requirement is
-        /// required.
+        /// Gets a value indicating whether this requirement is optional: <see langword="true"/> if this requirement is
+        /// optional, or <see langword="false"/> if this requirement is required.
         /// </summary>
         public bool IsOptional { get; private set; }
 
         /// <summary>
-        /// The type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
+        /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
         /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
         public ConfigurationRequirementType OfType { get; private set; }
 
         /// <summary>
-        /// The name of this requirement.
+        /// Gets the name of this requirement.
         /// </summary>
         public string Name { get; private set; }
 
@@ -177,6 +177,10 @@ namespace Drexel.Configurables
         /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.String"/> with the
         /// supplied properties.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static IConfigurationRequirement String(
             string name,
             string description,
@@ -348,6 +352,10 @@ namespace Drexel.Configurables
         /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.Int32"/> with the
         /// supplied properties.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static IConfigurationRequirement Int32(
             string name,
             string description,
@@ -405,6 +413,10 @@ namespace Drexel.Configurables
         /// A <see cref="ConfigurationRequirement"/> of type <see cref="ConfigurationRequirementType.Int64"/> with the
         /// supplied properties.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static IConfigurationRequirement Int64(
             string name,
             string description,

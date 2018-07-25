@@ -14,12 +14,12 @@ namespace Drexel.Configurables.Contracts
     public interface IConfiguration : IEnumerable<IMapping>
     {
         /// <summary>
-        /// The <see cref="IConfigurator"/> which produced this <see cref="IConfiguration"/>.
+        /// Gets the <see cref="IConfigurator"/> which produced this <see cref="IConfiguration"/>.
         /// </summary>
         IConfigurator Configurator { get; }
 
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="IConfiguration"/>.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="IConfiguration"/>.
         /// </summary>
         IReadOnlyList<IConfigurationRequirement> Keys { get; }
 

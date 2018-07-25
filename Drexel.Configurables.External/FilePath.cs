@@ -14,7 +14,7 @@ namespace Drexel.Configurables.External
         internal const string InvalidPath = "The specified path is not a valid fully-qualified path.";
 
         /// <summary>
-        /// Instantiates a new <see cref="FilePath"/> instance.
+        /// Initializes a new instance of the <see cref="FilePath"/> class.
         /// </summary>
         /// <param name="path">
         /// The local file path, formatted as a <see langword="string"/>. Must be fully-qualified (not relative).
@@ -25,10 +25,6 @@ namespace Drexel.Configurables.External
         /// <param name="caseSensitive">
         /// Indicates whether the file path should be treated case-sensitively.
         /// </param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design",
-            "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification = "The System.IO.Path class forces us to do this.")]
         public FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
         {
             if (path == null)
@@ -63,7 +59,7 @@ namespace Drexel.Configurables.External
         }
 
         /// <summary>
-        /// Indicates whether the path is considered case-sensitive.
+        /// Gets a value indicating whether the path is considered case-sensitive.
         /// </summary>
         /// <value>
         /// <see langword="true"/> if case sensitive; <see langword="false"/> otherwise.
@@ -71,7 +67,7 @@ namespace Drexel.Configurables.External
         public bool CaseSensitive { get; private set; }
 
         /// <summary>
-        /// The local file path.
+        /// Gets the local file path.
         /// </summary>
         public string Path { get; private set; }
 
@@ -119,7 +115,7 @@ namespace Drexel.Configurables.External
         {
             return this.CaseSensitive
                 ? this.Path.GetHashCode()
-                : this.Path.ToLowerInvariant().GetHashCode();
+                : this.Path.ToUpperInvariant().GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

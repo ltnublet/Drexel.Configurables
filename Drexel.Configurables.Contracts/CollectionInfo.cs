@@ -21,12 +21,12 @@
         }
 
         /// <summary>
-        /// The minimum number of values allowed in the collection.
+        /// Gets the minimum number of values allowed in the collection.
         /// </summary>
         public int MinimumCount { get; }
 
         /// <summary>
-        /// The maximum number of values allowed in the collection. <see langword="null"/> if there is no maximum.
+        /// Gets the maximum number of values allowed in the collection. <see langword="null"/> if there is no maximum.
         /// </summary>
         public int? MaximumCount { get; }
     }

@@ -210,13 +210,13 @@ namespace Drexel.Configurables
         }
 
         /// <summary>
-        /// The <see cref="IConfigurator"/> which produced this <see cref="Configuration"/>, or <see langword="null"/>
-        /// if this <see cref="Configuration"/> was initialized without one being specified.
+        /// Gets the <see cref="IConfigurator"/> which produced this <see cref="Configuration"/>, or
+        /// <see langword="null"/> if this <see cref="Configuration"/> was initialized without one being specified.
         /// </summary>
         public IConfigurator Configurator => this.backingConfiguration.Configurator;
 
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="Configuration"/>.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s contained by this <see cref="Configuration"/>.
         /// </summary>
         public IReadOnlyList<IConfigurationRequirement> Keys => this.backingConfiguration.Keys;
 
@@ -233,6 +233,10 @@ namespace Drexel.Configurables
         /// Occurs when the <see cref="IConfigurationRequirement"/> <paramref name="requirement"/> is not contained
         /// by this <see cref="Configuration"/>.
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1043:UseIntegralOrStringArgumentForIndexers",
+            Justification = "Not relevant here.")]
         public object this[IConfigurationRequirement requirement] => this.backingConfiguration[requirement];
 
         /// <summary>

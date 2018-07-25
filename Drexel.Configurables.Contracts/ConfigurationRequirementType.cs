@@ -13,8 +13,8 @@ namespace Drexel.Configurables.Contracts
     public sealed class ConfigurationRequirementType
     {
         /// <summary>
-        /// Static initializer for the <see cref="ConfigurationRequirementType"/> class; populates properties in order
-        /// so that reflection can be used to retrieve the total set of supported types.
+        /// Initializes static members of the <see cref="ConfigurationRequirementType"/> class. Populates properties in
+        /// order, so that reflection can be used to retrieve the total set of supported types.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Performance",
@@ -44,7 +44,8 @@ namespace Drexel.Configurables.Contracts
         }
 
         /// <summary>
-        /// Instantiates a new <see cref="ConfigurationRequirementType"/> of the specified <see cref="System.Type"/>.
+        /// Initializes a new instance of the <see cref="ConfigurationRequirementType"/> class of the specified
+        /// <see cref="System.Type"/>.
         /// </summary>
         /// <param name="type">
         /// The <see cref="System.Type"/> of the <see cref="ConfigurationRequirementType"/>.
@@ -56,63 +57,71 @@ namespace Drexel.Configurables.Contracts
 
 #pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="Boolean"/>.
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type <see cref="Boolean"/>.
         /// </summary>
 #pragma warning restore SA1121 // Use built-in type alias
         public static ConfigurationRequirementType Bool { get; }
 
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type
         /// <see cref="Drexel.Configurables.External.FilePath"/>.
         /// </summary>
         public static ConfigurationRequirementType FilePath { get; }
 
 #pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.Int32"/>.
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type <see cref="System.Int32"/>.
         /// </summary>
 #pragma warning restore SA1121 // Use built-in type alias
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static ConfigurationRequirementType Int32 { get; }
 
 #pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.Int64"/>.
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type <see cref="System.Int64"/>.
         /// </summary>
 #pragma warning restore SA1121 // Use built-in type alias
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static ConfigurationRequirementType Int64 { get; }
 
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type
         /// <see cref="System.Security.SecureString"/>.
         /// </summary>
         public static ConfigurationRequirementType SecureString { get; }
 
 #pragma warning disable SA1121 // Use built-in type alias
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.String"/>.
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type <see cref="System.String"/>.
         /// </summary>
 #pragma warning restore SA1121 // Use built-in type alias
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Naming",
+            "CA1720:Identifier contains type name",
+            Justification = "Meaning is clear.")]
         public static ConfigurationRequirementType String { get; }
 
         /// <summary>
-        /// Indicates the associated <see cref="IConfigurationRequirement"/> is of type <see cref="System.Uri"/>.
+        /// Gets the <see cref="ConfigurationRequirementType"/> for the type <see cref="System.Uri"/>.
         /// </summary>
         public static ConfigurationRequirementType Uri { get; }
 
         /// <summary>
-        /// The set of default supported <see cref="ConfigurationRequirementType"/>s. This does not include types
+        /// Gets the set of default supported <see cref="ConfigurationRequirementType"/>s. This does not include types
         /// instantiated in user code: only those statically defined on <see cref="ConfigurationRequirementType"/>
         /// (ex. <see cref="ConfigurationRequirementType.String"/>).
         /// </summary>
         public static IReadOnlyList<ConfigurationRequirementType> Types { get; }
 
         /// <summary>
-        /// The <see cref="System.Type"/> of the associated <see cref="IConfigurationRequirement"/>.
+        /// Gets the <see cref="System.Type"/> of the associated <see cref="IConfigurationRequirement"/>.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Naming",
-            "CA1721:PropertyNamesShouldNotMatchGetMethods",
-            Justification = "The distinction between the inherited method GetType and the property Type is clear.")]
         public Type Type { get; private set; }
 
         /// <summary>

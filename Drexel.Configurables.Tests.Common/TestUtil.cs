@@ -51,8 +51,8 @@ namespace Drexel.Configurables.Tests.Common
                 isOptional,
                 validator ?? ((x, y, z) => null),
                 collectionInfo,
-                dependsOn ?? new IConfigurationRequirement[0],
-                exclusiveWith ?? new IConfigurationRequirement[0]);
+                dependsOn ?? Array.Empty<IConfigurationRequirement>(),
+                exclusiveWith ?? Array.Empty<IConfigurationRequirement>());
         }
 
         public static IEnumerable<IConfigurationRequirement> CreateIConfigurationRequirementCollection(

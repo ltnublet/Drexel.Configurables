@@ -9,41 +9,40 @@ namespace Drexel.Configurables.Contracts
     public interface IConfigurationRequirement
     {
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
         /// </summary>
         IEnumerable<IConfigurationRequirement> DependsOn { get; }
 
         /// <summary>
-        /// The description of this requirement.
+        /// Gets the description of this requirement.
         /// </summary>
         string Description { get; }
 
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this requirement.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this
+        /// requirement.
         /// </summary>
         IEnumerable<IConfigurationRequirement> ExclusiveWith { get; }
 
         /// <summary>
-        /// <see langword="null"/> if this requirement expects a single instance of
-        /// <see cref="ConfigurationRequirementType"/> <see cref="OfType"/>; else, the constraints of the required
-        /// collection are described by the <see cref="CollectionInfo"/>.
+        /// Gets the collection constraints of this requirement, or <see langword="null"/> if none exist.
         /// </summary>
         CollectionInfo CollectionInfo { get; }
 
         /// <summary>
-        /// <see langword="true"/> if this requirement is optional; <see langword="false"/> if this requirement is
-        /// required.
+        /// Gets a value indicating whether this requirement is optional: <see langword="true"/> if this requirement is
+        /// optional, or <see langword="false"/> if this requirement is required.
         /// </summary>
         bool IsOptional { get; }
 
         /// <summary>
-        /// The type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
+        /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
         /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
         ConfigurationRequirementType OfType { get; }
 
         /// <summary>
-        /// The name of this requirement.
+        /// Gets the name of this requirement.
         /// </summary>
         string Name { get; }
 

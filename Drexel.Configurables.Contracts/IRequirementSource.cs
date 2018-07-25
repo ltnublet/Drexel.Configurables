@@ -8,7 +8,7 @@ namespace Drexel.Configurables.Contracts
     public interface IRequirementSource
     {
         /// <summary>
-        /// The set of <see cref="IConfigurationRequirement"/>s required by this <see cref="IRequirementSource"/>.
+        /// Gets the set of <see cref="IConfigurationRequirement"/>s required by this <see cref="IRequirementSource"/>.
         /// </summary>
         IReadOnlyList<IConfigurationRequirement> Requirements { get; }
     }

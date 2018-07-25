@@ -7,12 +7,12 @@
     public interface IMapping
     {
         /// <summary>
-        /// The mapped <see cref="IConfigurationRequirement"/>.
+        /// Gets the mapped <see cref="IConfigurationRequirement"/>.
         /// </summary>
         IConfigurationRequirement Requirement { get; }
 
         /// <summary>
-        /// The mapped <see cref="object"/>.
+        /// Gets the mapped <see cref="object"/>.
         /// </summary>
         object Value { get; }
     }
