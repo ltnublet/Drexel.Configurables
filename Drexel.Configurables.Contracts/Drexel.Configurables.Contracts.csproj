@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Configurables.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Contracts.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
