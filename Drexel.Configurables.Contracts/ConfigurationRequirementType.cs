@@ -10,7 +10,7 @@ namespace Drexel.Configurables.Contracts
     /// <summary>
     /// Represents a configuration type.
     /// </summary>
-    public sealed class ConfigurationRequirementType
+    public sealed class ConfigurationRequirementType : IConfigurationRequirementType
     {
         /// <summary>
         /// Initializes static members of the <see cref="ConfigurationRequirementType"/> class. Populates properties in
@@ -139,7 +139,7 @@ namespace Drexel.Configurables.Contracts
         public override bool Equals(object obj)
         {
 #pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
-            if (obj == null || !(obj is ConfigurationRequirementType other))
+            if (obj == null || !(obj is IConfigurationRequirementType other))
 #pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
             {
                 return false;

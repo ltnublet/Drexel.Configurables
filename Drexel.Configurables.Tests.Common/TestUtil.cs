@@ -11,8 +11,8 @@ namespace Drexel.Configurables.Tests.Common
 {
     public static class TestUtil
     {
-        private static Dictionary<ConfigurationRequirementType, object> defaultValidObjects =
-            new Dictionary<ConfigurationRequirementType, object>()
+        private static Dictionary<IConfigurationRequirementType, object> defaultValidObjects =
+            new Dictionary<IConfigurationRequirementType, object>()
             {
                 [ConfigurationRequirementType.Bool] =
                     true,
@@ -41,8 +41,8 @@ namespace Drexel.Configurables.Tests.Common
             bool isOptional = false,
             Validator validator = null,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null)
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null)
         {
             return new ConfigurationRequirement(
                 baseName + TestUtil.counter++,
@@ -55,7 +55,7 @@ namespace Drexel.Configurables.Tests.Common
                 exclusiveWith ?? Array.Empty<IConfigurationRequirement>());
         }
 
-        public static IEnumerable<IConfigurationRequirement> CreateIConfigurationRequirementCollection(
+        public static IReadOnlyCollection<IConfigurationRequirement> CreateIConfigurationRequirementCollection(
             int count,
             bool randomTypes = false,
             bool areOptional = false) =>

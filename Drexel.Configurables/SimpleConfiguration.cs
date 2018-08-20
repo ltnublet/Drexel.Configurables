@@ -12,7 +12,7 @@ namespace Drexel.Configurables
     internal sealed class SimpleConfiguration : IConfiguration
     {
         private readonly IReadOnlyDictionary<IConfigurationRequirement, object> backingDictionary;
-        private readonly IEnumerable<IMapping> backingMappings;
+        private readonly IEnumerable<Mapping> backingMappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleConfiguration"/> class.
@@ -60,7 +60,7 @@ namespace Drexel.Configurables
         /// <returns>
         /// Internal.
         /// </returns>
-        public IEnumerator<IMapping> GetEnumerator() => this.backingMappings.GetEnumerator();
+        public IEnumerator<IMapping<IConfigurationRequirement>> GetEnumerator() => this.backingMappings.GetEnumerator();
 
         /// <summary>
         /// Internal.

@@ -83,12 +83,12 @@ namespace Drexel.Configurables
         public ConfigurationRequirement(
             string name,
             string description,
-            ConfigurationRequirementType ofType,
+            IConfigurationRequirementType ofType,
             bool isOptional,
             Validator validator,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null)
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null)
         {
             ConfigurationRequirement.ThrowIfBadString(name, nameof(name));
             ConfigurationRequirement.ThrowIfBadString(description, nameof(description));
@@ -107,7 +107,7 @@ namespace Drexel.Configurables
         /// <summary>
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
         /// </summary>
-        public IEnumerable<IConfigurationRequirement> DependsOn { get; private set; }
+        public IReadOnlyCollection<IConfigurationRequirement> DependsOn { get; private set; }
 
         /// <summary>
         /// Gets the description of this requirement.
@@ -118,7 +118,7 @@ namespace Drexel.Configurables
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this
         /// requirement.
         /// </summary>
-        public IEnumerable<IConfigurationRequirement> ExclusiveWith { get; private set; }
+        public IReadOnlyCollection<IConfigurationRequirement> ExclusiveWith { get; private set; }
 
         /// <summary>
         /// Gets the collection constraints of this requirement, or <see langword="null"/> if none exist.
@@ -135,7 +135,7 @@ namespace Drexel.Configurables
         /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
         /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
-        public ConfigurationRequirementType OfType { get; private set; }
+        public IConfigurationRequirementType OfType { get; private set; }
 
         /// <summary>
         /// Gets the name of this requirement.
@@ -186,8 +186,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -243,8 +243,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -300,8 +300,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -361,8 +361,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -422,8 +422,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -479,8 +479,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -536,8 +536,8 @@ namespace Drexel.Configurables
             string description,
             bool isOptional = false,
             CollectionInfo collectionInfo = null,
-            IEnumerable<IConfigurationRequirement> dependsOn = null,
-            IEnumerable<IConfigurationRequirement> exclusiveWith = null,
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null,
             Validator additionalValidation = null)
         {
             return new ConfigurationRequirement(
@@ -569,7 +569,7 @@ namespace Drexel.Configurables
         /// A simple <see cref="Validator"/> with the default validation logic.
         /// </returns>
         public static Validator CreateSimpleValidator(
-            ConfigurationRequirementType type,
+            IConfigurationRequirementType type,
             Validator additionalValidation = null)
         {
             return (instance, requirement, dependentMappings) => ConfigurationRequirement.SimpleValidator(
@@ -587,7 +587,7 @@ namespace Drexel.Configurables
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
         /// <param name="dependentMappings">
-        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping{IConfigurationRequirement}"/>s for all
         /// <see cref="IConfigurationRequirement"/>s in this requirement's
         /// <see cref="IConfigurationRequirement.DependsOn"/>.
         /// </param>
@@ -847,7 +847,7 @@ namespace Drexel.Configurables
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "We don't control what types of exceptions validation can raise.")]
         internal static Exception SimpleValidator(
-            ConfigurationRequirementType type,
+            IConfigurationRequirementType type,
             object instance,
             IConfigurationRequirement requirement,
             IConfiguration dependentMappings,

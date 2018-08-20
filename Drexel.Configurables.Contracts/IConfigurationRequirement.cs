@@ -11,7 +11,7 @@ namespace Drexel.Configurables.Contracts
         /// <summary>
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
         /// </summary>
-        IEnumerable<IConfigurationRequirement> DependsOn { get; }
+        IReadOnlyCollection<IConfigurationRequirement> DependsOn { get; }
 
         /// <summary>
         /// Gets the description of this requirement.
@@ -22,7 +22,7 @@ namespace Drexel.Configurables.Contracts
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this
         /// requirement.
         /// </summary>
-        IEnumerable<IConfigurationRequirement> ExclusiveWith { get; }
+        IReadOnlyCollection<IConfigurationRequirement> ExclusiveWith { get; }
 
         /// <summary>
         /// Gets the collection constraints of this requirement, or <see langword="null"/> if none exist.
@@ -39,7 +39,7 @@ namespace Drexel.Configurables.Contracts
         /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
         /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
-        ConfigurationRequirementType OfType { get; }
+        IConfigurationRequirementType OfType { get; }
 
         /// <summary>
         /// Gets the name of this requirement.
@@ -53,7 +53,7 @@ namespace Drexel.Configurables.Contracts
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
         /// <param name="dependentMappings">
-        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping{IConfigurationRequirement}"/>s for all
         /// <see cref="IConfigurationRequirement"/>s in this requirement's
         /// <see cref="IConfigurationRequirement.DependsOn"/>.
         /// </param>

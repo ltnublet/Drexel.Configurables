@@ -28,9 +28,13 @@ namespace Drexel.Configurables.Persistables
         public PersistableConfigurationRequirement(
             Guid id,
             Version version,
-            IConfigurationRequirement requirement)
+            IConfigurationRequirement requirement,
+            Func<string, object> restoreFunc)
         {
             this.requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            this.OfType = new PersistableConfigurationRequirementType(
+                this.requirement.OfType,
+                restoreFunc ?? throw new ArgumentNullException(nameof(restoreFunc)));
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace Drexel.Configurables.Persistables
         /// <summary>
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must be supplied alongside this requirement.
         /// </summary>
-        public IEnumerable<IConfigurationRequirement> DependsOn => this.requirement.DependsOn;
+        public IReadOnlyCollection<IConfigurationRequirement> DependsOn => this.requirement.DependsOn;
 
         /// <summary>
         /// Gets the description of this requirement.
@@ -57,7 +61,7 @@ namespace Drexel.Configurables.Persistables
         /// Gets the set of <see cref="IConfigurationRequirement"/>s which must not be supplied alongside this
         /// requirement.
         /// </summary>
-        public IEnumerable<IConfigurationRequirement> ExclusiveWith => this.requirement.ExclusiveWith;
+        public IReadOnlyCollection<IConfigurationRequirement> ExclusiveWith => this.requirement.ExclusiveWith;
 
         /// <summary>
         /// Gets the collection constraints of this requirement, or <see langword="null"/> if none exist.
@@ -74,7 +78,13 @@ namespace Drexel.Configurables.Persistables
         /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
         /// <see cref="Validate(object, IConfiguration)"/> is.
         /// </summary>
-        public ConfigurationRequirementType OfType => this.requirement.OfType;
+        public PersistableConfigurationRequirementType OfType { get; }
+
+        /// <summary>
+        /// Gets the type of this requirement. This indicates what the expected <see cref="Type"/> of the input to
+        /// <see cref="Validate(object, IConfiguration)"/> is.
+        /// </summary>
+         IConfigurationRequirementType IConfigurationRequirement.OfType => this.requirement.OfType;
 
         /// <summary>
         /// Gets the name of this requirement.

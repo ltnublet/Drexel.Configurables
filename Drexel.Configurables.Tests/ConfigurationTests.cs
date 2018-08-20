@@ -439,12 +439,12 @@ namespace Drexel.Configurables.Tests
                         x,
                         TestUtil.GetDefaultValidObjectForRequirement(x)))
                 .ToDictionary(x => x.Key, x => x.Value);
-            IMapping[] expected = supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray();
+            IMapping<IConfigurationRequirement>[] expected = supplied.Select(x => new Mapping(x.Key, x.Value)).ToArray();
 
             IRequirementSource requirementSource = ConfigurationTests.CreateRequirementSource(requirements);
 
             IConfiguration configuration = new Configuration(requirementSource, supplied);
-            IMapping[] actual = configuration.ToArray();
+            IMapping<IConfigurationRequirement>[] actual = configuration.ToArray();
 
             CollectionAssert.AreEquivalent(expected, actual);
         }

@@ -299,7 +299,7 @@ namespace Drexel.Configurables
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<IMapping> GetEnumerator() => this.backingConfiguration.GetEnumerator();
+        public IEnumerator<IMapping<IConfigurationRequirement>> GetEnumerator() => this.backingConfiguration.GetEnumerator();
 
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Configuration"/>.

@@ -16,7 +16,7 @@ namespace Drexel.Configurables.Tests
 
             Mapping mapping = new Mapping(requirement, value);
 
-            Assert.AreEqual(requirement, mapping.Requirement);
+            Assert.AreEqual(requirement, mapping.Key);
             Assert.AreEqual(value, mapping.Value);
         }
 

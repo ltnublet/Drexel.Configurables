@@ -1,15 +1,15 @@
 ﻿namespace Drexel.Configurables.Contracts
 {
     /// <summary>
-    /// Represents a mapping between a <see cref="IConfigurationRequirement"/> and an <see cref="object"/> which
+    /// Represents a mapping between a <typeparamref name="T"/> and an <see cref="object"/> which
     /// satisfies its requirements.
     /// </summary>
-    public interface IMapping
+    public interface IMapping<out T>
     {
         /// <summary>
-        /// Gets the mapped <see cref="IConfigurationRequirement"/>.
+        /// Gets the mapped <typeparamref name="T"/>.
         /// </summary>
-        IConfigurationRequirement Requirement { get; }
+        T Key { get; }
 
         /// <summary>
         /// Gets the mapped <see cref="object"/>.

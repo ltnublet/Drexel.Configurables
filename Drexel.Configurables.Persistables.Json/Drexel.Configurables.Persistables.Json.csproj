@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.Json.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.Json.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
     <ProjectReference Include="..\Drexel.Configurables.Persistables.Contracts\Drexel.Configurables.Persistables.Contracts.csproj" />
-    <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
-    <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj" />
   </ItemGroup>
-
 </Project>

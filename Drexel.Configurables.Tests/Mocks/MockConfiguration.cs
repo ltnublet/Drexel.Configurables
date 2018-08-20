@@ -28,7 +28,7 @@ namespace Drexel.Configurables.Tests.Mocks
 
         public object this[IConfigurationRequirement requirement] => this.backingMappings[requirement];
 
-        public IEnumerator<IMapping> GetEnumerator() =>
+        public IEnumerator<IMapping<IConfigurationRequirement>> GetEnumerator() =>
             this.backingMappings.Select(x => new Mapping(x.Key, x.Value)).GetEnumerator();
 
         public object GetOrDefault(IConfigurationRequirement requirement, Func<object> defaultValueFactory)

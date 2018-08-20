@@ -4,9 +4,9 @@ using Drexel.Configurables.Contracts;
 namespace Drexel.Configurables
 {
     /// <summary>
-    /// A simple implementation of <see cref="IMapping"/>.
+    /// A simple implementation of <see cref="IMapping{IConfigurationRequirement}"/>.
     /// </summary>
-    public class Mapping : IMapping
+    public class Mapping : IMapping<IConfigurationRequirement>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Mapping"/> class.
@@ -22,14 +22,14 @@ namespace Drexel.Configurables
         /// </exception>
         public Mapping(IConfigurationRequirement requirement, object bound)
         {
-            this.Requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            this.Key = requirement ?? throw new ArgumentNullException(nameof(requirement));
             this.Value = bound;
         }
 
         /// <summary>
         /// Gets the mapped <see cref="IConfigurationRequirement"/>.
         /// </summary>
-        public IConfigurationRequirement Requirement { get; private set; }
+        public IConfigurationRequirement Key { get; private set; }
 
         /// <summary>
         /// Gets the mapped <see cref="object"/>.
@@ -44,20 +44,20 @@ namespace Drexel.Configurables
         /// </param>
         /// <returns>
         /// <see langword="true"/> if <paramref name="obj"/> is an instance of <see cref="Mapping"/> and its
-        /// <see cref="Mapping.Requirement"/> equals the value of this instance's <see cref="Mapping.Requirement"/>,
+        /// <see cref="Mapping.Key"/> equals the value of this instance's <see cref="Mapping.Key"/>,
         /// and its <see cref="Mapping.Value"/> equals the value of this instance's <see cref="Mapping.Value"/>;
         /// otherwise, <see langword="false"/>.
         /// </returns>
         public override bool Equals(object obj)
         {
 #pragma warning disable SA1119 // Statement must not use unnecessary parenthesis
-            if (obj == null || !(obj is Mapping other))
+            if (obj == null || !(obj is IMapping<IConfigurationRequirement> other))
 #pragma warning restore SA1119 // Statement must not use unnecessary parenthesis
             {
                 return false;
             }
 
-            return this.Requirement.Equals(other.Requirement)
+            return this.Key.Equals(other.Key)
                 && (this.Value?.Equals(other.Value) ?? other.Value == null);
         }
 
@@ -74,7 +74,7 @@ namespace Drexel.Configurables
             // Intentionally allow overflows during hash calculation.
             unchecked
             {
-                return this.Requirement.GetHashCode() + (this.Value?.GetHashCode() ?? nullValueHash);
+                return this.Key.GetHashCode() + (this.Value?.GetHashCode() ?? nullValueHash);
             }
         }
     }

@@ -89,9 +89,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -144,9 +144,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -199,9 +199,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -254,9 +254,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -311,9 +311,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -366,9 +366,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(
@@ -421,9 +421,9 @@ namespace Drexel.Configurables.Tests
                 };
             CollectionInfo collectionInfo = new CollectionInfo(1, 4);
 
-            IEnumerable<IConfigurationRequirement> dependsOn =
+            IReadOnlyCollection<IConfigurationRequirement> dependsOn =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
-            IEnumerable<IConfigurationRequirement> exclusiveWith =
+            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith =
                 TestUtil.CreateIConfigurationRequirementCollection(3);
 
             AssertUtil.Compare(

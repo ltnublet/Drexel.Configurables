@@ -11,7 +11,7 @@ namespace Drexel.Configurables.Contracts
         "Microsoft.Naming",
         "CA1710:IdentifiersShouldHaveCorrectSuffix",
         Justification = "Has additional functionality.")]
-    public interface IConfiguration : IEnumerable<IMapping>
+    public interface IConfiguration : IEnumerable<IMapping<IConfigurationRequirement>>
     {
         /// <summary>
         /// Gets the <see cref="IConfigurator"/> which produced this <see cref="IConfiguration"/>.
