@@ -1,27 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.4.1</Version>
-    <Authors>Max Drexel</Authors>
-    <Description>Contracts for configurable resources.</Description>
-    <Copyright>Copyright 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/ltnublet/Drexel.Configurables</PackageProjectUrl>
-    <PackageTags>configurables configuration configure drexel</PackageTags>
-    <PackageReleaseNotes>0.4.1: Resolved missing XML documentation
-0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
-0.3.6741: Separate the IConfigurable interface into the IRequirementSource and IConfigurator interfaces
-0.1.6738: Initial release</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Contracts.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.Contracts.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Contracts.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Persistables.Contracts.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -36,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
     <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
   </ItemGroup>
+
 </Project>
