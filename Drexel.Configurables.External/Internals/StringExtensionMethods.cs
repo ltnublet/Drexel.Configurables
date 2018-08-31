@@ -5,7 +5,7 @@ namespace Drexel.Configurables.External.Internals
 {
     internal static class StringExtensionMethods
     {
-        public static string Escape(this string toEscape)
+        public static string JsonEscape(this string toEscape)
         {
             if (toEscape == null)
             {
