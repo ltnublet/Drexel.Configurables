@@ -1,20 +1,21 @@
-﻿using Drexel.Configurables.External.Internals;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Drexel.Configurables.External.Internals;
 
 namespace Drexel.Configurables.External
 {
-    public sealed class JsonWriter
+    public sealed class JsonWriter : IDisposable
     {
-        private readonly JsonWriterState state;
+        internal readonly JsonWriterState State;
+        private bool disposed;
 
         public JsonWriter(
             Stream stream,
+            bool autoFlush = false,
             bool pretty = false,
             string newLine = null,
             Encoding encoding = null,
@@ -31,20 +32,23 @@ namespace Drexel.Configurables.External
                     "`stream.CanWrite` returned false; `JsonWriter` requires a writable stream.");
             }
 
-            this.state = new JsonWriterState(
+            this.State = new JsonWriterState(
                 stream,
+                autoFlush,
                 pretty,
                 newLine ?? Environment.NewLine,
                 encoding ?? Encoding.UTF8,
                 culture ?? CultureInfo.InvariantCulture,
                 scheduler ?? TaskScheduler.Current);
+
+            this.disposed = false;
         }
 
         public Task WriteObjectStart(CancellationToken token)
         {
             return this.WriteToStream(
                 "{",
-                this.state.WroteObjectOrArrayStart,
+                this.State.WroteObjectOrArrayStart,
                 token);
         }
 
@@ -52,15 +56,16 @@ namespace Drexel.Configurables.External
         {
             return this.WriteToStream(
                 "}",
-                this.state.WroteObjectOrArrayEnd,
-                token);
+                this.State.WroteObjectOrArrayEnd,
+                token,
+                true);
         }
 
         public Task WriteArrayStart(CancellationToken token)
         {
             return this.WriteToStream(
                 "[",
-                this.state.WroteObjectOrArrayStart,
+                this.State.WroteObjectOrArrayStart,
                 token);
         }
 
@@ -68,8 +73,9 @@ namespace Drexel.Configurables.External
         {
             return this.WriteToStream(
                 "]",
-                this.state.WroteObjectOrArrayEnd,
-                token);
+                this.State.WroteObjectOrArrayEnd,
+                token,
+                true);
         }
 
         public Task WriteValue(string value, CancellationToken token)
@@ -79,34 +85,33 @@ namespace Drexel.Configurables.External
                 return this.WriteNull(token);
             }
 
-            return this.WriteToStream(
-                value.JsonEscape(),
-                this.state.WroteValue,
+            return this.WriteValueInternal(
+                $"\"{value.JsonEscape()}\"",
                 token);
         }
 
         public Task WriteNull(CancellationToken token)
         {
-            return this.WriteNullInternal(this.state.WroteValue, token);
+            return this.WriteNullInternal(this.State.WroteValue, token);
         }
 
         public Task WritePropertyName(string name, CancellationToken token)
         {
             if (name == null)
             {
-                return this.WriteNullInternal(this.state.WroteName, token);
+                return this.WriteNullInternal(this.State.WroteName, token);
             }
 
             string escaped = name.JsonEscape();
 
             return this.WriteToStream(
                 string.Format(
-                    this.state.Culture,
-                    this.state.Pretty
+                    this.State.Culture,
+                    this.State.Pretty
                         ? "\"{0}\": "
                         : "\"{0}\":",
                     name.JsonEscape()),
-                this.state.WroteName,
+                this.State.WroteName,
                 token);
         }
 
@@ -119,91 +124,128 @@ namespace Drexel.Configurables.External
                 token);
         }
 
+        public Task WriteValueInternal(string value, CancellationToken token)
+        {
+            return this.WriteToStream(
+                value,
+                this.State.WroteValue,
+                token);
+        }
+
         private Task WriteToStream(
             string assumedSafeValue,
             Action stateTransform,
-            CancellationToken token)
+            CancellationToken token,
+            bool closingToken = false)
         {
-            const int maximumAdditionalCharacters = 4;
-
             return Task.Factory
                 .StartNew(
                     async asObject =>
                     {
                         JsonWriteOperation operation = (JsonWriteOperation)asObject;
 
-                        Monitor.Enter(operation.State.WriterLock);
+                        await operation.State.WriterLock.WaitAsync(operation.Token).ConfigureAwait(false);
 
-                        StringBuilder builder;
-                        int depthInSpaces = -1;
+                        try
+                        {
+                            StringBuilder builder;
+                            int depthInSpaces = -1;
 
-                        if (operation.State.Pretty)
-                        {
-                            depthInSpaces = operation.State.Depth * 4;
-                            builder = new StringBuilder(
-                                operation.Content.Length
-                                    + maximumAdditionalCharacters
-                                    + depthInSpaces);
-                        }
-                        else
-                        {
-                            builder = new StringBuilder(
-                                operation.Content.Length + maximumAdditionalCharacters);
-                        }
-
-                        if (operation.State.PreviousTokenRequiresComma)
-                        {
-                            builder.Append(',');
-                        }
-
-                        if (operation.State.Pretty && operation.State.PreviousTokenRequiresNewLine)
-                        {
-                            builder.Append(operation.State.NewLine);
-                            if (depthInSpaces > 0)
+                            if (operation.ClosingToken)
                             {
-                                builder.Append(new string(' ', depthInSpaces));
+                                operation.StateTransform.Invoke();
+                            }
+
+                            if (operation.State.Pretty)
+                            {
+                                depthInSpaces = operation.State.Depth * 4;
+                                builder = new StringBuilder(
+                                    operation.Content.Length
+                                        + operation.State.NewLine.Length
+                                        + 1
+                                        + depthInSpaces);
+                            }
+                            else
+                            {
+                                builder = new StringBuilder(operation.Content.Length + 1);
+                            }
+
+                            if (!operation.ClosingToken && operation.State.PreviousTokenRequiresComma)
+                            {
+                                builder.Append(',');
+                            }
+
+                            if (operation.State.Pretty && operation.State.PreviousTokenRequiresNewLine)
+                            {
+                                builder.Append(operation.State.NewLine);
+                                if (depthInSpaces > 0)
+                                {
+                                    builder.Append(new string(' ', depthInSpaces));
+                                }
+                            }
+
+                            builder.Append(operation.Content);
+
+                            byte[] bytes = operation.State.Encoding.GetBytes(builder.ToString());
+                            await operation.State.Stream
+                                .WriteAsync(
+                                    bytes,
+                                    0,
+                                    bytes.Length,
+                                    operation.Token)
+                                .ConfigureAwait(false);
+
+                            if (!operation.ClosingToken)
+                            {
+                                operation.StateTransform.Invoke();
+                            }
+
+                            if (operation.State.AutoFlush && operation.State.Depth == 0)
+                            {
+                                await operation
+                                    .State
+                                    .Stream
+                                    .FlushAsync()
+                                    .ConfigureAwait(false);
                             }
                         }
-
-                        byte[] bytes = operation.State.Encoding.GetBytes(builder.ToString());
-                        await operation.State.Stream
-                            .WriteAsync(
-                                bytes,
-                                0,
-                                bytes.Length,
-                                operation.Token)
-                            .ContinueWith(
-                                x =>
-                                {
-                                    JsonWriteOperation nestedOperation = (JsonWriteOperation)x.AsyncState;
-                                    nestedOperation.StateTransform.Invoke();
-                                    Monitor.Exit(operation.State.WriterLock);
-                                },
-                                CancellationToken.None, // Do not allow the exit to be cancelled.
-                                TaskContinuationOptions.ExecuteSynchronously,
-                                operation.State.Scheduler)
-                            .ConfigureAwait(false);
+                        finally
+                        {
+                            operation.State.WriterLock.Release();
+                        }
                     },
                     new JsonWriteOperation(
-                        this.state,
+                        this.State,
                         assumedSafeValue,
                         stateTransform,
+                        closingToken,
                         token),
                     token,
                     TaskCreationOptions.None,
-                    this.state.Scheduler);
+                    this.State.Scheduler);
         }
 
-        private class JsonWriterState
+        public void Dispose()
+        {
+            if (!this.disposed)
+            {
+                this.State.Dispose();
+                this.disposed = true;
+            }
+        }
+
+        internal class JsonWriterState : IDisposable
         {
             public readonly Stream Stream;
+            public readonly bool AutoFlush;
             public readonly bool Pretty;
             public readonly string NewLine;
             public readonly Encoding Encoding;
             public readonly CultureInfo Culture;
             public readonly TaskScheduler Scheduler;
+
             public int Depth;
-            public object WriterLock;
+            public SemaphoreSlim WriterLock;
             public bool PreviousTokenWasName;
             public bool PreviousTokenWasObjectOrArrayStart;
             public bool PreviousTokenWasObjectOrArrayEnd;
@@ -212,6 +254,7 @@ namespace Drexel.Configurables.External
 
             public JsonWriterState(
                 Stream stream,
+                bool autoFlush,
                 bool pretty,
                 string newLine,
                 Encoding encoding,
@@ -219,6 +262,7 @@ namespace Drexel.Configurables.External
                 TaskScheduler scheduler)
             {
                 this.Stream = stream;
+                this.AutoFlush = autoFlush;
                 this.Pretty = pretty;
                 this.NewLine = newLine;
                 this.Encoding = encoding;
@@ -226,7 +270,7 @@ namespace Drexel.Configurables.External
                 this.Scheduler = scheduler;
 
                 this.Depth = 0;
-                this.WriterLock = new object();
+                this.WriterLock = new SemaphoreSlim(1);
                 this.PreviousTokenWasName = false;
                 this.PreviousTokenWasObjectOrArrayStart = false;
                 this.PreviousTokenWasObjectOrArrayEnd = false;
@@ -271,6 +315,11 @@ namespace Drexel.Configurables.External
                 this.PreviousTokenRequiresComma = true;
                 this.PreviousTokenRequiresNewLine = true;
             }
+
+            public void Dispose()
+            {
+                this.WriterLock.Dispose();
+            }
         }
 
         private class JsonWriteOperation
@@ -278,17 +327,20 @@ namespace Drexel.Configurables.External
             public readonly JsonWriterState State;
             public readonly string Content;
             public readonly Action StateTransform;
+            public readonly bool ClosingToken;
             public readonly CancellationToken Token;
 
             public JsonWriteOperation(
                 JsonWriterState state,
                 string content,
                 Action stateTransform,
+                bool closingToken,
                 CancellationToken token)
             {
                 this.State = state;
                 this.Content = content;
                 this.StateTransform = stateTransform;
+                this.ClosingToken = closingToken;
                 this.Token = token;
             }
         }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -6,8 +6,22 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\Drexel.Configurables.External.Tests\FilePathTests.cs" Link="FilePathTests.cs" />
+    <Compile Include="..\Drexel.Configurables.External.Tests\JsonWriterTests.cs" Link="JsonWriterTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
+    <AdditionalFiles Include="..\.StyleCop\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -51,6 +51,9 @@
     <Compile Include="..\Drexel.Configurables.External.Tests\FilePathTests.cs">
       <Link>FilePathTests.cs</Link>
     </Compile>
+    <Compile Include="..\Drexel.Configurables.External.Tests\JsonWriterTests.cs">
+      <Link>JsonWriterTests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
