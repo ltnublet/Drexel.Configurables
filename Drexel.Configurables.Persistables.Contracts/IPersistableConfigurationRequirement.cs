@@ -18,5 +18,10 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// Gets the version of this <see cref="IPersistableConfigurationRequirement"/>.
         /// </summary>
         Version Version { get; }
+
+        /// <summary>
+        /// Gets the persistable type of this requirement.
+        /// </summary>
+        new PersistableConfigurationRequirementType OfType { get; }
     }
 }

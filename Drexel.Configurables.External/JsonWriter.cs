@@ -90,6 +90,22 @@ namespace Drexel.Configurables.External
                 token);
         }
 
+        public Task WriteValue(object value, CancellationToken token)
+        {
+            if (value == null)
+            {
+                return this.WriteNull(token);
+            }
+            else if (value is string asString)
+            {
+                return this.WriteValue(value as string, token);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public Task WriteNull(CancellationToken token)
         {
             return this.WriteNullInternal(this.State.WroteValue, token);
@@ -124,7 +140,7 @@ namespace Drexel.Configurables.External
                 token);
         }
 
-        public Task WriteValueInternal(string value, CancellationToken token)
+        private Task WriteValueInternal(string value, CancellationToken token)
         {
             return this.WriteToStream(
                 value,

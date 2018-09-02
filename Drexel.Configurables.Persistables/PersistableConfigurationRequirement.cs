@@ -25,16 +25,19 @@ namespace Drexel.Configurables.Persistables
         /// <param name="requirement">
         /// The nested requirement.
         /// </param>
+        /// <param name="type">
+        /// The type of this requirement.
+        /// </param>
         public PersistableConfigurationRequirement(
             Guid id,
             Version version,
             IConfigurationRequirement requirement,
-            Func<string, object> restoreFunc)
+            PersistableConfigurationRequirementType type)
         {
             this.requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
-            this.OfType = new PersistableConfigurationRequirementType(
-                this.requirement.OfType,
-                restoreFunc ?? throw new ArgumentNullException(nameof(restoreFunc)));
+            this.Id = id;
+            this.Version = version ?? throw new ArgumentNullException(nameof(version));
+            this.OfType = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         /// <summary>
