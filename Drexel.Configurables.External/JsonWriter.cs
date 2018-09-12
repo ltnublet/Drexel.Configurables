@@ -369,7 +369,7 @@ namespace Drexel.Configurables.External
 
                             operation.SucceedingStateTransform.Invoke();
 
-                            if (operation.State.AutoFlush && operation.State.Depth == 0)
+                            if (operation.State.AutoFlush && operation.State.CurrentTokenRequiresFlush)
                             {
                                 await operation
                                     .State
@@ -570,6 +570,7 @@ namespace Drexel.Configurables.External
             /// </summary>
             public void WroteObjectOrArrayEnd()
             {
+                this.CurrentTokenRequiresFlush = false;
                 this.PreviousTokenWasName = false;
                 this.PreviousTokenWasObjectOrArrayStart = false;
                 this.PreviousTokenWasObjectOrArrayEnd = true;
