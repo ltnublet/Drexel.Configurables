@@ -249,7 +249,7 @@ namespace Drexel.Configurables.External.Tests
         [DataTestMethod]
         [DataRow(true)]
         [DataRow(false)]
-        public async Task JsonWriter_Pretty_Honored(bool pretty)
+        public async Task JsonWriter_Pretty_Honored_Manual(bool pretty)
         {
             using (MemoryStream stream = new MemoryStream())
             using (JsonWriter writer = new JsonWriter(stream, pretty: pretty))
@@ -274,6 +274,12 @@ namespace Drexel.Configurables.External.Tests
                 stream.Seek(0, SeekOrigin.Begin);
                 StreamReader reader = new StreamReader(stream);
                 string content = reader.ReadToEnd();
+
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
+
                 Assert.IsFalse(string.IsNullOrWhiteSpace(content));
             }
         }

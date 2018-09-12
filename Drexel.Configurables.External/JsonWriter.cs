@@ -8,11 +8,60 @@ using Drexel.Configurables.External.Internals;
 
 namespace Drexel.Configurables.External
 {
+    /// <summary>
+    /// Performs write operations to a supplied <see cref="Stream"/>.
+    /// </summary>
     public sealed class JsonWriter : IDisposable
     {
+        /// <summary>
+        /// Contains the internal state of the <see cref="JsonWriter"/>.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "StyleCop.CSharp.MaintainabilityRules",
+            "SA1401:Fields must be private",
+            Justification = "Intentional.")]
         internal readonly JsonWriterState State;
+
         private bool disposed;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonWriter"/> class.
+        /// </summary>
+        /// <param name="stream">
+        /// The underlying <see cref="Stream"/> to write to.
+        /// </param>
+        /// <param name="autoFlush">
+        /// When <see langword="true"/>, the underlying <see cref="Stream"/> <paramref name="stream"/> will be flushed
+        /// (via <see cref="Stream.FlushAsync(CancellationToken)"/>) as part of calls to
+        /// <see cref="JsonWriter.WriteObjectEnd(CancellationToken)"/>.
+        /// </param>
+        /// <param name="pretty">
+        /// When <see langword="true"/>, write operations will include additional whitespace to increase
+        /// human-readability.
+        /// </param>
+        /// <param name="newLine">
+        /// The <see langword="string"/> used for whitespace newlines. When <see langword="null"/>,
+        /// <see cref="Environment.NewLine"/> will be used.
+        /// </param>
+        /// <param name="encoding">
+        /// The <see cref="Encoding"/> to use when writing characters to the <see cref="Stream"/>. When
+        /// <see langword="null"/>", <see cref="Encoding.UTF8"/> will be used.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/> to use when performing write operations. When <see langword="null"/>,
+        /// <see cref="CultureInfo.InvariantCulture"/> will be used.
+        /// </param>
+        /// <param name="scheduler">
+        /// The <see cref="TaskScheduler"/> to schedule <see langword="async"/> writes on. When <see langword="null"/>,
+        /// <see cref="TaskScheduler.Current"/> will be used.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Occurs when a supplied argument is illegally <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Occurs when the <see cref="Stream.CanWrite"/> property of the <see cref="Stream"/>
+        /// <paramref name="stream"/> does not return <see langword="true"/>.
+        /// </exception>
         public JsonWriter(
             Stream stream,
             bool autoFlush = false,
@@ -44,40 +93,102 @@ namespace Drexel.Configurables.External
             this.disposed = false;
         }
 
+        /// <summary>
+        /// Disposes of the <see cref="JsonWriter"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!this.disposed)
+            {
+                this.State.Dispose();
+                this.disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Writes the start of an object to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteObjectStart(CancellationToken token)
         {
             return this.WriteToStream(
                 "{",
+                this.State.NoChange,
                 this.State.WroteObjectOrArrayStart,
                 token);
         }
 
+        /// <summary>
+        /// Writes the end of an object to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteObjectEnd(CancellationToken token)
         {
             return this.WriteToStream(
                 "}",
+                this.State.WritingObjectEnd,
                 this.State.WroteObjectOrArrayEnd,
-                token,
-                true);
+                token);
         }
 
+        /// <summary>
+        /// Writes the start of an array to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteArrayStart(CancellationToken token)
         {
             return this.WriteToStream(
                 "[",
+                this.State.NoChange,
                 this.State.WroteObjectOrArrayStart,
                 token);
         }
 
+        /// <summary>
+        /// Writes the end of an array to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteArrayEnd(CancellationToken token)
         {
             return this.WriteToStream(
                 "]",
+                this.State.WritingArrayEnd,
                 this.State.WroteObjectOrArrayEnd,
-                token,
-                true);
+                token);
         }
 
+        /// <summary>
+        /// Writes the <see langword="string"/> <paramref name="value"/> to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="value">
+        /// The <see langword="string"/> to write to the stream.
+        /// </param>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteValue(string value, CancellationToken token)
         {
             if (value == null)
@@ -86,10 +197,25 @@ namespace Drexel.Configurables.External
             }
 
             return this.WriteValueInternal(
-                $"\"{value.JsonEscape()}\"",
+                string.Format(
+                    this.State.Culture,
+                    "\"{0}\"",
+                    value.JsonEscape()),
                 token);
         }
 
+        /// <summary>
+        /// Writes the <see langword="object"/> <paramref name="value"/> to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="value">
+        /// The <see langword="object"/> to write to the stream.
+        /// </param>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteValue(object value, CancellationToken token)
         {
             if (value == null)
@@ -106,16 +232,43 @@ namespace Drexel.Configurables.External
             }
         }
 
+        /// <summary>
+        /// Writes <see langword="null"/> to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WriteNull(CancellationToken token)
         {
-            return this.WriteNullInternal(this.State.WroteValue, token);
+            return this.WriteNullInternal(
+                this.State.NoChange,
+                this.State.WroteValue,
+                token);
         }
 
+        /// <summary>
+        /// Writes the property name <paramref name="name"/> to the <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The property name to write to the <see cref="Stream"/>.
+        /// </param>
+        /// <param name="token">
+        /// The <see cref="CancellationToken"/> that will be assigned to the write operation.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the write operation.
+        /// </returns>
         public Task WritePropertyName(string name, CancellationToken token)
         {
             if (name == null)
             {
-                return this.WriteNullInternal(this.State.WroteName, token);
+                return this.WriteNullInternal(
+                    this.State.NoChange,
+                    this.State.WroteName,
+                    token);
             }
 
             string escaped = name.JsonEscape();
@@ -127,16 +280,21 @@ namespace Drexel.Configurables.External
                         ? "\"{0}\": "
                         : "\"{0}\":",
                     name.JsonEscape()),
+                this.State.NoChange,
                 this.State.WroteName,
                 token);
         }
 
-        private Task WriteNullInternal(Action stateTransform, CancellationToken token)
+        private Task WriteNullInternal(
+            Action precedingStateTransform,
+            Action succeedingStateTransform,
+            CancellationToken token)
         {
             const string @null = "null";
             return this.WriteToStream(
                 @null,
-                stateTransform,
+                precedingStateTransform,
+                succeedingStateTransform,
                 token);
         }
 
@@ -144,15 +302,16 @@ namespace Drexel.Configurables.External
         {
             return this.WriteToStream(
                 value,
+                this.State.NoChange,
                 this.State.WroteValue,
                 token);
         }
 
         private Task WriteToStream(
             string assumedSafeValue,
-            Action stateTransform,
-            CancellationToken token,
-            bool closingToken = false)
+            Action precedingStateTransform,
+            Action succeedingStateTransform,
+            CancellationToken token)
         {
             return Task.Factory
                 .StartNew(
@@ -167,10 +326,7 @@ namespace Drexel.Configurables.External
                             StringBuilder builder;
                             int depthInSpaces = -1;
 
-                            if (operation.ClosingToken)
-                            {
-                                operation.StateTransform.Invoke();
-                            }
+                            operation.PrecedingStateTransform.Invoke();
 
                             if (operation.State.Pretty)
                             {
@@ -186,7 +342,7 @@ namespace Drexel.Configurables.External
                                 builder = new StringBuilder(operation.Content.Length + 1);
                             }
 
-                            if (!operation.ClosingToken && operation.State.PreviousTokenRequiresComma)
+                            if (operation.State.PreviousTokenRequiresComma)
                             {
                                 builder.Append(',');
                             }
@@ -211,10 +367,7 @@ namespace Drexel.Configurables.External
                                     operation.Token)
                                 .ConfigureAwait(false);
 
-                            if (!operation.ClosingToken)
-                            {
-                                operation.StateTransform.Invoke();
-                            }
+                            operation.SucceedingStateTransform.Invoke();
 
                             if (operation.State.AutoFlush && operation.State.Depth == 0)
                             {
@@ -233,41 +386,126 @@ namespace Drexel.Configurables.External
                     new JsonWriteOperation(
                         this.State,
                         assumedSafeValue,
-                        stateTransform,
-                        closingToken,
+                        precedingStateTransform,
+                        succeedingStateTransform,
                         token),
                     token,
                     TaskCreationOptions.None,
                     this.State.Scheduler);
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Represents the internal state of the <see cref="JsonWriter"/>.
+        /// </summary>
+        internal sealed class JsonWriterState : IDisposable
         {
-            if (!this.disposed)
-            {
-                this.State.Dispose();
-                this.disposed = true;
-            }
-        }
-
-        internal class JsonWriterState : IDisposable
-        {
+#pragma warning disable SA1401 // Fields must be private
+            /// <summary>
+            /// The underlying stream being operated on.
+            /// </summary>
             public readonly Stream Stream;
+
+            /// <summary>
+            /// Whether autoflush is enabled.
+            /// </summary>
             public readonly bool AutoFlush;
+
+            /// <summary>
+            /// Whether pretty printing is enabled.
+            /// </summary>
             public readonly bool Pretty;
+
+            /// <summary>
+            /// The string to use for newlines when pretty printing.
+            /// </summary>
             public readonly string NewLine;
+
+            /// <summary>
+            /// The <see cref="Encoding"/> to use when converting user-supplied <see langword="string"/>s to
+            /// <see langword="T:Byte[]"/> while writing to the <see cref="Stream"/>.
+            /// </summary>
             public readonly Encoding Encoding;
+
+            /// <summary>
+            /// The <see cref="CultureInfo"/> to use when calling
+            /// <see cref="string.Format(IFormatProvider, string, object[])"/> while escaping user-supplied
+            /// <see langword="string"/>s.
+            /// </summary>
             public readonly CultureInfo Culture;
+
+            /// <summary>
+            /// The <see cref="TaskScheduler"/> to use when scheduling <see cref="Task"/>s for writing to the
+            /// <see cref="Stream"/>.
+            /// </summary>
             public readonly TaskScheduler Scheduler;
 
+            /// <summary>
+            /// The current depth (in spaces) when pretty printing.
+            /// </summary>
             public int Depth;
-            public SemaphoreSlim WriterLock;
-            public bool PreviousTokenWasName;
-            public bool PreviousTokenWasObjectOrArrayStart;
-            public bool PreviousTokenWasObjectOrArrayEnd;
-            public bool PreviousTokenRequiresComma;
-            public bool PreviousTokenRequiresNewLine;
 
+            /// <summary>
+            /// The thread-safe lock to use when writing to the <see cref="Stream"/>.
+            /// </summary>
+            public SemaphoreSlim WriterLock;
+
+            /// <summary>
+            /// Indicates whether the current token requires a flush to occur, if <see cref="Pretty"/> is
+            /// <see langword="true"/>.
+            /// </summary>
+            public bool CurrentTokenRequiresFlush;
+
+            /// <summary>
+            /// Indicates whether the previous token was a property name.
+            /// </summary>
+            public bool PreviousTokenWasName;
+
+            /// <summary>
+            /// Indicates whether the previous token was the start of an object or array.
+            /// </summary>
+            public bool PreviousTokenWasObjectOrArrayStart;
+
+            /// <summary>
+            /// Indicates whether the previous token was the end of an objecy or array.
+            /// </summary>
+            public bool PreviousTokenWasObjectOrArrayEnd;
+
+            /// <summary>
+            /// Indicates whether the previous token requires a comma to be written when performing the next write.
+            /// </summary>
+            public bool PreviousTokenRequiresComma;
+
+            /// <summary>
+            /// Indicates whether the previous token requires a newline to be written when performing the next write.
+            /// </summary>
+            public bool PreviousTokenRequiresNewLine;
+#pragma warning restore SA1401 // Fields must be private
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="JsonWriterState"/> class.
+            /// </summary>
+            /// <param name="stream">
+            /// The <see cref="Stream"/>.
+            /// </param>
+            /// <param name="autoFlush">
+            /// Indicates whether auto-flush is enabled, which is flush the underlying <see cref="Stream"/> whenever
+            /// the end of an object is written to the stream.
+            /// </param>
+            /// <param name="pretty">
+            /// Indicates whether pretty printing is enabled.
+            /// </param>
+            /// <param name="newLine">
+            /// The newline <see langword="string"/> to use when pretty printing.
+            /// </param>
+            /// <param name="encoding">
+            /// The <see cref="Encoding"/>.
+            /// </param>
+            /// <param name="culture">
+            /// The <see cref="CultureInfo"/>.
+            /// </param>
+            /// <param name="scheduler">
+            /// The <see cref="TaskScheduler"/>.
+            /// </param>
             public JsonWriterState(
                 Stream stream,
                 bool autoFlush,
@@ -287,6 +525,7 @@ namespace Drexel.Configurables.External
 
                 this.Depth = 0;
                 this.WriterLock = new SemaphoreSlim(1);
+                this.CurrentTokenRequiresFlush = false;
                 this.PreviousTokenWasName = false;
                 this.PreviousTokenWasObjectOrArrayStart = false;
                 this.PreviousTokenWasObjectOrArrayEnd = false;
@@ -294,6 +533,9 @@ namespace Drexel.Configurables.External
                 this.PreviousTokenRequiresNewLine = false;
             }
 
+            /// <summary>
+            /// Mutates the state to indicate that the previous write operation was for an object or array start.
+            /// </summary>
             public void WroteObjectOrArrayStart()
             {
                 this.PreviousTokenWasName = false;
@@ -304,6 +546,28 @@ namespace Drexel.Configurables.External
                 this.Depth++;
             }
 
+            /// <summary>
+            /// Mutates the state to indicate that the current write operation is for an object end.
+            /// </summary>
+            public void WritingObjectEnd()
+            {
+                this.CurrentTokenRequiresFlush = true;
+                this.PreviousTokenRequiresComma = false;
+                this.Depth--;
+            }
+
+            /// <summary>
+            /// Mutates the state to indicate that the current write operation is for an array end.
+            /// </summary>
+            public void WritingArrayEnd()
+            {
+                this.PreviousTokenRequiresComma = false;
+                this.Depth--;
+            }
+
+            /// <summary>
+            /// Mutates the state to indicate that the previous write operation was for an array end.
+            /// </summary>
             public void WroteObjectOrArrayEnd()
             {
                 this.PreviousTokenWasName = false;
@@ -311,9 +575,11 @@ namespace Drexel.Configurables.External
                 this.PreviousTokenWasObjectOrArrayEnd = true;
                 this.PreviousTokenRequiresComma = true;
                 this.PreviousTokenRequiresNewLine = true;
-                this.Depth--;
             }
 
+            /// <summary>
+            /// Mutates the state to indicate that the previous operation was for a property name.
+            /// </summary>
             public void WroteName()
             {
                 this.PreviousTokenWasName = true;
@@ -323,6 +589,9 @@ namespace Drexel.Configurables.External
                 this.PreviousTokenRequiresNewLine = false;
             }
 
+            /// <summary>
+            /// Mutates the state to indicate that the previous operation was for a value.
+            /// </summary>
             public void WroteValue()
             {
                 this.PreviousTokenWasName = false;
@@ -332,6 +601,17 @@ namespace Drexel.Configurables.External
                 this.PreviousTokenRequiresNewLine = true;
             }
 
+            /// <summary>
+            /// Retains the current state.
+            /// </summary>
+            public void NoChange()
+            {
+                // Do nothing.
+            }
+
+            /// <summary>
+            /// Disposes of the state.
+            /// </summary>
             public void Dispose()
             {
                 this.WriterLock.Dispose();
@@ -340,23 +620,25 @@ namespace Drexel.Configurables.External
 
         private class JsonWriteOperation
         {
+#pragma warning disable SA1401 // Fields must be private
             public readonly JsonWriterState State;
             public readonly string Content;
-            public readonly Action StateTransform;
-            public readonly bool ClosingToken;
+            public readonly Action PrecedingStateTransform;
+            public readonly Action SucceedingStateTransform;
             public readonly CancellationToken Token;
+#pragma warning restore SA1401 // Fields must be private
 
             public JsonWriteOperation(
                 JsonWriterState state,
                 string content,
-                Action stateTransform,
-                bool closingToken,
+                Action precedingStateTransform,
+                Action succeedingStateTransform,
                 CancellationToken token)
             {
                 this.State = state;
                 this.Content = content;
-                this.StateTransform = stateTransform;
-                this.ClosingToken = closingToken;
+                this.PrecedingStateTransform = precedingStateTransform;
+                this.SucceedingStateTransform = succeedingStateTransform;
                 this.Token = token;
             }
         }
