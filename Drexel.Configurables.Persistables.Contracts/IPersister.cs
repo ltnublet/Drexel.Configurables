@@ -5,7 +5,7 @@ namespace Drexel.Configurables.Persistables.Contracts
 {
     public interface IPersister
     {
-        Task Persist(
+        Task PersistAsync(
             IPersistableConfiguration configuration,
             CancellationToken token);
     }

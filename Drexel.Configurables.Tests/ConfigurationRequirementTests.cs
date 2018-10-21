@@ -592,7 +592,7 @@ namespace Drexel.Configurables.Tests
         [TestMethod]
         public void ConfigurationRequirement_SimpleValidator_Collection_CollectionIsEmpty()
         {
-            object[] value = new object[0];
+            object[] value = Array.Empty<object>();
             IConfigurationRequirement requirement = TestUtil.CreateConfigurationRequirement(
                 collectionInfo: new CollectionInfo(0));
 

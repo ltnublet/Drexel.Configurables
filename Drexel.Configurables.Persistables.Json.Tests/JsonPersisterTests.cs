@@ -57,7 +57,7 @@ namespace Drexexl.Configurables.Persistables.Json.Tests.NetCore
                     source,
                     source.GenerateValidMappings());
 
-                await persister.Persist(configuration, CancellationToken.None);
+                await persister.PersistAsync(configuration, CancellationToken.None);
 
                 stream.Seek(0, SeekOrigin.Begin);
                 using (StreamReader reader = new StreamReader(stream))

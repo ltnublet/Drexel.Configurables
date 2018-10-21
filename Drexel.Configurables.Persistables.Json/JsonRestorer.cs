@@ -9,7 +9,7 @@ namespace Drexel.Configurables.Persistables.Json
 {
     public class JsonRestorer : IRestorer
     {
-        public Task<IPersistableConfiguration> Restore(CancellationToken token)
+        public Task<IPersistableConfiguration> RestoreAsync(CancellationToken token)
         {
             throw new NotImplementedException();
         }

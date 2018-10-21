@@ -51,7 +51,7 @@ namespace Drexel.Configurables.Tests
             Assert.AreEqual(collectionInfo, requirement.CollectionInfo);
             CollectionAssert.AreEquivalent(dependsOn.ToArray(), requirement.DependsOn.ToArray());
             CollectionAssert.AreEquivalent(exclusiveWith.ToArray(), requirement.ExclusiveWith.ToArray());
-            
+
             Assert.AreEqual(typeof(ArgumentNullException), requirement.Validate(null).GetType());
             Assert.AreEqual(typeof(ArgumentException), requirement.Validate(badInput).GetType());
             Assert.IsNull(requirement.Validate(goodInput));

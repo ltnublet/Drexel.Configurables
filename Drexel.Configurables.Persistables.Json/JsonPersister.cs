@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Drexel.Configurables.External;
 using Drexel.Configurables.Persistables.Contracts;
 using Newtonsoft.Json;
 
@@ -19,7 +18,7 @@ namespace Drexel.Configurables.Persistables.Json
             this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
         }
 
-        public async Task Persist(
+        public async Task PersistAsync(
             IPersistableConfiguration configuration,
             CancellationToken token)
         {
