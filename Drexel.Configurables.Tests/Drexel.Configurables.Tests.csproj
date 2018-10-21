@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,25 +15,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="..\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
     <AdditionalFiles Include="..\.StyleCop\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Drexel.Configurables.Persistables.Json.Tests\JsonPersisterTests.cs" Link="JsonPersisterTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Drexel.Configurables.Persistables.Contracts\Drexel.Configurables.Persistables.Contracts.csproj" />
-    <ProjectReference Include="..\Drexel.Configurables.Persistables.Json\Drexel.Configurables.Persistables.Json.csproj" />
-    <ProjectReference Include="..\Drexel.Configurables.Persistables\Drexel.Configurables.Persistables.csproj" />
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
     <ProjectReference Include="..\Drexel.Configurables.Tests.Common\Drexel.Configurables.Tests.Common.csproj" />
+    <ProjectReference Include="..\Drexel.Configurables\Drexel.Configurables.csproj" />
   </ItemGroup>
 
 </Project>
