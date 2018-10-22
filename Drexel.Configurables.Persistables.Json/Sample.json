@@ -1,0 +1,95 @@
+﻿{
+  "Version": "1.0.0.0",
+  "Keys": [
+    {
+      "Id": "ef899bed-35f3-4ba1-a638-fbf1efb43357",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "67dc8ec6-47ff-49bf-abaf-1474ce3bc26f",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "c451a768-53f3-4d71-8559-ab8a0c275883",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "fb2ef569-9b03-4093-86ce-ec48144f4c82",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "3184cc02-5e69-42a1-b987-54fffeb9ccac",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "72f901bf-9e6a-4969-98cf-c20c34a38d54",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "23ac4f79-5c36-4bb1-92d8-75f3c423ee81",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "8e57f35f-9096-43a3-a305-eaf10ad0703c",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "050c19c4-8525-4717-afb9-428325cd2279",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    },
+    {
+      "Id": "d7038e82-8c8d-4da8-8b7f-a37bd116aba6",
+      "Version": "1.0",
+      "OfVersion": {
+        "Version": "1.0",
+        "Type": "System.String"
+      },
+      "Value": "Hello world"
+    }
+  ]
+}

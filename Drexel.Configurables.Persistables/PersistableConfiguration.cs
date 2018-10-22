@@ -7,10 +7,29 @@ using Drexel.Configurables.Persistables.Contracts;
 
 namespace Drexel.Configurables.Persistables
 {
+    /// <summary>
+    /// Represents a uniquely-identifiable <see cref="IConfiguration"/> that is safe to persist.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Naming",
+        "CA1710:Identifiers should have correct suffix",
+        Justification = "Unnecessary.")]
     public sealed class PersistableConfiguration : IPersistableConfiguration
     {
         private readonly Configuration configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersistableConfiguration"/> class.
+        /// </summary>
+        /// <param name="requirementSource">
+        /// The requirement source.
+        /// </param>
+        /// <param name="mappings">
+        /// The mappings.
+        /// </param>
+        /// <param name="configurator">
+        /// The <see cref="IConfigurator"/> which produced this <see cref="PersistableConfiguration"/>.
+        /// </param>
         public PersistableConfiguration(
             IPersistableConfigurationRequirementSource requirementSource,
             IReadOnlyDictionary<IPersistableConfigurationRequirement, object> mappings,

@@ -3,8 +3,20 @@ using System.Text;
 
 namespace Drexel.Configurables.External.Internals
 {
+    /// <summary>
+    /// Internal <see langword="string"/> extension methods.
+    /// </summary>
     internal static class StringExtensionMethods
     {
+        /// <summary>
+        /// Escapes the specified <see langword="string"/> such that it is safe for JSON.
+        /// </summary>
+        /// <param name="toEscape">
+        /// The <see langword="string"/> to escape.
+        /// </param>
+        /// <returns>
+        /// An escaped version of the supplied <see langword="string"/>.
+        /// </returns>
         public static string JsonEscape(this string toEscape)
         {
             if (toEscape == null)

@@ -9,6 +9,8 @@ namespace Drexel.Configurables.External.Tests
     [TestClass]
     public class FilePathTests
     {
+        private static MockPathInteractor interactor;
+
         public static IEnumerable<object[]> FileNameTestCases { get; } =
             new object[][]
             {
@@ -25,8 +27,6 @@ namespace Drexel.Configurables.External.Tests
                     }
                 }
             };
-
-        private static MockPathInteractor interactor;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
@@ -46,7 +46,7 @@ namespace Drexel.Configurables.External.Tests
 
             ArgumentException exception =
                 Assert.ThrowsException<ArgumentException>(() => new FilePath(noRoot, interactor));
-            Assert.IsTrue(exception.Message.Contains(FilePath.InvalidPath));
+            StringAssert.Contains(exception.Message, FilePath.InvalidPath);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Drexel.Configurables.External.Tests
 
             ArgumentException exception =
                 Assert.ThrowsException<ArgumentException>(() => new FilePath(path, interactor));
-            Assert.IsTrue(exception.Message.Contains(FilePath.InvalidPath));
+            StringAssert.Contains(exception.Message, FilePath.InvalidPath);
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Drexel.Configurables.External.Tests
 
             ArgumentException exception =
                 Assert.ThrowsException<ArgumentException>(() => new FilePath(path, interactor));
-            Assert.IsTrue(exception.Message.Contains(FilePath.InvalidPath));
+            StringAssert.Contains(exception.Message, FilePath.InvalidPath);
         }
 
         [TestMethod]

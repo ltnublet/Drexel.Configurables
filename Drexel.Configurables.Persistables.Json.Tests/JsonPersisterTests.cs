@@ -5,13 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
-using Drexel.Configurables.Persistables;
 using Drexel.Configurables.Persistables.Contracts;
-using Drexel.Configurables.Persistables.Json;
 using Drexel.Configurables.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Drexexl.Configurables.Persistables.Json.Tests.NetCore
+namespace Drexel.Configurables.Persistables.Json.Tests.NetCore
 {
     [TestClass]
     public class JsonPersisterTests
@@ -33,59 +31,28 @@ namespace Drexexl.Configurables.Persistables.Json.Tests.NetCore
         }
 
         [TestMethod]
-        public async Task JsonPersister_Persist_Succeeds()
+        public async Task JsonPersister_PersistAsync_Succeeds()
         {
             using (MemoryStream stream = new MemoryStream())
             {
                 JsonPersister persister = new JsonPersister(stream);
 
-                TestRequirementSource source = new TestRequirementSource(
-                    Enumerable.Range(0, 10)
-                        .Select(x => TestUtil.CreateConfigurationRequirement())
-                        .Select(x => new PersistableConfigurationRequirement(
-                            Guid.NewGuid(),
-                            new Version(1, 0),
-                            x,
-                            new PersistableConfigurationRequirementType(
-                                x.OfType,
-                                new Version(1, 0),
-                                y => y.ToString(),
-                                y => y)))
-                        .ToArray());
-
-                PersistableConfiguration configuration = new PersistableConfiguration(
-                    source,
-                    source.GenerateValidMappings());
+                IPersistableConfiguration configuration = JsonTestUtil.CreateSampleConfiguration();
 
                 await persister.PersistAsync(configuration, CancellationToken.None);
 
-                stream.Seek(0, SeekOrigin.Begin);
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    string content = reader.ReadToEnd();
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(content));
-                }
+                JsonPersisterTests.AssertAreEqual(configuration, stream);
             }
         }
 
-        private class TestRequirementSource : IPersistableConfigurationRequirementSource
+        private static void AssertAreEqual(IPersistableConfiguration configuration, Stream stream)
         {
-            public TestRequirementSource(params IPersistableConfigurationRequirement[] requirements)
+            // TODO: do some real comparison here
+            stream.Seek(0, SeekOrigin.Begin);
+            using (StreamReader reader = new StreamReader(stream))
             {
-                this.Requirements = requirements?.ToList();
-            }
-
-            public IReadOnlyList<IPersistableConfigurationRequirement> Requirements { get; }
-
-            IReadOnlyList<IConfigurationRequirement> IRequirementSource.Requirements => this.Requirements;
-
-            public IReadOnlyDictionary<IPersistableConfigurationRequirement, object> GenerateValidMappings()
-            {
-                return (IReadOnlyDictionary<IPersistableConfigurationRequirement, object>)this
-                    .Requirements
-                    .ToDictionary(
-                        x => x,
-                        x => TestUtil.GetDefaultValidObjectForRequirement(x));
+                string content = reader.ReadToEnd();
+                Assert.IsFalse(string.IsNullOrWhiteSpace(content));
             }
         }
     }
