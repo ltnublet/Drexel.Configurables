@@ -101,7 +101,7 @@ namespace Drexel.Configurables.Persistables
         /// The <see cref="object"/> to perform validation upon.
         /// </param>
         /// <param name="dependentMappings">
-        /// An <see cref="IConfiguration"/> containing <see cref="IMapping"/>s for all
+        /// An <see cref="IConfiguration"/> containing <see cref="IMapping{T}"/>s for all
         /// <see cref="IConfigurationRequirement"/>s in this requirement's
         /// <see cref="IConfigurationRequirement.DependsOn"/>.
         /// </param>

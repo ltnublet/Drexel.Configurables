@@ -27,7 +27,7 @@ namespace Drexel.Configurables.Persistables.Json.Tests
 
                 stream.Seek(0, SeekOrigin.Begin);
 
-                JsonRestorer restorer = new JsonRestorer(stream);
+                JsonRestorer restorer = new JsonRestorer(stream, expected.Keys);
                 IPersistableConfiguration actual = await restorer.RestoreAsync(CancellationToken.None);
 
                 JsonRestorerTests.AssertAreEqual(expected, actual);

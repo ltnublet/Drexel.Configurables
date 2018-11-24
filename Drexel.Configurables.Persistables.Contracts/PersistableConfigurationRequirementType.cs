@@ -15,11 +15,14 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// <summary>
         /// Initializes a new instance of the <see cref="PersistableConfigurationRequirementType"/> class.
         /// </summary>
-        /// <param name="type">
-        /// The underlying <see cref="IConfigurationRequirementType"/>.
+        /// <param name="id">
+        /// The unique ID that identifies this requirement type.
         /// </param>
         /// <param name="version">
         /// The <see cref="Version"/> of the requirement type.
+        /// </param>
+        /// <param name="type">
+        /// The underlying <see cref="IConfigurationRequirementType"/>.
         /// </param>
         /// <param name="encodeFunc">
         /// The encoding function to convert a value of this type to a <see langword="string"/>.
@@ -28,30 +31,36 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// The restoration function to convert a <see langword="string"/> to a value of this type.
         /// </param>
         public PersistableConfigurationRequirementType(
-            IConfigurationRequirementType type,
+            Guid id,
             Version version,
+            IConfigurationRequirementType type,
             Func<object, string> encodeFunc,
             Func<string, object> restoreFunc)
         {
+            this.Id = id;
+            this.Version = version ?? throw new ArgumentNullException(nameof(version));
             this.type = type ?? throw new ArgumentNullException(nameof(type));
             this.encodeFunc = encodeFunc ?? throw new ArgumentNullException(nameof(encodeFunc));
             this.restoreFunc = restoreFunc ?? throw new ArgumentNullException(nameof(restoreFunc));
-            this.Version = version ?? throw new ArgumentNullException(nameof(version));
         }
 
         /// <summary>
-        /// Gets the <see cref="Type"/> of the associated <see cref="IConfigurationRequirement"/>.
+        /// Gets the unique ID of this requirement type.
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Type"/> of the associated <see cref="IConfigurationRequirementType"/>.
         /// </summary>
         public Type Type => this.type.Type;
 
         /// <summary>
-        /// Gets the <see cref="System.Version"/> of the associated <see cref="IConfigurationRequirementType"/>.
+        /// Gets the <see cref="System.Version"/> of this requirement type.
         /// </summary>
         public Version Version { get; }
 
         /// <summary>
-        /// Encodes the supplied <see langword="object"/> <paramref name="value"/> to a <see langword="string"/> if
-        /// possible.
+        /// Encodes the supplied <see langword="object"/> <paramref name="value"/> to a <see langword="string"/>.
         /// </summary>
         /// <param name="value">
         /// The <see langword="object"/> value to encode.
@@ -63,14 +72,14 @@ namespace Drexel.Configurables.Persistables.Contracts
 
         /// <summary>
         /// Restores the supplied <see langword="string"/> <paramref name="value"/> to an <see langword="object"/>
-        /// of the <see cref="System.Type"/> of this <see cref="IConfigurationRequirementType"/> if possible.
+        /// of the <see cref="System.Type"/> of this <see cref="IConfigurationRequirementType"/>.
         /// </summary>
         /// <param name="value">
         /// The <see langword="string"/> <paramref name="value"/> to restore.
         /// </param>
         /// <returns>
         /// An <see langword="object"/> of the <see langword="System.Type"/> of this
-        /// <see cref="IConfigurationRequirementType"/> if possible.
+        /// <see cref="IConfigurationRequirementType"/>.
         /// </returns>
         public object Restore(string value) => this.restoreFunc.Invoke(value);
     }

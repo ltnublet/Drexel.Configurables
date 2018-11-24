@@ -9,7 +9,7 @@ using Drexel.Configurables.Persistables.Contracts;
 using Drexel.Configurables.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Drexel.Configurables.Persistables.Json.Tests.NetCore
+namespace Drexel.Configurables.Persistables.Json.Tests
 {
     [TestClass]
     public class JsonPersisterTests

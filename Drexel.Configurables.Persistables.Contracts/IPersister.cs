@@ -30,7 +30,7 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// <param name="configuration">
         /// The configuration to persist.
         /// </param>
-        /// <param name="token">
+        /// <param name="cancellationToken">
         /// The token to monitor for cancellation requests.
         /// </param>
         /// <returns>
@@ -38,6 +38,6 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// </returns>
         Task PersistAsync(
             IPersistableConfiguration configuration,
-            CancellationToken token = default(CancellationToken));
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

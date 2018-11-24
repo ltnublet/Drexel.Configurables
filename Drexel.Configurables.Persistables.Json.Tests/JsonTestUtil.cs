@@ -17,8 +17,9 @@ namespace Drexel.Configurables.Persistables.Json.Tests
                         new Version(1, 0),
                         x,
                         new PersistableConfigurationRequirementType(
-                            x.OfType,
+                            Guid.NewGuid(),
                             new Version(1, 0),
+                            x.OfType,
                             y => y.ToString(),
                             y => y)))
                     .ToArray());

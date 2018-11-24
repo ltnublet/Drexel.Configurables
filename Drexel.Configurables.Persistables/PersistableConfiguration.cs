@@ -35,17 +35,12 @@ namespace Drexel.Configurables.Persistables
             IReadOnlyDictionary<IPersistableConfigurationRequirement, object> mappings,
             IConfigurator configurator = null)
         {
-            Dictionary<IPersistableConfigurationRequirement, IConfigurationRequirement> upcast =
-                mappings.Keys.ToDictionary(x => x, x => (IConfigurationRequirement)x);
-            Dictionary<IConfigurationRequirement, IPersistableConfigurationRequirement> downcast =
-                upcast.ToDictionary(x => x.Value, x => x.Key);
-
             this.configuration = new Configuration(
                 requirementSource,
-                mappings?.ToDictionary(x => upcast[x.Key], x => x.Value),
+                mappings.ToDictionary(x => (IConfigurationRequirement)x.Key, x => x.Value),
                 configurator);
 
-            this.Keys = this.configuration.Keys.Select(x => downcast[x]).ToList();
+            this.Keys = this.configuration.Keys.Cast<IPersistableConfigurationRequirement>().ToList();
         }
 
         public object this[IConfigurationRequirement requirement] => this.configuration[requirement];
@@ -56,7 +51,10 @@ namespace Drexel.Configurables.Persistables
 
         IReadOnlyList<IConfigurationRequirement> IConfiguration.Keys => this.Keys;
 
-        public IEnumerator<IMapping<IPersistableConfigurationRequirement>> GetEnumerator() => this.GetEnumerator();
+        public IEnumerator<IMapping<IPersistableConfigurationRequirement>> GetEnumerator() => this
+            .configuration
+            .Select(x => new PersistableMapping((IPersistableConfigurationRequirement)x.Key, x.Value))
+            .GetEnumerator();
 
         public object GetOrDefault(IConfigurationRequirement requirement, Func<object> defaultValueFactory) =>
             this.configuration.GetOrDefault(requirement, defaultValueFactory);
@@ -73,5 +71,20 @@ namespace Drexel.Configurables.Persistables
 
         IEnumerator<IMapping<IConfigurationRequirement>>IEnumerable<IMapping<IConfigurationRequirement>>.GetEnumerator() =>
             this.GetEnumerator();
+
+        private class PersistableMapping : IMapping<IPersistableConfigurationRequirement>
+        {
+            public PersistableMapping(
+                IPersistableConfigurationRequirement requirement,
+                object value)
+            {
+                this.Key = requirement;
+                this.Value = value;
+            }
+
+            public IPersistableConfigurationRequirement Key { get; }
+
+            public object Value { get; }
+        }
     }
 }

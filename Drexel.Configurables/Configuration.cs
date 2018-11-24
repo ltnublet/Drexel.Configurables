@@ -172,7 +172,7 @@ namespace Drexel.Configurables
 
             RecursiveAdd(ref toEvaluate, backingDictionary.Keys.ToList());
 
-            // We can now iterate through toEvaluate; at each requirement, we set of previously completed requirements
+            // We can now iterate through toEvaluate; at each requirement, the set of previously completed requirements
             // will satisfy all dependsOns.
             Dictionary<IConfigurationRequirement, object> completed =
                 new Dictionary<IConfigurationRequirement, object>();

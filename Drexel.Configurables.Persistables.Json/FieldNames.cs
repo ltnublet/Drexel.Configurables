@@ -6,13 +6,12 @@ namespace Drexel.Configurables.Persistables.Json
 {
     internal static class FieldNames
     {
-        public const string PersisterVersion = "Version";
+        public const string Version = "Version";
+        public const string Types = "Types";
         public const string Keys = "Keys";
-        public const string PropertyId = "Id";
-        public const string PropertyVersion = "Version";
-        public const string PropertyOfType = "OfVersion";
-        public const string PropertyOfTypeVersion = "Version";
-        public const string PropertyOfTypeType = "Type";
-        public const string Value = "Value";
+        public const string Values = "Values";
+        public const string OfType = "OfType";
+        public const string Id = "Id";
+        public const string Type = "Type";
     }
 }
