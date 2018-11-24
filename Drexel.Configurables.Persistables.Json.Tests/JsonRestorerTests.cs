@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Drexel.Configurables.Contracts;
 using Drexel.Configurables.Persistables.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,7 +28,13 @@ namespace Drexel.Configurables.Persistables.Json.Tests
                 }
 
                 stream.Seek(0, SeekOrigin.Begin);
+                string contents = null;
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
+                {
+                    contents = reader.ReadToEnd();
+                }
 
+                stream.Seek(0, SeekOrigin.Begin);
                 JsonRestorer restorer = new JsonRestorer(stream, expected.Keys);
                 IPersistableConfiguration actual = await restorer.RestoreAsync(CancellationToken.None);
 
@@ -36,7 +44,17 @@ namespace Drexel.Configurables.Persistables.Json.Tests
 
         private static void AssertAreEqual(IPersistableConfiguration expected, IPersistableConfiguration actual)
         {
-            throw new NotImplementedException();
+            Assert.AreEqual(expected.Configurator, actual.Configurator);
+            CollectionAssert.AreEqual(expected.Keys.ToArray(), actual.Keys.ToArray());
+            foreach (IMapping<IPersistableConfigurationRequirement> mapping in actual.AsEnumerable())
+            {
+                Assert.AreEqual(expected[mapping.Key], mapping.Value);
+            }
+
+            foreach (IMapping<IPersistableConfigurationRequirement> mapping in expected.AsEnumerable())
+            {
+                Assert.AreEqual(mapping.Value, actual[mapping.Key]);
+            }
         }
     }
 }

@@ -19,5 +19,15 @@ namespace Drexel.Configurables.Persistables.Contracts
         /// <see cref="IPersistableConfiguration"/>.
         /// </summary>
         new IReadOnlyList<IPersistableConfigurationRequirement> Keys { get; }
+
+        /// <summary>
+        /// Returns the contents of the <see cref="IPersistableConfiguration"/> as an <see cref="IEnumerable{T}"/> of
+        /// type <see cref="IMapping{T}"/> of type <see cref="IPersistableConfigurationRequirement"/>.
+        /// </summary>
+        /// <returns>
+        /// The contents of the <see cref="IPersistableConfiguration"/> as an <see cref="IEnumerable{T}"/> of type
+        /// <see cref="IMapping{T}"/> of type <see cref="IPersistableConfigurationRequirement"/>.
+        /// </returns>
+        IEnumerable<IMapping<IPersistableConfigurationRequirement>> AsEnumerable();
     }
 }

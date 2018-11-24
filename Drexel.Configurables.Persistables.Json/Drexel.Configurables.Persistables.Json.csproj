@@ -27,5 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Drexel.Configurables.Persistables.Contracts\Drexel.Configurables.Persistables.Contracts.csproj" />
+    <ProjectReference Include="..\Drexel.Configurables.Persistables\Drexel.Configurables.Persistables.csproj" />
   </ItemGroup>
 </Project>

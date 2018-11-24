@@ -17,7 +17,7 @@ namespace Drexel.Configurables.Persistables.Json
     public sealed class JsonPersister : IPersister, IDisposable
     {
         private const int BufferSize = 1024;
-        private const string PersisterVersion = "1.0.0.0";
+        private static readonly Version PersisterVersion = new Version(1, 0, 0, 0);
 
         private readonly Stream stream;
         private readonly bool pretty;
@@ -102,7 +102,9 @@ namespace Drexel.Configurables.Persistables.Json
                 await writer.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
 
                 await writer.WritePropertyNameAsync(FieldNames.Version, cancellationToken).ConfigureAwait(false);
-                await writer.WriteValueAsync(JsonPersister.PersisterVersion, cancellationToken).ConfigureAwait(false);
+                await JsonWriterExtensions
+                    .WriteValueAsync(writer, JsonPersister.PersisterVersion, cancellationToken)
+                    .ConfigureAwait(false);
 
                 await JsonPersister.Types.WriteTypes(writer, configuration, cancellationToken).ConfigureAwait(false);
                 await JsonPersister.Keys.WriteKeys(writer, configuration, cancellationToken).ConfigureAwait(false);
@@ -162,7 +164,9 @@ namespace Drexel.Configurables.Persistables.Json
                 CancellationToken cancellationToken)
             {
                 await writer.WritePropertyNameAsync(mapping.Key.Id, cancellationToken).ConfigureAwait(false);
-                await writer.WriteValueAsync(mapping.Value, cancellationToken).ConfigureAwait(false);
+                await writer
+                    .WriteValueAsync(mapping.Key.OfType.Encode(mapping.Value), cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
 

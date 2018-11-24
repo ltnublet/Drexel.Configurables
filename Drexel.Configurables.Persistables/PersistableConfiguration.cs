@@ -51,6 +51,15 @@ namespace Drexel.Configurables.Persistables
 
         IReadOnlyList<IConfigurationRequirement> IConfiguration.Keys => this.Keys;
 
+        public IEnumerable<IMapping<IPersistableConfigurationRequirement>> AsEnumerable()
+        {
+            IEnumerator<IMapping<IPersistableConfigurationRequirement>> enumerator = this.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+        }
+
         public IEnumerator<IMapping<IPersistableConfigurationRequirement>> GetEnumerator() => this
             .configuration
             .Select(x => new PersistableMapping((IPersistableConfigurationRequirement)x.Key, x.Value))
