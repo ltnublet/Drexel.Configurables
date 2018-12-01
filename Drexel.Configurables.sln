@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Persis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Persistables.Json.Tests", "Drexel.Configurables.Persistables.Json.Tests\Drexel.Configurables.Persistables.Json.Tests.csproj", "{50CF3C04-1767-4F5D-BE40-4F34F2C4D1B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Persistables.Tests", "Drexel.Configurables.Persistables.Tests\Drexel.Configurables.Persistables.Tests.csproj", "{E76AC30C-0C49-4FDC-95D4-082B95980911}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{50CF3C04-1767-4F5D-BE40-4F34F2C4D1B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50CF3C04-1767-4F5D-BE40-4F34F2C4D1B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50CF3C04-1767-4F5D-BE40-4F34F2C4D1B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E76AC30C-0C49-4FDC-95D4-082B95980911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E76AC30C-0C49-4FDC-95D4-082B95980911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E76AC30C-0C49-4FDC-95D4-082B95980911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E76AC30C-0C49-4FDC-95D4-082B95980911}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
