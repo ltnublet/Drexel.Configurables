@@ -1,33 +1,136 @@
-﻿namespace Drexel.Configurables.Contracts
+﻿using System;
+
+namespace Drexel.Configurables.Contracts
 {
     /// <summary>
     /// Represents information about a collection.
     /// </summary>
-    public sealed class CollectionInfo
+    public struct EnumerableInfo : IEquatable<EnumerableInfo>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionInfo"/> class.
+        /// Initializes a new instance of the <see cref="EnumerableInfo"/> struct.
         /// </summary>
         /// <param name="minimumCount">
-        /// The minimum allowed number of values in the collection.
+        /// The minimum number of elements allowed in the collection.
         /// </param>
         /// <param name="maximumCount">
-        /// An optional maximum allowed number of values in the collection.
+        /// The maximum number of elements allowed in the collection, if a limit exists.
         /// </param>
-        public CollectionInfo(int minimumCount, int? maximumCount = null)
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="minimumCount"/> is less than 0, or <paramref name="maximumCount"/> is specified
+        /// but less than <paramref name="minimumCount"/>.
+        /// </exception>
+        public EnumerableInfo(
+            int minimumCount,
+            int? maximumCount = null)
         {
+            if (minimumCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(minimumCount));
+            }
+
+            if (maximumCount.HasValue && maximumCount.Value < minimumCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maximumCount));
+            }
+
             this.MinimumCount = minimumCount;
             this.MaximumCount = maximumCount;
         }
 
         /// <summary>
-        /// Gets the minimum number of values allowed in the collection.
+        /// Gets the minimum number of elements allowed in the collection.
         /// </summary>
         public int MinimumCount { get; }
 
         /// <summary>
-        /// Gets the maximum number of values allowed in the collection. <see langword="null"/> if there is no maximum.
+        /// Gets the maximum number of elements allowed in the collection, if a limit exists.
         /// </summary>
         public int? MaximumCount { get; }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="EnumerableInfo"/>s are equal.
+        /// </summary>
+        /// <param name="left">
+        /// The first <see cref="EnumerableInfo"/>.
+        /// </param>
+        /// <param name="right">
+        /// The second <see cref="EnumerableInfo"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is equal to the current
+        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// </returns>
+        public static bool operator ==(EnumerableInfo left, EnumerableInfo right) => left.Equals(right);
+
+        /// <summary>
+        /// Determines whether the specified <see cref="EnumerableInfo"/>s are not equal.
+        /// </summary>
+        /// <param name="left">
+        /// The first <see cref="EnumerableInfo"/>.
+        /// </param>
+        /// <param name="right">
+        /// The second <see cref="EnumerableInfo"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is not equal to the current
+        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// </returns>
+        public static bool operator !=(EnumerableInfo left, EnumerableInfo right) => !(left == right);
+
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="obj">
+        /// The object to compare with the current object.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the specified object is equal to the current object; otherwise,
+        /// <see langword="false"/>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is EnumerableInfo other)
+            {
+                return this.Equals(other);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="EnumerableInfo"/> is equal to the current
+        /// <see cref="EnumerableInfo"/>.
+        /// </summary>
+        /// <param name="other">
+        /// The <see cref="EnumerableInfo"/> to compare with the current <see cref="EnumerableInfo"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is equal to the current
+        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool Equals(EnumerableInfo other)
+        {
+            return other.MinimumCount == this.MinimumCount
+                && other.MaximumCount == this.MaximumCount;
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// The hash code for this instance.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 27;
+                hash = (hash * 13) + this.MinimumCount.GetHashCode();
+                hash = (hash * 13) + this.MaximumCount.GetHashCode();
+
+                return hash;
+            }
+        }
     }
 }

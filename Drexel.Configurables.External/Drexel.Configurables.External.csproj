@@ -2,30 +2,30 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.External.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.5.0</Version>
     <Authors>Max Drexel</Authors>
     <Description>External code for configurable resources.</Description>
-    <Version>0.2.0</Version>
     <Copyright>Copyright 2018</Copyright>
-    <PackageReleaseNotes>0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
-0.1.6738: Initial release</PackageReleaseNotes>
     <PackageLicenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ltnublet/Drexel.Configurables</PackageProjectUrl>
     <PackageTags>configurables configuration configure drexel</PackageTags>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.External.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.External.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
+    <PackageReleaseNotes>0.5.0: Substantial rewrite with configuration persistence support
+0.4.1: Resolved missing XML documentation
+0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
+0.3.6741: Separate the IConfigurable interface into the IRequirementSource and IConfigurator interfaces
+0.1.6738: Initial release
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
-    <AdditionalFiles Include="..\.StyleCop\stylecop.json" Link="stylecop.json" />
+    <AdditionalFiles Include="..\Solution_Items\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
+    <AdditionalFiles Include="..\Solution_Items\.StyleCop\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
