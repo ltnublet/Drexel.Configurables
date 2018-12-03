@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Solution_Items\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

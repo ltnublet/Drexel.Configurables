@@ -11,22 +11,20 @@ namespace Drexel.Configurables.Tests.Common
 {
     public static class TestUtil
     {
-        private static Dictionary<IConfigurationRequirementType, object> defaultValidObjects =
-            new Dictionary<IConfigurationRequirementType, object>()
+        private static Dictionary<IRequirementType, object> defaultValidObjects =
+            new Dictionary<IRequirementType, object>()
             {
-                [ConfigurationRequirementType.Bool] =
+                [RequirementTypes.V1.Bool] =
                     true,
-                [ConfigurationRequirementType.FilePath] =
-                    new FilePath("Hello.txt", new MockPathInteractor(x => x, x => true)),
-                [ConfigurationRequirementType.Int32] =
+                [RequirementTypes.V1.Int32] =
                     8675309,
-                [ConfigurationRequirementType.Int64] =
+                [RequirementTypes.V1.Int64] =
                     8675309L,
-                [ConfigurationRequirementType.SecureString] =
+                [RequirementTypes.V1.SecureString] =
                     "Hello world".ToSecureString(),
-                [ConfigurationRequirementType.String] =
+                [RequirementTypes.V1.String] =
                     "Hello world",
-                [ConfigurationRequirementType.Uri] =
+                [RequirementTypes.V1.Uri] =
                     new Uri("https://www.example.com/route/information?parameter1=value1&parameter2=value2")
             };
 
@@ -34,63 +32,121 @@ namespace Drexel.Configurables.Tests.Common
 
         private static long counter = 0;
 
-        public static ConfigurationRequirement CreateConfigurationRequirement(
+        public static IRequirement CreateConfigurationRequirement<T>(
+            IRequirementType<T> type,
+            Guid? id = null,
             string baseName = "ConfigurationRequirementName",
             string baseDescription = "Configuration requirement description.",
-            ConfigurationRequirementType type = null,
             bool isOptional = false,
-            Validator validator = null,
-            CollectionInfo collectionInfo = null,
-            IReadOnlyCollection<IConfigurationRequirement> dependsOn = null,
-            IReadOnlyCollection<IConfigurationRequirement> exclusiveWith = null)
+            CollectionInfo? collectionInfo = null,
+            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
+            IReadOnlyCollection<IRequirement> dependsOn = null,
+            IReadOnlyCollection<IRequirement> exclusiveWith = null,
+            Func<T, IConfiguration, Exception> validator = null)
         {
-            return new ConfigurationRequirement(
+            return new Requirement<T>(
+                id.HasValue ? id.Value : Guid.NewGuid(),
                 baseName + TestUtil.counter++,
                 baseDescription + TestUtil.counter++,
-                type ?? ConfigurationRequirementType.String,
+                type,
                 isOptional,
-                validator ?? ((x, y, z) => null),
                 collectionInfo,
-                dependsOn ?? Array.Empty<IConfigurationRequirement>(),
-                exclusiveWith ?? Array.Empty<IConfigurationRequirement>());
+                restrictedToSet,
+                dependsOn,
+                exclusiveWith,
+                validator);
         }
 
-        public static IReadOnlyCollection<IConfigurationRequirement> CreateIConfigurationRequirementCollection(
+        public static IReadOnlyCollection<IRequirement> CreateIConfigurationRequirementCollection(
             int count,
             bool randomTypes = false,
             bool areOptional = false) =>
             Enumerable
                 .Range(0, count)
-                .Select(x => TestUtil.CreateConfigurationRequirement(
-                    isOptional: areOptional,
-                    type: randomTypes
-                        ? ConfigurationRequirementType.Types[TestUtil.random.Next(0, ConfigurationRequirementType.Types.Count)]
-                        : null))
+                .Select(
+                    x =>
+                    {
+                        if (randomTypes)
+                        {
+                            switch (TestUtil.random.Next(0, 7))
+                            {
+                                case 0:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.Bool,
+                                        isOptional: areOptional);
+                                case 1:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.Int32,
+                                        isOptional: areOptional);
+                                case 2:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.Int64,
+                                        isOptional: areOptional);
+                                case 3:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.SecureString,
+                                        isOptional: areOptional);
+                                case 4:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.String,
+                                        isOptional: areOptional);
+                                case 5:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.Uri,
+                                        isOptional: areOptional);
+                                case 6:
+                                    return TestUtil.CreateConfigurationRequirement(
+                                        RequirementTypes.V1.GetFilePathType(
+                                            new MockPathInteractor(
+                                                y => y,
+                                                y => true)),
+                                        isOptional: areOptional);
+                                default:
+                                    throw new InvalidOperationException("Impossible test failure");
+                            }
+                        }
+                        else
+                        {
+                            return TestUtil.CreateConfigurationRequirement(
+                                RequirementTypes.V1.String,
+                                isOptional: areOptional);
+                        }
+                    })
                 .ToArray();
 
-        public static object GetDefaultValidObjectForRequirement(IConfigurationRequirement requirement)
+        public static object GetDefaultValidObjectForRequirement(IRequirement requirement)
         {
             if (requirement == null)
             {
                 throw new ArgumentNullException(nameof(requirement));
             }
 
-            if (!TestUtil.defaultValidObjects.TryGetValue(requirement.OfType, out object result))
+            if (!TestUtil.defaultValidObjects.TryGetValue(requirement.Type, out object result))
             {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "Unrecognized ConfigurationRequirementType '{0}'.",
-                        requirement.OfType.Type.ToString()));
+                if (requirement.Type.Type == typeof(FilePath) && requirement.Type.Version == new Version(1, 0, 0, 0))
+                {
+                    return new FilePath("Hello.txt", new MockPathInteractor(x => x, x => true));
+                }
+                else
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            "Unrecognized ConfigurationRequirementType '{0}'.",
+                            requirement.Type.Type.ToString()));
+                }
             }
 
-            if (requirement.CollectionInfo == null)
+            if (!requirement.CollectionInfo.HasValue)
             {
                 return result;
             }
             else
             {
-                object[] buffer = new object[requirement.CollectionInfo.MinimumCount];
+                object[] buffer = new object[
+                    requirement.CollectionInfo.Value.MinimumCount.HasValue
+                        ? requirement.CollectionInfo.Value.MinimumCount.Value
+                        : 0];
                 for (int counter = 0; counter < buffer.Length; counter++)
                 {
                     buffer[counter] = result;

@@ -211,6 +211,19 @@ namespace Drexel.Configurables
                             Configuration.MappedValueIsNotEnumerableButRequirementHasEnumerableInfo);
                     }
                 }
+                else if (!requirement.CollectionInfo.HasValue)
+                {
+                    // TODO: Does this work? It's trying to see if `value` is in `RestrictedToSet`.
+                    ISetValidator validator = requirement.CreateSetValidator();
+                    try
+                    {
+                        validator.Validate(new[] { value });
+                    }
+                    catch (Exception e)
+                    {
+                        return e;
+                    }
+                }
 
                 try
                 {

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.External.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>..\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Solution_Items\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
