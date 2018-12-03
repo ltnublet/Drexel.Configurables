@@ -5,13 +5,13 @@ namespace Drexel.Configurables.Contracts
     /// <summary>
     /// Represents information about a collection.
     /// </summary>
-    public struct EnumerableInfo : IEquatable<EnumerableInfo>
+    public struct CollectionInfo : IEquatable<CollectionInfo>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EnumerableInfo"/> struct.
+        /// Initializes a new instance of the <see cref="CollectionInfo"/> struct.
         /// </summary>
         /// <param name="minimumCount">
-        /// The minimum number of elements allowed in the collection.
+        /// The minimum number of elements allowed in the collection, if a limit exists.
         /// </param>
         /// <param name="maximumCount">
         /// The maximum number of elements allowed in the collection, if a limit exists.
@@ -20,11 +20,11 @@ namespace Drexel.Configurables.Contracts
         /// Thrown when <paramref name="minimumCount"/> is less than 0, or <paramref name="maximumCount"/> is specified
         /// but less than <paramref name="minimumCount"/>.
         /// </exception>
-        public EnumerableInfo(
-            int minimumCount,
+        public CollectionInfo(
+            int? minimumCount = null,
             int? maximumCount = null)
         {
-            if (minimumCount < 0)
+            if (minimumCount.HasValue && minimumCount.Value < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(minimumCount));
             }
@@ -39,9 +39,9 @@ namespace Drexel.Configurables.Contracts
         }
 
         /// <summary>
-        /// Gets the minimum number of elements allowed in the collection.
+        /// Gets the minimum number of elements allowed in the collection, if a limit exists.
         /// </summary>
-        public int MinimumCount { get; }
+        public int? MinimumCount { get; }
 
         /// <summary>
         /// Gets the maximum number of elements allowed in the collection, if a limit exists.
@@ -49,34 +49,34 @@ namespace Drexel.Configurables.Contracts
         public int? MaximumCount { get; }
 
         /// <summary>
-        /// Determines whether the specified <see cref="EnumerableInfo"/>s are equal.
+        /// Determines whether the specified <see cref="CollectionInfo"/>s are equal.
         /// </summary>
         /// <param name="left">
-        /// The first <see cref="EnumerableInfo"/>.
+        /// The first <see cref="CollectionInfo"/>.
         /// </param>
         /// <param name="right">
-        /// The second <see cref="EnumerableInfo"/>.
+        /// The second <see cref="CollectionInfo"/>.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is equal to the current
-        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// <see langword="true"/> if the specified <see cref="CollectionInfo"/> is equal to the current
+        /// <see cref="CollectionInfo"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator ==(EnumerableInfo left, EnumerableInfo right) => left.Equals(right);
+        public static bool operator ==(CollectionInfo left, CollectionInfo right) => left.Equals(right);
 
         /// <summary>
-        /// Determines whether the specified <see cref="EnumerableInfo"/>s are not equal.
+        /// Determines whether the specified <see cref="CollectionInfo"/>s are not equal.
         /// </summary>
         /// <param name="left">
-        /// The first <see cref="EnumerableInfo"/>.
+        /// The first <see cref="CollectionInfo"/>.
         /// </param>
         /// <param name="right">
-        /// The second <see cref="EnumerableInfo"/>.
+        /// The second <see cref="CollectionInfo"/>.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is not equal to the current
-        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// <see langword="true"/> if the specified <see cref="CollectionInfo"/> is not equal to the current
+        /// <see cref="CollectionInfo"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator !=(EnumerableInfo left, EnumerableInfo right) => !(left == right);
+        public static bool operator !=(CollectionInfo left, CollectionInfo right) => !(left == right);
 
         /// <summary>
         /// Determines whether the specified object is equal to the current object.
@@ -90,7 +90,7 @@ namespace Drexel.Configurables.Contracts
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj is EnumerableInfo other)
+            if (obj is CollectionInfo other)
             {
                 return this.Equals(other);
             }
@@ -99,17 +99,17 @@ namespace Drexel.Configurables.Contracts
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="EnumerableInfo"/> is equal to the current
-        /// <see cref="EnumerableInfo"/>.
+        /// Determines whether the specified <see cref="CollectionInfo"/> is equal to the current
+        /// <see cref="CollectionInfo"/>.
         /// </summary>
         /// <param name="other">
-        /// The <see cref="EnumerableInfo"/> to compare with the current <see cref="EnumerableInfo"/>.
+        /// The <see cref="CollectionInfo"/> to compare with the current <see cref="CollectionInfo"/>.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the specified <see cref="EnumerableInfo"/> is equal to the current
-        /// <see cref="EnumerableInfo"/>; otherwise, <see langword="false"/>.
+        /// <see langword="true"/> if the specified <see cref="CollectionInfo"/> is equal to the current
+        /// <see cref="CollectionInfo"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public bool Equals(EnumerableInfo other)
+        public bool Equals(CollectionInfo other)
         {
             return other.MinimumCount == this.MinimumCount
                 && other.MaximumCount == this.MaximumCount;

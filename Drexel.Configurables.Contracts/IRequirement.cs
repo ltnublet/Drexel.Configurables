@@ -9,7 +9,7 @@ namespace Drexel.Configurables.Contracts
 
         IReadOnlyCollection<IRequirement> DependsOn { get; }
 
-        EnumerableInfo? EnumerableInfo { get; }
+        CollectionInfo? CollectionInfo { get; }
 
         IReadOnlyCollection<IRequirement> ExclusiveWith { get; }
 
@@ -20,6 +20,10 @@ namespace Drexel.Configurables.Contracts
         string Name { get; }
 
         IRequirementType Type { get; }
+
+        ISetValidator CreateSetValidator();
+
+        Exception Validate(object value, IConfiguration dependencies);
     }
 
     public interface IRequirement<T> : IRequirement
@@ -27,5 +31,9 @@ namespace Drexel.Configurables.Contracts
         IReadOnlyCollection<SetRestrictionInfo<T>> RestrictedToSet { get; }
 
         new IRequirementType<T> Type { get; }
+
+        new ISetValidator<T> CreateSetValidator();
+
+        Exception Validate(T value, IConfiguration dependencies);
     }
 }
