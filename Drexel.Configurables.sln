@@ -23,6 +23,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Extern
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Tests.Common", "Drexel.Configurables.Tests.Common\Drexel.Configurables.Tests.Common.csproj", "{EACE0869-9525-4A99-A3F2-175411E16380}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Tests", "Drexel.Configurables.Tests\Drexel.Configurables.Tests.csproj", "{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Contracts.Tests", "Drexel.Configurables.Contracts.Tests\Drexel.Configurables.Contracts.Tests.csproj", "{6296346F-396A-4004-9B28-A7F6DEC793FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,14 @@ Global
 		{EACE0869-9525-4A99-A3F2-175411E16380}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EACE0869-9525-4A99-A3F2-175411E16380}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EACE0869-9525-4A99-A3F2-175411E16380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

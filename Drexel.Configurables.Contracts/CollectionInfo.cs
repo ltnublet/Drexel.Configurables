@@ -29,7 +29,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentOutOfRangeException(nameof(minimumCount));
             }
 
-            if (maximumCount.HasValue && maximumCount.Value < minimumCount)
+            if (maximumCount.HasValue && (maximumCount.Value < 1 || maximumCount.Value < minimumCount))
             {
                 throw new ArgumentOutOfRangeException(nameof(maximumCount));
             }

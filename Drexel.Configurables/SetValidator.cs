@@ -14,9 +14,17 @@ namespace Drexel.Configurables
 
         public SetValidator(
             IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet,
-            CollectionInfo? collectionInfo)
+            CollectionInfo? collectionInfo = null)
         {
-            this.backingSet = restrictedToSet?.ToDictionary(x => x.Value, x => x);
+            try
+            {
+                this.backingSet = restrictedToSet?.ToDictionary(x => x.Value, x => x);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException("Set must not contain duplicate values.", nameof(restrictedToSet));
+            }
+
             this.collectionInfo = collectionInfo;
         }
 

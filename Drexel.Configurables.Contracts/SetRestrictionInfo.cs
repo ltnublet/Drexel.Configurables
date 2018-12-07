@@ -22,7 +22,15 @@ namespace Drexel.Configurables.Contracts
         /// <param name="maximumTimesAllowed">
         /// The maximum number of times the associated value is allowed to appear, if such a restriction exists.
         /// </param>
-        public SetRestrictionInfo(T value, int? minimumTimesAllowed, int? maximumTimesAllowed)
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="minimumTimesAllowed"/> is less than 0, <paramref name="maximumTimesAllowed"/>
+        /// is less than 1, or <paramref name="maximumTimesAllowed"/> is less than
+        /// <paramref name="minimumTimesAllowed"/>.
+        /// </exception>
+        public SetRestrictionInfo(
+            T value,
+            int? minimumTimesAllowed = null,
+            int? maximumTimesAllowed = null)
         {
             this.Value = value;
             this.MaximumTimesAllowed = maximumTimesAllowed;
