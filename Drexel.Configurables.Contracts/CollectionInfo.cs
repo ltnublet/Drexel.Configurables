@@ -79,6 +79,34 @@ namespace Drexel.Configurables.Contracts
         public static bool operator !=(CollectionInfo left, CollectionInfo right) => !(left == right);
 
         /// <summary>
+        /// Returns a value indicating whether a collection of the specified size exceeds the maximum count of this
+        /// collection info.
+        /// </summary>
+        /// <param name="collectionSize">
+        /// The size of the collection.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the collection size is too large for this collection info;
+        /// <see langword="false"/> otherwise.
+        /// </returns>
+        public bool IsTooLarge(int collectionSize) =>
+            this.MaximumCount.HasValue && collectionSize > this.MaximumCount.Value;
+
+        /// <summary>
+        /// Returns a value indicating whether a collection of the specified size is below the minimum count of this
+        /// collection info.
+        /// </summary>
+        /// <param name="collectionSize">
+        /// The size of the collection.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the collection size is below the minimum count for this collection info;
+        /// <see langword="false"/> otherwise.
+        /// </returns>
+        public bool IsTooSmall(int collectionSize) =>
+            this.MinimumCount.HasValue && this.MinimumCount.Value > collectionSize;
+
+        /// <summary>
         /// Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">

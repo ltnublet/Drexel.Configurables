@@ -64,5 +64,29 @@ namespace Drexel.Configurables.Contracts
         /// Gets the minimum number of times the associated value must appear, if such a restriction exists.
         /// </summary>
         public int? MinimumTimesAllowed { get; }
+
+        /// <summary>
+        /// Returns a value indicating whether the specified count is above the allowed range.
+        /// </summary>
+        /// <param name="count">
+        /// The count.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the count is above the allowed range; <see langword="false"/> otherwise.
+        /// </returns>
+        public bool IsAboveRange(int count) =>
+            this.MaximumTimesAllowed.HasValue && count > this.MaximumTimesAllowed.Value;
+
+        /// <summary>
+        /// Returns a value indicating whether the specified count is below the allowed range.
+        /// </summary>
+        /// <param name="count">
+        /// The count.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the count is below the allowed range; <see langword="false"/> otherwise.
+        /// </returns>
+        public bool IsBelowRange(int count) =>
+            this.MinimumTimesAllowed.HasValue && count < this.MinimumTimesAllowed.Value;
     }
 }

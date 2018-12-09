@@ -254,5 +254,25 @@ namespace Drexel.Configurables.Contracts.Tests
 
             Assert.IsTrue(first.GetHashCode() != second.GetHashCode());
         }
+
+        [DataTestMethod]
+        [DataRow(3, 5, true)]
+        [DataRow(3, 3, false)]
+        [DataRow(3, 1, false)]
+        public void CollectionInfo_IsTooLarge_Succeeds(int maximumCount, int collectionSize, bool expected)
+        {
+            CollectionInfo info = new CollectionInfo(maximumCount: maximumCount);
+            Assert.AreEqual(expected, info.IsTooLarge(collectionSize));
+        }
+
+        [DataTestMethod]
+        [DataRow(3, 5, false)]
+        [DataRow(3, 3, false)]
+        [DataRow(3, 1, true)]
+        public void CollectionInfo_IsTooSmall_Succeeds(int minimumCount, int collectionSize, bool expected)
+        {
+            CollectionInfo info = new CollectionInfo(minimumCount: minimumCount);
+            Assert.AreEqual(expected, info.IsTooSmall(collectionSize));
+        }
     }
 }

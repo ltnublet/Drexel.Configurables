@@ -13,7 +13,7 @@ namespace Drexel.Configurables
         private readonly CollectionInfo? collectionInfo;
 
         public SetValidator(
-            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet,
+            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
             CollectionInfo? collectionInfo = null)
         {
             try
@@ -30,9 +30,21 @@ namespace Drexel.Configurables
 
         public void Validate(IEnumerable<T> set)
         {
+            if (set == null)
+            {
+                throw new ArgumentNullException(nameof(set));
+            }
+
             if (this.backingSet == null)
             {
-                return;
+                if (this.collectionInfo == null)
+                {
+                    return;
+                }
+                else
+                {
+                    this.ValidateSetSize(set.Count());
+                }
             }
 
             Dictionary<T, int> timesSeenDictionary = new Dictionary<T, int>(this.backingSet.Count);
@@ -49,44 +61,37 @@ namespace Drexel.Configurables
                 }
                 else
                 {
-                    throw new ValueNotInSetException(value);
+                    throw new ValueNotInSetException(value, typeof(T));
                 }
             }
 
             int totalItems = timesSeenDictionary.Values.Sum();
-
             if (this.collectionInfo.HasValue)
             {
-                if (this.collectionInfo.Value.MinimumCount.HasValue
-                    && totalItems < this.collectionInfo.Value.MinimumCount.Value)
-                {
-                    throw new MinimumCountNotMetException();
-                }
-
-                if (this.collectionInfo.Value.MaximumCount.HasValue
-                    && totalItems > this.collectionInfo.Value.MaximumCount.Value)
-                {
-                    throw new MaximumCountExceededException();
-                }
+                this.ValidateSetSize(totalItems);
             }
 
             foreach (KeyValuePair<T, SetRestrictionInfo<T>> restriction in this.backingSet)
             {
-                bool wasSeen = timesSeenDictionary.TryGetValue(restriction.Key, out int timesSeen);
-                if (restriction.Value.MinimumTimesAllowed.HasValue
-                    && (!wasSeen || timesSeen < restriction.Value.MinimumTimesAllowed.Value))
+                if (!timesSeenDictionary.TryGetValue(restriction.Key, out int timesSeen))
+                {
+                    timesSeen = 0;
+                }
+
+                if (restriction.Value.IsBelowRange(timesSeen))
                 {
                     throw new ValueBelowMinimumTimesThresholdException(
                         restriction.Key,
+                        typeof(T),
                         timesSeen,
                         restriction.Value.MinimumTimesAllowed.Value);
                 }
 
-                if (restriction.Value.MinimumTimesAllowed.HasValue
-                    && (!wasSeen || timesSeen > restriction.Value.MaximumTimesAllowed.Value))
+                if (restriction.Value.IsAboveRange(timesSeen))
                 {
                     throw new ValueAboveMaximumTimesThresholdException(
                         restriction.Key,
+                        typeof(T),
                         timesSeen,
                         restriction.Value.MaximumTimesAllowed.Value);
                 }
@@ -95,20 +100,64 @@ namespace Drexel.Configurables
 
         public void Validate(IEnumerable set)
         {
-            if (this.backingSet == null)
+            if (set == null)
             {
-                return;
+                throw new ArgumentNullException(nameof(set));
             }
 
-            try
+            if (this.backingSet == null)
             {
-                this.Validate(set.Cast<T>());
+                if (this.collectionInfo == null)
+                {
+                    return;
+                }
+                else
+                {
+                    IEnumerator enumerator = set.GetEnumerator();
+                    int setSize;
+                    for (setSize = 0; enumerator.MoveNext(); setSize++)
+                    {
+                    }
+
+                    this.ValidateSetSize(setSize);
+                }
             }
-            catch (InvalidCastException e)
+
+            this.Validate(SetValidator<T>.ToGenericEnumerable(set));
+        }
+
+        [System.Diagnostics.DebuggerHidden]
+        private static IEnumerable<T> ToGenericEnumerable(IEnumerable nonGeneric)
+        {
+            IEnumerator enumerator = nonGeneric.GetEnumerator();
+            while (enumerator.MoveNext())
             {
-                throw new SetValidatorException(
-                    "Could not cast all elements of supplied set to expected type.",
-                    e);
+                if (enumerator.Current is T asT)
+                {
+                    yield return asT;
+                }
+                else
+                {
+                    throw new ValueOfWrongTypeException(enumerator.Current, typeof(T));
+                }
+            }
+        }
+
+        [System.Diagnostics.DebuggerHidden]
+        private void ValidateSetSize(int size)
+        {
+            if (this.collectionInfo.Value.IsTooSmall(size))
+            {
+                throw new MinimumCountNotMetException(
+                    this.collectionInfo.Value.MinimumCount.Value,
+                    size);
+            }
+
+            if (this.collectionInfo.Value.IsTooLarge(size))
+            {
+                throw new MaximumCountExceededException(
+                    this.collectionInfo.Value.MaximumCount.Value,
+                    size);
             }
         }
     }

@@ -92,5 +92,25 @@ namespace Drexel.Configurables.Contracts.Tests
                     minimumTimesAllowed: minimumTimesAllowed,
                     maximumTimesAllowed: maximumTimesAllowed));
         }
+
+        [DataTestMethod]
+        [DataRow(3, 5, true)]
+        [DataRow(3, 3, false)]
+        [DataRow(3, 1, false)]
+        public void SetRestrictionInfo_IsAboveRange_Succeeds(int maximumTimesAllowed, int count, bool expected)
+        {
+            SetRestrictionInfo<int> info = new SetRestrictionInfo<int>(0, maximumTimesAllowed: maximumTimesAllowed);
+            Assert.AreEqual(expected, info.IsAboveRange(count));
+        }
+
+        [DataTestMethod]
+        [DataRow(3, 5, false)]
+        [DataRow(3, 3, false)]
+        [DataRow(3, 1, true)]
+        public void SetRestrictionInfo_IsBelowRange_Succeeds(int minimumTimesAllowed, int count, bool expected)
+        {
+            SetRestrictionInfo<int> info = new SetRestrictionInfo<int>(0, minimumTimesAllowed: minimumTimesAllowed);
+            Assert.AreEqual(expected, info.IsBelowRange(count));
+        }
     }
 }

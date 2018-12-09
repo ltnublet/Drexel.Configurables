@@ -4,8 +4,13 @@ namespace Drexel.Configurables.Contracts.Exceptions
 {
     public class SetValidatorException : Exception
     {
+        public SetValidatorException()
+        {
+            // Nothing to do.
+        }
+
         public SetValidatorException(string message)
-            : this(message, null)
+            : base(message)
         {
             // Nothing to do.
         }
@@ -13,18 +18,7 @@ namespace Drexel.Configurables.Contracts.Exceptions
         public SetValidatorException(string message, Exception innerException)
             : base(message, innerException)
         {
-            this.HasValue = false;
+            // Nothing to do.
         }
-
-        private protected SetValidatorException(string message, object value)
-            : base(message)
-        {
-            this.HasValue = true;
-            this.Value = value;
-        }
-
-        public bool HasValue { get; }
-
-        public object Value { get; }
     }
 }
