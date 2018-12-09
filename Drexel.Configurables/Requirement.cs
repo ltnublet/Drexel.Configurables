@@ -48,7 +48,7 @@ namespace Drexel.Configurables
         /// containg this requirement must contain both this requirement, and all of the <see cref="IRequirement"/>s in
         /// the set.
         /// </param>
-        /// <param name="exclusivewith">
+        /// <param name="exclusiveWith">
         /// If non-<see langword="null"/>, indicates that this requirement is exclusive with the set of
         /// <see cref="IRequirement"/>s contained by the supplied set. This means that an <see cref="IConfiguration"/>
         /// containing this requirement must not contain both this requirement, and any of the
@@ -68,7 +68,7 @@ namespace Drexel.Configurables
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
             IReadOnlyCollection<IRequirement> dependsOn = null,
-            IReadOnlyCollection<IRequirement> exclusivewith = null,
+            IReadOnlyCollection<IRequirement> exclusiveWith = null,
             Func<T, IConfiguration, Exception> validationCallback = null)
         {
             this.Id = id;
@@ -79,7 +79,7 @@ namespace Drexel.Configurables
             this.CollectionInfo = collectionInfo;
             this.RestrictedToSet = restrictedToSet;
             this.DependsOn = dependsOn ?? Array.Empty<IRequirement>();
-            this.ExclusiveWith = exclusivewith ?? Array.Empty<IRequirement>();
+            this.ExclusiveWith = exclusiveWith ?? Array.Empty<IRequirement>();
             this.validationCallback = validationCallback;
         }
 
@@ -182,6 +182,9 @@ namespace Drexel.Configurables
         /// If the value passes validation, <see langword="null"/>; otherwise, an <see cref="Exception"/> describing
         /// the reason validation failed.
         /// </returns>
+        /// <exception cref="InvalidCastException">
+        /// Thrown when the supplied <paramref name="value"/> is not of type <typeparamref name="T"/>.
+        /// </exception>
         public Exception Validate(object value, IConfiguration dependencies)
         {
             if (value is T asT)

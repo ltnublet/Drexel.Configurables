@@ -32,7 +32,7 @@ namespace Drexel.Configurables.Tests.Common
 
         private static long counter = 0;
 
-        public static IRequirement CreateConfigurationRequirement<T>(
+        public static IRequirement CreateRequirement<T>(
             IRequirementType<T> type,
             Guid? id = null,
             string baseName = "ConfigurationRequirementName",
@@ -57,7 +57,7 @@ namespace Drexel.Configurables.Tests.Common
                 validator);
         }
 
-        public static IReadOnlyCollection<IRequirement> CreateIConfigurationRequirementCollection(
+        public static IReadOnlyCollection<IRequirement> CreateRequirementCollection(
             int count,
             bool randomTypes = false,
             bool areOptional = false) =>
@@ -71,31 +71,31 @@ namespace Drexel.Configurables.Tests.Common
                             switch (TestUtil.random.Next(0, 7))
                             {
                                 case 0:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.Bool,
                                         isOptional: areOptional);
                                 case 1:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.Int32,
                                         isOptional: areOptional);
                                 case 2:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.Int64,
                                         isOptional: areOptional);
                                 case 3:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.SecureString,
                                         isOptional: areOptional);
                                 case 4:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.String,
                                         isOptional: areOptional);
                                 case 5:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.Uri,
                                         isOptional: areOptional);
                                 case 6:
-                                    return TestUtil.CreateConfigurationRequirement(
+                                    return TestUtil.CreateRequirement(
                                         RequirementTypes.V1.GetFilePathType(
                                             new MockPathInteractor(
                                                 y => y,
@@ -107,7 +107,7 @@ namespace Drexel.Configurables.Tests.Common
                         }
                         else
                         {
-                            return TestUtil.CreateConfigurationRequirement(
+                            return TestUtil.CreateRequirement(
                                 RequirementTypes.V1.String,
                                 isOptional: areOptional);
                         }
