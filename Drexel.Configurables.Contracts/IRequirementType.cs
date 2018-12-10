@@ -4,6 +4,8 @@ namespace Drexel.Configurables.Contracts
 {
     public interface IRequirementType
     {
+        Guid Id { get; }
+
         bool IsPersistable { get; }
 
         Type Type { get; }

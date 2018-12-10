@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.JSON.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>..\Solution_Items\.StyleCop\Drexel.Configurables.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.5.0</Version>
+    <Authors>Max Drexel</Authors>
+    <Description>JSON persistence for configurable resources.</Description>
+    <Copyright>Copyright 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ltnublet/Drexel.Configurables</PackageProjectUrl>
+    <PackageTags>JSON configurables configuration configure drexel</PackageTags>
+    <PackageReleaseNotes>
+      0.5.0: Substantial rewrite with configuration persistence support
+      0.4.1: Resolved missing XML documentation
+      0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
+      0.3.6741: Separate the IConfigurable interface into the IRequirementSource and IConfigurator interfaces
+      0.1.6738: Initial release
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\Solution_Items\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
+    <AdditionalFiles Include="..\Solution_Items\.StyleCop\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

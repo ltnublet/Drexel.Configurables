@@ -45,7 +45,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class BoolRequirementType : RequirementType<bool>
         {
             public BoolRequirementType()
-                : base(true)
+                : base("2af45e35-7067-4d4a-aaf3-3ffa7cfc23fc", true)
             {
                 // Nothing to do.
             }
@@ -78,7 +78,7 @@ namespace Drexel.Configurables.RequirementTypes
             private readonly IPathInteractor pathInteractor;
 
             public FilePathRequirementType(IPathInteractor pathInteractor)
-                : base(true)
+                : base("54ce6ec8-f6dc-4fd3-87bd-56b409d3f5bc", true)
             {
                 this.pathInteractor = pathInteractor;
             }
@@ -131,7 +131,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class Int32RequirementType : RequirementType<int>
         {
             public Int32RequirementType()
-                : base(true)
+                : base("d3fcd5ad-fbca-4ccd-826f-81c855f99acc", true)
             {
                 // Nothing to do.
             }
@@ -166,7 +166,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class Int64RequirementType : RequirementType<long>
         {
             public Int64RequirementType()
-                : base(true)
+                : base("f4d9529c-d8b1-4676-ab5c-4989b66679ed", true)
             {
                 // Nothing to do.
             }
@@ -201,7 +201,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class SecureStringRequirementType : RequirementType<SecureString>
         {
             public SecureStringRequirementType()
-                : base(false)
+                : base("b4213094-5ab8-43f7-8fad-dcfe7d08d47d", false)
             {
                 // Nothing to do.
             }
@@ -230,7 +230,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class StringRequirementType : RequirementType<string>
         {
             public StringRequirementType()
-                : base(true)
+                : base("b97c3d45-cde4-4001-bbe6-3087da22acd5", true)
             {
                 // Nothing to do.
             }
@@ -253,7 +253,7 @@ namespace Drexel.Configurables.RequirementTypes
         private sealed class UriRequirementType : RequirementType<Uri>
         {
             public UriRequirementType()
-                : base(true)
+                : base("7d40ee53-81ec-4714-9e04-e9e8f430b361", true)
             {
                 // Nothing to do.
             }
@@ -291,11 +291,14 @@ namespace Drexel.Configurables.RequirementTypes
 
         private abstract class RequirementType<T> : IRequirementType<T>
         {
-            public RequirementType(bool persistable)
+            public RequirementType(string id, bool persistable)
             {
+                this.Id = Guid.Parse(id);
                 this.IsPersistable = persistable;
                 this.Version = new Version(1, 0, 0, 0);
             }
+
+            public Guid Id { get; }
 
             public bool IsPersistable { get; }
 
