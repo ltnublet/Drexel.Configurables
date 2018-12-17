@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Drexel.Configurables.JSON.Exceptions
+namespace Drexel.Configurables.Json.Exceptions
 {
     public class JsonConfigurationRestorerException : Exception
     {

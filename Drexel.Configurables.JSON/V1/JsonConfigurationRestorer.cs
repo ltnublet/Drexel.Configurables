@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
-using Drexel.Configurables.JSON.Exceptions;
+using Drexel.Configurables.Json.Exceptions;
 using Newtonsoft.Json;
 
-namespace Drexel.Configurables.JSON.V1
+namespace Drexel.Configurables.Json.V1
 {
     public class JsonConfigurationRestorer : IConfigurationRestorer, IDisposable
     {

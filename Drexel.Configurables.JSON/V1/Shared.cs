@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Drexel.Configurables.JSON.V1
+namespace Drexel.Configurables.Json.V1
 {
     internal static class Shared
     {

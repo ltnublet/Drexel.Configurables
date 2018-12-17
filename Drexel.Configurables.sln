@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28124.53
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Contracts", "Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}"
 EndProject
@@ -23,11 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Extern
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Tests.Common", "Drexel.Configurables.Tests.Common\Drexel.Configurables.Tests.Common.csproj", "{EACE0869-9525-4A99-A3F2-175411E16380}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Tests", "Drexel.Configurables.Tests\Drexel.Configurables.Tests.csproj", "{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Tests", "Drexel.Configurables.Tests\Drexel.Configurables.Tests.csproj", "{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Contracts.Tests", "Drexel.Configurables.Contracts.Tests\Drexel.Configurables.Contracts.Tests.csproj", "{6296346F-396A-4004-9B28-A7F6DEC793FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Contracts.Tests", "Drexel.Configurables.Contracts.Tests\Drexel.Configurables.Contracts.Tests.csproj", "{6296346F-396A-4004-9B28-A7F6DEC793FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.JSON", "Drexel.Configurables.JSON\Drexel.Configurables.JSON.csproj", "{0F1F225C-1A82-43A1-A671-AD284D19541E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Json", "Drexel.Configurables.Json\Drexel.Configurables.Json.csproj", "{0F1F225C-1A82-43A1-A671-AD284D19541E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Drexel.Configurables.Contracts;
 
-namespace Drexel.Configurables.JSON
+namespace Drexel.Configurables.Json
 {
     public class JsonConfigurationPersister : IConfigurationPersister
     {

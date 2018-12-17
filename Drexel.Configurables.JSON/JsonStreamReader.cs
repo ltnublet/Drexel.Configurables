@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Drexel.Configurables.JSON.Exceptions;
+using Drexel.Configurables.Json.Exceptions;
 using Newtonsoft.Json;
 
-namespace Drexel.Configurables.JSON
+namespace Drexel.Configurables.Json
 {
     internal sealed class JsonStreamReader : IDisposable
     {
