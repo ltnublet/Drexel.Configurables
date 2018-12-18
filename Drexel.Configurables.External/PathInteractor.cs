@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Drexel.Configurables.External
 {
@@ -21,7 +22,7 @@ namespace Drexel.Configurables.External
             "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
             Justification = "Intentional.")]
-        public string GetFullPath(string path)
+        public string? GetFullPath(string path)
         {
             try
             {
@@ -43,9 +44,15 @@ namespace Drexel.Configurables.External
         /// <returns>
         /// <see langword="true"/> if path contains a root; otherwise, <see langword="false"/>.
         /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="path"/> is not valid.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when an argument is illegally <see langword="null"/>.
+        /// </exception>
         public bool IsPathRooted(string path)
         {
-            return Path.IsPathRooted(path);
+            return Path.IsPathRooted(path ?? throw new ArgumentNullException(nameof(path)));
         }
     }
 }

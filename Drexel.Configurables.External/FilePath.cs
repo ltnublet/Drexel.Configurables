@@ -25,6 +25,12 @@ namespace Drexel.Configurables.External
         /// <param name="caseSensitive">
         /// Indicates whether the file path should be treated case-sensitively.
         /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when a combination of arguments is illegal.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when an argument is illegally <see langword="null"/>.
+        /// </exception>
         public FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
         {
             if (path == null)
@@ -40,8 +46,16 @@ namespace Drexel.Configurables.External
             bool valid;
             try
             {
-                valid = FilePath.InvariantCultureStringEquals(path, interactor.GetFullPath(path), caseSensitive)
-                    && interactor.IsPathRooted(path);
+                string? fullPath = interactor.GetFullPath(path);
+                if (fullPath == null)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    valid = FilePath.InvariantCultureStringEquals(path, fullPath, caseSensitive)
+                        && interactor.IsPathRooted(path);
+                }
             }
             catch
             {

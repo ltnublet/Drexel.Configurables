@@ -12,9 +12,10 @@
         /// The file or directory for which to obtain absolute path information.
         /// </param>
         /// <returns>
-        /// The fully qualified location of <paramref name="path"/>.
+        /// The fully qualified location of <paramref name="path"/>, or <see langword="null"/> if the absolute path
+        /// cannot be retrieved.
         /// </returns>
-        string GetFullPath(string path);
+        string? GetFullPath(string path);
 
         /// <summary>
         /// Gets a <see cref="bool"/> indicating whether the specified <paramref name="path"/> <see cref="string"/>

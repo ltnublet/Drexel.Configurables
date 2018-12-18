@@ -17,6 +17,9 @@ namespace Drexel.Configurables.External.Internals
         /// <returns>
         /// An escaped version of the supplied <see langword="string"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when an argument is illegally null.
+        /// </exception>
         public static string JsonEscape(this string toEscape)
         {
             if (toEscape == null)

@@ -9,11 +9,11 @@ namespace Drexel.Configurables
 {
     public class SetValidator<T> : ISetValidator<T>
     {
-        private readonly IReadOnlyDictionary<T, SetRestrictionInfo<T>> backingSet;
+        private readonly IReadOnlyDictionary<T, SetRestrictionInfo<T>>? backingSet;
         private readonly CollectionInfo? collectionInfo;
 
         public SetValidator(
-            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
+            IReadOnlyCollection<SetRestrictionInfo<T>>? restrictedToSet = null,
             CollectionInfo? collectionInfo = null)
         {
             try
@@ -37,14 +37,12 @@ namespace Drexel.Configurables
 
             if (this.backingSet == null)
             {
-                if (this.collectionInfo == null)
-                {
-                    return;
-                }
-                else
+                if (this.collectionInfo != null)
                 {
                     this.ValidateSetSize(set.Count());
                 }
+
+                return;
             }
 
             Dictionary<T, int> timesSeenDictionary = new Dictionary<T, int>(this.backingSet.Count);

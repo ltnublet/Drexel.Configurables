@@ -12,7 +12,7 @@ namespace Drexel.Configurables
     /// </typeparam>
     public class Requirement<T> : IRequirement<T>
     {
-        private readonly Func<T, IConfiguration, Exception> validationCallback;
+        private readonly Func<T, IConfiguration, Exception>? validationCallback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Requirement{T}"/> class.
@@ -66,10 +66,10 @@ namespace Drexel.Configurables
             IRequirementType<T> type,
             bool isOptional,
             CollectionInfo? collectionInfo = null,
-            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
-            IReadOnlyCollection<IRequirement> dependsOn = null,
-            IReadOnlyCollection<IRequirement> exclusiveWith = null,
-            Func<T, IConfiguration, Exception> validationCallback = null)
+            IReadOnlyCollection<SetRestrictionInfo<T>>? restrictedToSet = null,
+            IReadOnlyCollection<IRequirement>? dependsOn = null,
+            IReadOnlyCollection<IRequirement>? exclusiveWith = null,
+            Func<T, IConfiguration, Exception>? validationCallback = null)
         {
             this.Id = id;
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -122,7 +122,7 @@ namespace Drexel.Configurables
         /// Gets the set of <see cref="SetRestrictionInfo{T}"/>s describing the set of values this requirement is
         /// restricted to, if such restrictions exist; otherwise, <see langword="null"/>.
         /// </summary>
-        public IReadOnlyCollection<SetRestrictionInfo<T>> RestrictedToSet { get; }
+        public IReadOnlyCollection<SetRestrictionInfo<T>>? RestrictedToSet { get; }
 
         /// <summary>
         /// Gets the type of this requirement.
