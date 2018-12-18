@@ -42,8 +42,4 @@
     <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RequirementTypes\" />
-  </ItemGroup>
-
 </Project>

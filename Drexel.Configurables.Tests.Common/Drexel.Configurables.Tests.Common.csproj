@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <CodeAnalysisRuleSet>..\Solution_Items\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
     <NullableReferenceTypes>true</NullableReferenceTypes>
   </PropertyGroup>
@@ -10,6 +10,10 @@
   <ItemGroup>
     <AdditionalFiles Include="..\Solution_Items\.StyleCop\CodeAnalysisDictionary.xml" Link="CodeAnalysisDictionary.xml" />
     <AdditionalFiles Include="..\Solution_Items\.StyleCop\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

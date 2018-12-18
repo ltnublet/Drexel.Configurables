@@ -20,6 +20,9 @@ namespace Drexel.Configurables.Contracts
         /// <param name="requirements">
         /// The requirements to initialize this collection with.
         /// </param>
+        /// <exception cref="AggregateException">
+        /// Occurs if multiple validation exceptions occur during initialization of this collection.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a supplied argument is illegally <see langword="null"/>.
         /// </exception>
@@ -40,32 +43,48 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(requirements));
             }
 
+            List<Exception> exceptions = new List<Exception>();
             HashSet<IRequirement> distinctRequirements = new HashSet<IRequirement>();
             foreach (IRequirement requirement in requirements)
             {
                 if (distinctRequirements.Contains(requirement))
                 {
-                    throw new DuplicateRequirementException(requirement);
+                    exceptions.Add(new DuplicateRequirementException(requirement));
+                }
+                else
+                {
+                    distinctRequirements.Add(requirement);
                 }
             }
 
             ImmutableHashSet<IRequirement> asImmutable = distinctRequirements.ToImmutableHashSet();
-            foreach (IRequirement requirement in requirements)
-            {
-                ImmutableHashSet<IRequirement> missing = asImmutable.Except(asImmutable);
-                if (missing.Any())
-                {
-                    throw new DependenciesNotSatisfiedException(requirement, missing);
-                }
-            }
-
-            foreach (IRequirement requirement in requirements)
+            foreach (IRequirement requirement in distinctRequirements)
             {
                 ImmutableHashSet<IRequirement> conflicting = asImmutable.Intersect(asImmutable);
                 if (conflicting.Any())
                 {
-                    throw new ConflictingRequirementsException(requirement, conflicting);
+                    exceptions.Add(new ConflictingRequirementsException(requirement, conflicting));
+                    distinctRequirements.Remove(requirement);
                 }
+            }
+
+            asImmutable = distinctRequirements.ToImmutableHashSet();
+            foreach (IRequirement requirement in distinctRequirements)
+            {
+                ImmutableHashSet<IRequirement> missing = asImmutable.Except(asImmutable);
+                if (missing.Any())
+                {
+                    exceptions.Add(new DependenciesNotSatisfiedException(requirement, missing));
+                }
+            }
+
+            if (exceptions.Count == 1)
+            {
+                throw exceptions[0];
+            }
+            else if (exceptions.Count > 1)
+            {
+                throw new AggregateException("Multiple validation failures occurred.", exceptions);
             }
 
             this.backingCollection = distinctRequirements.ToArray();

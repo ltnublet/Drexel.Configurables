@@ -33,18 +33,45 @@ namespace Drexel.Configurables.Tests.Common
         private static long counter = 0;
 
         public static IRequirement CreateRequirement<T>(
-            IRequirementType<T> type,
+            IClassRequirementType<T> type,
             Guid? id = null,
             string baseName = "ConfigurationRequirementName",
             string baseDescription = "Configuration requirement description.",
             bool isOptional = false,
             CollectionInfo? collectionInfo = null,
-            IReadOnlyCollection<SetRestrictionInfo<T>> restrictedToSet = null,
-            IReadOnlyCollection<IRequirement> dependsOn = null,
-            IReadOnlyCollection<IRequirement> exclusiveWith = null,
-            Func<T, IConfiguration, Exception> validator = null)
+            IReadOnlyCollection<SetRestrictionInfo<T>>? restrictedToSet = null,
+            IReadOnlyCollection<IRequirement>? dependsOn = null,
+            IReadOnlyCollection<IRequirement>? exclusiveWith = null,
+            Func<T?, IConfiguration, Exception?>? validator = null)
+            where T : class
         {
-            return new Requirement<T>(
+            return new ClassRequirement<T>(
+                id.HasValue ? id.Value : Guid.NewGuid(),
+                baseName + TestUtil.counter++,
+                baseDescription + TestUtil.counter++,
+                type,
+                isOptional,
+                collectionInfo,
+                restrictedToSet,
+                dependsOn,
+                exclusiveWith,
+                validator);
+        }
+
+        public static IRequirement CreateRequirement<T>(
+            IStructRequirementType<T> type,
+            Guid? id = null,
+            string baseName = "ConfigurationRequirementName",
+            string baseDescription = "Configuration requirement description.",
+            bool isOptional = false,
+            CollectionInfo? collectionInfo = null,
+            IReadOnlyCollection<SetRestrictionInfo<T>>? restrictedToSet = null,
+            IReadOnlyCollection<IRequirement>? dependsOn = null,
+            IReadOnlyCollection<IRequirement>? exclusiveWith = null,
+            Func<T, IConfiguration, Exception?>? validator = null)
+            where T : struct
+        {
+            return new StructRequirement<T>(
                 id.HasValue ? id.Value : Guid.NewGuid(),
                 baseName + TestUtil.counter++,
                 baseDescription + TestUtil.counter++,

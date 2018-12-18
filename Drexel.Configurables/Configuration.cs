@@ -18,24 +18,6 @@ namespace Drexel.Configurables
     public sealed class Configuration : IConfiguration
     {
         /// <summary>
-        /// Exception message for when a requirement is missing.
-        /// </summary>
-        internal const string MissingRequirement =
-            "Missing required requirement. Name: '{0}', ID: '{1}'.";
-
-        /// <summary>
-        /// Exception message for when a dependency is not satisfied.
-        /// </summary>
-        internal const string DependenciesNotSatisfied =
-            "Requirement does not have its dependencies satisfied. Name: '{0}', ID: '{1}'.";
-
-        /// <summary>
-        /// Exception message for when a conflicting requirement is specified.
-        /// </summary>
-        internal const string ConflictingRequirementsSpecified =
-            "Requirement is in conflict with another requirement. Name: '{0}', ID: '{1}'.";
-
-        /// <summary>
         /// Exception message for when requirements fail validation.
         /// </summary>
         internal const string RequirementsFailedValidation =
@@ -85,8 +67,11 @@ namespace Drexel.Configurables
         /// <param name="mappings">
         /// The set of mappings between requirements and values.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when an argument is illegally <see langword="null"/>.
+        /// </exception>
         public Configuration(
-            IReadOnlyCollection<IRequirement> requirements,
+            RequirementCollection requirements,
             IReadOnlyDictionary<IRequirement, object> mappings)
         {
             if (requirements == null)
@@ -99,52 +84,14 @@ namespace Drexel.Configurables
                 throw new ArgumentNullException(nameof(mappings));
             }
 
-            Dictionary<IRequirement, object> backingDictionary =
-                mappings.ToDictionary(x => x.Key, x => x.Value);
-
             List<Exception> failures = new List<Exception>();
+            Dictionary<IRequirement, object> backingDictionary = new Dictionary<IRequirement, object>();
 
-            // Check for missing requirements.
-            failures.AddRange(requirements
-                .Where(x => !x.IsOptional && !backingDictionary.Keys.Contains(x))
-                .Select(x => new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Configuration.MissingRequirement,
-                        x.Name,
-                        x.Id))));
-
-            // Check for DependsOn failures.
-            IRequirement[] dependsOnFailures = backingDictionary
-                .Keys
-                .Where(x => x.DependsOn.Any(y => !mappings.Keys.Contains(y)))
-                .ToArray();
-            failures.AddRange(dependsOnFailures
-                .Select(x => new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Configuration.DependenciesNotSatisfied,
-                        x.Name,
-                        x.Id))));
-
-            // Check for ExclusiveWith failures.
-            IRequirement[] exclusiveConflicts = backingDictionary
-                .Keys
-                .Where(x => x.ExclusiveWith.Any(y => mappings.Keys.Contains(y)))
-                .ToArray();
-            failures.AddRange(exclusiveConflicts
-                .Select(x => new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Configuration.ConflictingRequirementsSpecified,
-                        x.Name,
-                        x.Id))));
-
-            // Remove ExclusiveWith/DependsOn errors from the set of validations to execute.
-            foreach (IRequirement cantValidate in exclusiveConflicts.Concat(dependsOnFailures))
-            {
-                backingDictionary.Remove(cantValidate);
-            }
+            // TODO: switch to RequirementCollection
+            // TODO: detect missing non-optional requirements
+            // TODO: refactor topological sort to be part of RequirementCollection
+            throw new NotImplementedException(
+                "Need to switch over to using RequirementCollection and throw correct exception types");
 
             // Validate the remaining requirements.
             // We can only reach this after removing all requirements that don't have their prerequisites.

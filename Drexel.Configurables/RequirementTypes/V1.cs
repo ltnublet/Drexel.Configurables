@@ -8,19 +8,21 @@ namespace Drexel.Configurables.RequirementTypes
 {
     public static class V1
     {
-        public static IRequirementType<bool> Bool { get; } = new BoolRequirementType();
+        private static readonly Version Version = new Version(1, 0, 0, 0);
 
-        public static IRequirementType<int> Int32 { get; } = new Int32RequirementType();
+        public static IStructRequirementType<bool> Bool { get; } = new BoolRequirementType();
 
-        public static IRequirementType<long> Int64 { get; } = new Int64RequirementType();
+        public static IStructRequirementType<int> Int32 { get; } = new Int32RequirementType();
 
-        public static IRequirementType<SecureString> SecureString { get; } = new SecureStringRequirementType();
+        public static IStructRequirementType<long> Int64 { get; } = new Int64RequirementType();
 
-        public static IRequirementType<string> String { get; } = new StringRequirementType();
+        public static IClassRequirementType<SecureString> SecureString { get; } = new SecureStringRequirementType();
 
-        public static IRequirementType<Uri> Uri { get; } = new UriRequirementType();
+        public static IClassRequirementType<string> String { get; } = new StringRequirementType();
 
-        public static IRequirementType<FilePath> GetFilePathType(IPathInteractor pathInteractor)
+        public static IClassRequirementType<Uri> Uri { get; } = new UriRequirementType();
+
+        public static IClassRequirementType<FilePath> GetFilePathType(IPathInteractor pathInteractor)
         {
             return new FilePathRequirementType(pathInteractor);
         }
@@ -42,15 +44,20 @@ namespace Drexel.Configurables.RequirementTypes
                 || underlyingType == typeof(UriRequirementType);
         }
 
-        private sealed class BoolRequirementType : RequirementType<bool>
+        private sealed class BoolRequirementType : StructRequirementTypeBase<bool>
         {
+            private static readonly Guid BoolRequirementTypeId = Guid.Parse("2af45e35-7067-4d4a-aaf3-3ffa7cfc23fc");
+
             public BoolRequirementType()
-                : base("2af45e35-7067-4d4a-aaf3-3ffa7cfc23fc", true)
+                : base(
+                      BoolRequirementType.BoolRequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override bool Cast(object value)
+            protected override bool CastInternal(object value)
             {
                 if (value is bool asBool)
                 {
@@ -73,19 +80,29 @@ namespace Drexel.Configurables.RequirementTypes
             }
         }
 
-        private sealed class FilePathRequirementType : RequirementType<FilePath>
+        private sealed class FilePathRequirementType : ClassRequirementTypeBase<FilePath>
         {
+            private static readonly Guid FilePathRequirementTypeId =
+                Guid.Parse("54ce6ec8-f6dc-4fd3-87bd-56b409d3f5bc");
+
             private readonly IPathInteractor pathInteractor;
 
             public FilePathRequirementType(IPathInteractor pathInteractor)
-                : base("54ce6ec8-f6dc-4fd3-87bd-56b409d3f5bc", true)
+                : base(
+                      FilePathRequirementType.FilePathRequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 this.pathInteractor = pathInteractor;
             }
 
-            public override FilePath Cast(object value)
+            public override FilePath? Cast(object? value)
             {
-                if (value is FilePath asPath)
+                if (value == null)
+                {
+                    return null;
+                }
+                else if (value is FilePath asPath)
                 {
                     return asPath;
                 }
@@ -93,11 +110,11 @@ namespace Drexel.Configurables.RequirementTypes
                 throw new InvalidCastException();
             }
 
-            protected override string PersistInternal(FilePath value)
+            protected override string? PersistInternal(FilePath? value)
             {
                 if (value == null)
                 {
-                    throw new InvalidCastException();
+                    return null;
                 }
 
                 return string.Format(
@@ -107,20 +124,22 @@ namespace Drexel.Configurables.RequirementTypes
                     value.Path);
             }
 
-            protected override FilePath RestoreInternal(string value)
+            protected override FilePath? RestoreInternal(string? value)
             {
-                if (value != null)
+                if (value == null)
                 {
-                    int dividerIndex = value.IndexOf(':');
-                    if (dividerIndex > -1)
+                    return null;
+                }
+
+                int dividerIndex = value.IndexOf(':');
+                if (dividerIndex > -1)
+                {
+                    if (bool.TryParse(value.Substring(0, dividerIndex), out bool caseSensitive))
                     {
-                        if (bool.TryParse(value.Substring(0, dividerIndex), out bool caseSensitive))
-                        {
-                            return new FilePath(
-                                value.Substring(dividerIndex),
-                                this.pathInteractor,
-                                caseSensitive);
-                        }
+                        return new FilePath(
+                            value.Substring(dividerIndex),
+                            this.pathInteractor,
+                            caseSensitive);
                     }
                 }
 
@@ -128,15 +147,20 @@ namespace Drexel.Configurables.RequirementTypes
             }
         }
 
-        private sealed class Int32RequirementType : RequirementType<int>
+        private sealed class Int32RequirementType : StructRequirementTypeBase<int>
         {
+            private static readonly Guid Int32RequirementTypeId = Guid.Parse("d3fcd5ad-fbca-4ccd-826f-81c855f99acc");
+
             public Int32RequirementType()
-                : base("d3fcd5ad-fbca-4ccd-826f-81c855f99acc", true)
+                : base(
+                      Int32RequirementType.Int32RequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override int Cast(object value)
+            protected override int CastInternal(object value)
             {
                 if (value is int asInt)
                 {
@@ -163,15 +187,20 @@ namespace Drexel.Configurables.RequirementTypes
             }
         }
 
-        private sealed class Int64RequirementType : RequirementType<long>
+        private sealed class Int64RequirementType : StructRequirementTypeBase<long>
         {
+            private static readonly Guid Int64RequirementTypeId = Guid.Parse("f4d9529c-d8b1-4676-ab5c-4989b66679ed");
+
             public Int64RequirementType()
-                : base("f4d9529c-d8b1-4676-ab5c-4989b66679ed", true)
+                : base(
+                      Int64RequirementType.Int64RequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override long Cast(object value)
+            protected override long CastInternal(object value)
             {
                 if (value is long asLong)
                 {
@@ -198,17 +227,27 @@ namespace Drexel.Configurables.RequirementTypes
             }
         }
 
-        private sealed class SecureStringRequirementType : RequirementType<SecureString>
+        private sealed class SecureStringRequirementType : ClassRequirementTypeBase<SecureString>
         {
+            private static readonly Guid SecureStringRequirementTypeId =
+                Guid.Parse("b4213094-5ab8-43f7-8fad-dcfe7d08d47d");
+
             public SecureStringRequirementType()
-                : base("b4213094-5ab8-43f7-8fad-dcfe7d08d47d", false)
+                : base(
+                      SecureStringRequirementType.SecureStringRequirementTypeId,
+                      false,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override SecureString Cast(object value)
+            public override SecureString? Cast(object? value)
             {
-                if (value is SecureString asSecureString)
+                if (value == null)
+                {
+                    return null;
+                }
+                else if (value is SecureString asSecureString)
                 {
                     return asSecureString;
                 }
@@ -216,28 +255,37 @@ namespace Drexel.Configurables.RequirementTypes
                 throw new InvalidCastException();
             }
 
-            protected override string PersistInternal(SecureString value)
+            protected override string? PersistInternal(SecureString? value)
             {
                 throw new NotImplementedException();
             }
 
-            protected override SecureString RestoreInternal(string value)
+            protected override SecureString? RestoreInternal(string? value)
             {
                 throw new NotImplementedException();
             }
         }
 
-        private sealed class StringRequirementType : RequirementType<string>
+        private sealed class StringRequirementType : ClassRequirementTypeBase<string>
         {
+            private static readonly Guid StringRequirementTypeId = Guid.Parse("b97c3d45-cde4-4001-bbe6-3087da22acd5");
+
             public StringRequirementType()
-                : base("b97c3d45-cde4-4001-bbe6-3087da22acd5", true)
+                : base(
+                      StringRequirementType.StringRequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override string Cast(object value)
+            public override string? Cast(object? value)
             {
-                if (value is string asString)
+                if (value == null)
+                {
+                    return null;
+                }
+                else if (value is string asString)
                 {
                     return asString;
                 }
@@ -245,22 +293,31 @@ namespace Drexel.Configurables.RequirementTypes
                 throw new InvalidCastException();
             }
 
-            protected override string PersistInternal(string value) => value;
+            protected override string? PersistInternal(string? value) => value;
 
-            protected override string RestoreInternal(string value) => value;
+            protected override string? RestoreInternal(string? value) => value;
         }
 
-        private sealed class UriRequirementType : RequirementType<Uri>
+        private sealed class UriRequirementType : ClassRequirementTypeBase<Uri>
         {
+            private static readonly Guid UriRequirementTypeId = Guid.Parse("7d40ee53-81ec-4714-9e04-e9e8f430b361");
+
             public UriRequirementType()
-                : base("7d40ee53-81ec-4714-9e04-e9e8f430b361", true)
+                : base(
+                      UriRequirementType.UriRequirementTypeId,
+                      true,
+                      V1.Version)
             {
                 // Nothing to do.
             }
 
-            public override Uri Cast(object value)
+            public override Uri? Cast(object? value)
             {
-                if (value is Uri asUri)
+                if (value == null)
+                {
+                    return null;
+                }
+                else if (value is Uri asUri)
                 {
                     return asUri;
                 }
@@ -268,79 +325,24 @@ namespace Drexel.Configurables.RequirementTypes
                 throw new InvalidCastException();
             }
 
-            protected override string PersistInternal(Uri value)
+            protected override string? PersistInternal(Uri? value)
             {
                 if (value == null)
                 {
-                    throw new InvalidCastException();
+                    return null;
                 }
 
                 return value.OriginalString;
             }
 
-            protected override Uri RestoreInternal(string value)
+            protected override Uri? RestoreInternal(string? value)
             {
-                if (value != null)
+                if (value == null)
                 {
-                    return new Uri(value);
+                    return null;
                 }
 
-                throw new InvalidCastException();
-            }
-        }
-
-        private abstract class RequirementType<T> : IRequirementType<T>
-        {
-            public RequirementType(string id, bool persistable)
-            {
-                this.Id = Guid.Parse(id);
-                this.IsPersistable = persistable;
-                this.Version = new Version(1, 0, 0, 0);
-            }
-
-            public Guid Id { get; }
-
-            public bool IsPersistable { get; }
-
-            public Type Type => typeof(T);
-
-            public Version Version { get; }
-
-            public abstract T Cast(object value);
-
-            public string Persist(T value)
-            {
-                this.ThrowIfNotPersistable();
-                return this.PersistInternal(value);
-            }
-
-            public string Persist(object value)
-            {
-                this.ThrowIfNotPersistable();
-                return this.PersistInternal(this.Cast(value));
-            }
-
-            public T Restore(string value)
-            {
-                this.ThrowIfNotPersistable();
-                return this.RestoreInternal(value);
-            }
-
-            object IRequirementType.Restore(string value) => this.Restore(value);
-
-            protected abstract string PersistInternal(T value);
-
-            protected abstract T RestoreInternal(string value);
-
-            [System.Diagnostics.DebuggerHidden]
-            [System.Runtime.CompilerServices.MethodImpl(
-                System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-            private void ThrowIfNotPersistable()
-            {
-                if (!this.IsPersistable)
-                {
-                    throw new InvalidOperationException();
-                }
+                return new Uri(value);
             }
         }
     }

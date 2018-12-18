@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <IsPackable>false</IsPackable>
     <CodeAnalysisRuleSet>..\Solution_Items\.StyleCop\Drexel.Configurables.MSTest.ruleset</CodeAnalysisRuleSet>
     <NullableReferenceTypes>true</NullableReferenceTypes>

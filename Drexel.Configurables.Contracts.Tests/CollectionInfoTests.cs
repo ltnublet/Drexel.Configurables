@@ -69,6 +69,10 @@ namespace Drexel.Configurables.Contracts.Tests
             };
 
         [TestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1129:Do not use default value type constructor",
+            Justification = "Test is intentionally testing the parameterless constructor.")]
         public void CollectionInfo_Ctor_Parameterless_Succeeds()
         {
             CollectionInfo info = new CollectionInfo();

@@ -5,17 +5,18 @@ using Drexel.Configurables.Contracts;
 namespace Drexel.Configurables
 {
     /// <summary>
-    /// Represents a configuration requirement.
+    /// Represents a configuration requirement where the underlying type is a <see langword="class"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The type of this requirement.
     /// </typeparam>
-    public class Requirement<T> : IRequirement<T>
+    public class ClassRequirement<T> : IClassRequirement<T>
+        where T : class
     {
-        private readonly Func<T, IConfiguration, Exception>? validationCallback;
+        private readonly Func<T?, IConfiguration, Exception?>? validationCallback;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Requirement{T}"/> class.
+        /// Initializes a new instance of the <see cref="ClassRequirement{T}"/> class.
         /// </summary>
         /// <param name="id">
         /// The ID of this requirement. An ID must be unique within a given <see cref="IConfiguration"/>.
@@ -27,7 +28,7 @@ namespace Drexel.Configurables
         /// The description of this requirement.
         /// </param>
         /// <param name="type">
-        /// The <see cref="IRequirementType{T}"/> of this requirement.
+        /// The <see cref="IClassRequirementType{T}"/> of this requirement.
         /// </param>
         /// <param name="isOptional">
         /// If <see langword="true"/>, this requirement is considered optional.
@@ -59,17 +60,17 @@ namespace Drexel.Configurables
         /// should return an <see cref="Exception"/> if the value is not valid, or <see langword="null"/> if the value
         /// is valid.
         /// </param>
-        public Requirement(
+        public ClassRequirement(
             Guid id,
             string name,
             string description,
-            IRequirementType<T> type,
+            IClassRequirementType<T> type,
             bool isOptional,
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<SetRestrictionInfo<T>>? restrictedToSet = null,
             IReadOnlyCollection<IRequirement>? dependsOn = null,
             IReadOnlyCollection<IRequirement>? exclusiveWith = null,
-            Func<T, IConfiguration, Exception>? validationCallback = null)
+            Func<T?, IConfiguration, Exception?>? validationCallback = null)
         {
             this.Id = id;
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -127,7 +128,7 @@ namespace Drexel.Configurables
         /// <summary>
         /// Gets the type of this requirement.
         /// </summary>
-        public IRequirementType<T> Type { get; }
+        public IClassRequirementType<T> Type { get; }
 
         /// <summary>
         /// Gets the type of this requirement.
@@ -165,8 +166,18 @@ namespace Drexel.Configurables
         /// If the value passes validation, <see langword="null"/>; otherwise, an <see cref="Exception"/> describing
         /// the reason validation failed.
         /// </returns>
-        public Exception Validate(T value, IConfiguration dependencies) =>
-            this.validationCallback?.Invoke(value, dependencies);
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="dependencies"/> is <see langword="null"/>.
+        /// </exception>
+        public Exception? Validate(T? value, IConfiguration dependencies)
+        {
+            if (dependencies == null)
+            {
+                throw new ArgumentNullException(nameof(dependencies));
+            }
+
+            return this.validationCallback?.Invoke(value, dependencies);
+        }
 
         /// <summary>
         /// Validates the supplied value against this requirement.
@@ -182,11 +193,19 @@ namespace Drexel.Configurables
         /// If the value passes validation, <see langword="null"/>; otherwise, an <see cref="Exception"/> describing
         /// the reason validation failed.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="dependencies"/> is <see langword="null"/>.
+        /// </exception>
         /// <exception cref="InvalidCastException">
         /// Thrown when the supplied <paramref name="value"/> is not of type <typeparamref name="T"/>.
         /// </exception>
-        public Exception Validate(object value, IConfiguration dependencies)
+        public Exception? Validate(object? value, IConfiguration dependencies)
         {
+            if (dependencies == null)
+            {
+                throw new ArgumentNullException(nameof(dependencies));
+            }
+
             if (value is T asT)
             {
                 return this.Validate(asT, dependencies);
