@@ -3,31 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Contracts", "Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Contracts", "Src\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8E0FBD4D-2EA0-4ADB-84CE-46FFD6CF69F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example", "Example\Drexel.Configurables.Example\Drexel.Configurables.Example.csproj", "{43667255-5D3A-4907-ABB8-0459DC963211}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".StyleCop", ".StyleCop", "{5CD86276-7907-4CE5-AFE8-879D2AE15F2C}"
-	ProjectSection(SolutionItems) = preProject
-		Solution_Items\.StyleCop\CodeAnalysisDictionary.xml = Solution_Items\.StyleCop\CodeAnalysisDictionary.xml
-		Solution_Items\.StyleCop\Drexel.Configurables.MSTest.ruleset = Solution_Items\.StyleCop\Drexel.Configurables.MSTest.ruleset
-		Solution_Items\.StyleCop\Drexel.Configurables.ruleset = Solution_Items\.StyleCop\Drexel.Configurables.ruleset
-		Solution_Items\.StyleCop\stylecop.json = Solution_Items\.StyleCop\stylecop.json
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{27576382-1DB8-4118-BEEE-AAC7EAA66E4C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables", "Drexel.Configurables\Drexel.Configurables.csproj", "{FE44B8D3-8B19-4BAB-BFEE-AE9133D9A3F2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{2C280484-DCF5-4DA4-8565-2BDD44840C29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.External", "Drexel.Configurables.External\Drexel.Configurables.External.csproj", "{774FAB3F-D191-4923-97AE-58225803D0FB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C8C299F-16F8-472D-895B-46DE2679586F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.External.Tests", "Drexel.Configurables.External.Tests\Drexel.Configurables.External.Tests.csproj", "{572B7ADD-CAFF-4899-8039-EB9BAFD7CC82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Remote", "Example\Drexel.Configurables.Example.Remote\Drexel.Configurables.Example.Remote.csproj", "{F4580058-8610-48D4-A1E5-89799A65420D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Tests.Common", "Drexel.Configurables.Tests.Common\Drexel.Configurables.Tests.Common.csproj", "{EACE0869-9525-4A99-A3F2-175411E16380}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Local", "Example\Drexel.Configurables.Example.Local\Drexel.Configurables.Example.Local.csproj", "{7A3F8113-D90B-4C18-B438-F4D071C46430}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Tests", "Drexel.Configurables.Tests\Drexel.Configurables.Tests.csproj", "{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Contracts", "Example\Drexel.Configurables.Example.Contracts\Drexel.Configurables.Example.Contracts.csproj", "{199A6FC5-123E-4A3E-9517-2F36A59F126A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Contracts.Tests", "Drexel.Configurables.Contracts.Tests\Drexel.Configurables.Contracts.Tests.csproj", "{6296346F-396A-4004-9B28-A7F6DEC793FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Json", "Drexel.Configurables.Json\Drexel.Configurables.Json.csproj", "{0F1F225C-1A82-43A1-A671-AD284D19541E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.External", "Src\Drexel.Configurables.External\Drexel.Configurables.External.csproj", "{E70157E3-5B49-4428-BB9E-A48DE448C038}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,44 +27,41 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6D3BBCB-F9A0-45E0-A783-CC8EAE71D370}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE44B8D3-8B19-4BAB-BFEE-AE9133D9A3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE44B8D3-8B19-4BAB-BFEE-AE9133D9A3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE44B8D3-8B19-4BAB-BFEE-AE9133D9A3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE44B8D3-8B19-4BAB-BFEE-AE9133D9A3F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{774FAB3F-D191-4923-97AE-58225803D0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{774FAB3F-D191-4923-97AE-58225803D0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{774FAB3F-D191-4923-97AE-58225803D0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{774FAB3F-D191-4923-97AE-58225803D0FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{572B7ADD-CAFF-4899-8039-EB9BAFD7CC82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{572B7ADD-CAFF-4899-8039-EB9BAFD7CC82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{572B7ADD-CAFF-4899-8039-EB9BAFD7CC82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{572B7ADD-CAFF-4899-8039-EB9BAFD7CC82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EACE0869-9525-4A99-A3F2-175411E16380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EACE0869-9525-4A99-A3F2-175411E16380}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EACE0869-9525-4A99-A3F2-175411E16380}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EACE0869-9525-4A99-A3F2-175411E16380}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C66CA0A-2EF8-4D65-BF5B-05E4F34EEA5C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6296346F-396A-4004-9B28-A7F6DEC793FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F1F225C-1A82-43A1-A671-AD284D19541E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F1F225C-1A82-43A1-A671-AD284D19541E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F1F225C-1A82-43A1-A671-AD284D19541E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F1F225C-1A82-43A1-A671-AD284D19541E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43667255-5D3A-4907-ABB8-0459DC963211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43667255-5D3A-4907-ABB8-0459DC963211}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43667255-5D3A-4907-ABB8-0459DC963211}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43667255-5D3A-4907-ABB8-0459DC963211}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4580058-8610-48D4-A1E5-89799A65420D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4580058-8610-48D4-A1E5-89799A65420D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4580058-8610-48D4-A1E5-89799A65420D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4580058-8610-48D4-A1E5-89799A65420D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3F8113-D90B-4C18-B438-F4D071C46430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3F8113-D90B-4C18-B438-F4D071C46430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3F8113-D90B-4C18-B438-F4D071C46430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3F8113-D90B-4C18-B438-F4D071C46430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{199A6FC5-123E-4A3E-9517-2F36A59F126A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{199A6FC5-123E-4A3E-9517-2F36A59F126A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{199A6FC5-123E-4A3E-9517-2F36A59F126A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{199A6FC5-123E-4A3E-9517-2F36A59F126A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5CD86276-7907-4CE5-AFE8-879D2AE15F2C} = {8E0FBD4D-2EA0-4ADB-84CE-46FFD6CF69F2}
+		{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
+		{43667255-5D3A-4907-ABB8-0459DC963211} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
+		{F4580058-8610-48D4-A1E5-89799A65420D} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
+		{7A3F8113-D90B-4C18-B438-F4D071C46430} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
+		{199A6FC5-123E-4A3E-9517-2F36A59F126A} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
+		{E70157E3-5B49-4428-BB9E-A48DE448C038} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F63AC9-AEB0-4744-A6BD-89BDF935BC78}

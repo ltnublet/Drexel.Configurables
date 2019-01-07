@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.External.xml</DocumentationFile>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.5.0</Version>
+    <Authors>Max Drexel</Authors>
+    <Description>External code for configurable resources.</Description>
+    <Copyright>Copyright 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/ltnublet/Drexel.Configurables/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ltnublet/Drexel.Configurables</PackageProjectUrl>
+    <PackageTags>configurables configuration configure drexel</PackageTags>
+    <PackageReleaseNotes>0.5.0: Substantial rewrite with configuration persistence support
+0.4.1: Resolved missing XML documentation
+0.4.0: Retargeted project from .NET Framework 4.7.2 to .NET Standard 2.0
+0.3.6741: Separate the IConfigurable interface into the IRequirementSource and IConfigurator interfaces
+0.1.6738: Initial release
+    </PackageReleaseNotes>
+  </PropertyGroup>
+</Project>
