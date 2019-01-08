@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Contracts", "Src\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Contracts", "Src\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj", "{CC7F6EAE-3A23-4197-89DB-5748F8E00DBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example", "Example\Drexel.Configurables.Example\Drexel.Configurables.Example.csproj", "{43667255-5D3A-4907-ABB8-0459DC963211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Example", "Example\Drexel.Configurables.Example\Drexel.Configurables.Example.csproj", "{43667255-5D3A-4907-ABB8-0459DC963211}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{27576382-1DB8-4118-BEEE-AAC7EAA66E4C}"
 EndProject
@@ -13,13 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{2C28
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C8C299F-16F8-472D-895B-46DE2679586F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Remote", "Example\Drexel.Configurables.Example.Remote\Drexel.Configurables.Example.Remote.csproj", "{F4580058-8610-48D4-A1E5-89799A65420D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Example.Remote", "Example\Drexel.Configurables.Example.Remote\Drexel.Configurables.Example.Remote.csproj", "{F4580058-8610-48D4-A1E5-89799A65420D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Local", "Example\Drexel.Configurables.Example.Local\Drexel.Configurables.Example.Local.csproj", "{7A3F8113-D90B-4C18-B438-F4D071C46430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Example.Local", "Example\Drexel.Configurables.Example.Local\Drexel.Configurables.Example.Local.csproj", "{7A3F8113-D90B-4C18-B438-F4D071C46430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Example.Contracts", "Example\Drexel.Configurables.Example.Contracts\Drexel.Configurables.Example.Contracts.csproj", "{199A6FC5-123E-4A3E-9517-2F36A59F126A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.Example.Contracts", "Example\Drexel.Configurables.Example.Contracts\Drexel.Configurables.Example.Contracts.csproj", "{199A6FC5-123E-4A3E-9517-2F36A59F126A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables.External", "Src\Drexel.Configurables.External\Drexel.Configurables.External.csproj", "{E70157E3-5B49-4428-BB9E-A48DE448C038}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables", "Src\Drexel.Configurables\Drexel.Configurables.csproj", "{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E70157E3-5B49-4428-BB9E-A48DE448C038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{7A3F8113-D90B-4C18-B438-F4D071C46430} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
 		{199A6FC5-123E-4A3E-9517-2F36A59F126A} = {2C280484-DCF5-4DA4-8565-2BDD44840C29}
 		{E70157E3-5B49-4428-BB9E-A48DE448C038} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
+		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F63AC9-AEB0-4744-A6BD-89BDF935BC78}

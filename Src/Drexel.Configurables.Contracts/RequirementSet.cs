@@ -42,6 +42,10 @@ namespace Drexel.Configurables.Contracts
         /// is, when one <see cref="RequirementType"/> specifies an <see cref="RequirementType.Id"/> or
         /// <see cref="RequirementType.Type"/> that is incompatible with another.
         /// </exception>
+        /// <exception cref="SetContainsCircularDependency">
+        /// Thrown when the <paramref name="requirements"/> contains a cycle in either their
+        /// <see cref="Requirement.DependsOn"/>s or <see cref="Requirement.ExclusiveWith"/>s.
+        /// </exception>
         public RequirementSet(params Requirement[] requirements)
             : this((IReadOnlyCollection<Requirement>)requirements
                   ?? throw new ArgumentNullException(nameof(requirements)))
