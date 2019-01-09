@@ -14,9 +14,6 @@ namespace Drexel.Configurables.Example.Local
     {
         static LocalPlugin()
         {
-            ////LocalPlugin.DirectoryRequirement = Requirements.NewFilePath();
-            ////LocalPlugin.IncludeSubfoldersRequirement = Requirements.NewBool();
-
             // TODO: replace these with real requirements
             LocalPlugin.DirectoryRequirement = new ClassRequirement<FilePath>(
                 Guid.NewGuid(),
@@ -24,14 +21,22 @@ namespace Drexel.Configurables.Example.Local
             LocalPlugin.IncludeSubfoldersRequirement = new StructRequirement<bool>(
                 Guid.NewGuid(),
                 RequirementTypes.Boolean);
+            LocalPlugin.SearchFilterRequirement = new ClassRequirement<string>(
+                Guid.NewGuid(),
+                RequirementTypes.String,
+                relations: new RequirementRelationsBuilder()
+                    .AddExclusiveWith(LocalPlugin.IncludeSubfoldersRequirement)
+                    .Build());
 
             LocalPlugin.RequirementSet = new RequirementSet(
                 LocalPlugin.DirectoryRequirement,
-                LocalPlugin.IncludeSubfoldersRequirement);
+                LocalPlugin.IncludeSubfoldersRequirement,
+                LocalPlugin.SearchFilterRequirement);
         }
 
         private static readonly ClassRequirement<FilePath> DirectoryRequirement;
         private static readonly StructRequirement<bool> IncludeSubfoldersRequirement;
+        private static readonly ClassRequirement<string> SearchFilterRequirement;
         private static readonly RequirementSet RequirementSet;
 
         public LocalPlugin()
@@ -54,11 +59,30 @@ namespace Drexel.Configurables.Example.Local
 
         public IPluginStartup CreateStartup(Configuration configuration)
         {
+            FilePath? directory = configuration.Get(LocalPlugin.DirectoryRequirement);
+            if (directory == null)
+            {
+                throw new ArgumentNullException(nameof(LocalPlugin.DirectoryRequirement));
+            }
+
+            string? searchFilter;
+            bool includeSubfolders;
+            if (configuration.TryGet(LocalPlugin.IncludeSubfoldersRequirement, out bool buffer))
+            {
+                searchFilter = null;
+                includeSubfolders = buffer;
+            }
+            else
+            {
+                searchFilter = configuration.Get(LocalPlugin.SearchFilterRequirement);
+                includeSubfolders = false;
+            }
+
             return new LocalStartup(
                 this,
-                configuration.Get(LocalPlugin.DirectoryRequirement)
-                    ?? throw new ArgumentNullException(nameof(LocalPlugin.DirectoryRequirement)),
-                configuration.Get(LocalPlugin.IncludeSubfoldersRequirement));
+                directory,
+                includeSubfolders,
+                searchFilter);
         }
     }
 }

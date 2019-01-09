@@ -28,6 +28,7 @@ namespace Drexel.Configurables
             RequirementTypes.Int64 = Int64RequirementType.Instance;
             RequirementTypes.SecureString = SecureStringRequirementType.Instance;
             RequirementTypes.Single = SingleRequirementType.Instance;
+            RequirementTypes.String = StringRequirementType.Instance;
             RequirementTypes.UInt16 = UInt16RequirementType.Instance;
             RequirementTypes.UInt64 = UInt64RequirementType.Instance;
             RequirementTypes.Uri = UriRequirementType.Instance;

@@ -126,15 +126,36 @@ namespace Drexel.Configurables.Example
                 Type type = requirement.Type.Type;
                 if (type == typeof(FilePath))
                 {
-                    Console.Write("Enter file path: ");
+                    Console.Write("Enter file path (press enter to skip): ");
                     string input = Console.ReadLine();
+                    if (input == string.Empty)
+                    {
+                        continue;
+                    }
+
                     value = new FilePath(input, PathInteractor.Instance);
                 }
                 else if (type == typeof(bool))
                 {
-                    Console.Write("Enter bool: ");
+                    Console.Write("Enter bool (press enter to skip): ");
                     string input = Console.ReadLine();
+                    if (input == string.Empty)
+                    {
+                        continue;
+                    }
+
                     value = bool.Parse(input);
+                }
+                else if (type == typeof(string))
+                {
+                    Console.Write("Enter string (press enter to skip): ");
+                    string input = Console.ReadLine();
+                    if (input == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    value = input;
                 }
                 else
                 {

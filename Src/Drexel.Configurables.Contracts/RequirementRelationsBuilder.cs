@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Drexel.Configurables.Contracts.Exceptions;
 
@@ -30,6 +31,9 @@ namespace Drexel.Configurables.Contracts
         /// <returns>
         /// This builder.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="dependsOn"/> is <see langword="null"/>.
+        /// </exception>
         /// <exception cref="RequirementRelationsBuilderConflictException">
         /// Thrown when the specified requirement has already been added to the set of exclusivities.
         /// </exception>
@@ -38,6 +42,11 @@ namespace Drexel.Configurables.Contracts
         /// </exception>
         public RequirementRelationsBuilder AddDependsOn(Requirement dependsOn)
         {
+            if (dependsOn == null)
+            {
+                throw new ArgumentNullException(nameof(dependsOn));
+            }
+
             if (this.backingExclusiveWith.Contains(dependsOn))
             {
                 throw new RequirementRelationsBuilderConflictException(dependsOn, dependsOn);
@@ -64,6 +73,9 @@ namespace Drexel.Configurables.Contracts
         /// <returns>
         /// This builder.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="exclusiveWith"/> is <see langword="null"/>.
+        /// </exception>
         /// <exception cref="RequirementRelationsBuilderConflictException">
         /// Thrown when the specified requirement has already been added to the set of dependencies.
         /// </exception>
@@ -72,6 +84,11 @@ namespace Drexel.Configurables.Contracts
         /// </exception>
         public RequirementRelationsBuilder AddExclusiveWith(Requirement exclusiveWith)
         {
+            if (exclusiveWith == null)
+            {
+                throw new ArgumentNullException(nameof(exclusiveWith));
+            }
+
             if (this.backingDependsOn.Contains(exclusiveWith))
             {
                 throw new RequirementRelationsBuilderConflictException(exclusiveWith, exclusiveWith);

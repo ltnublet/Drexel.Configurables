@@ -11,14 +11,17 @@ namespace Drexel.Configurables.Example.Local
         private readonly IExamplePlugin plugin;
         private readonly FilePath directory;
         private readonly bool includeSubFolders;
+        private readonly string searchFilter;
 
         public LocalStartup(
             IExamplePlugin plugin,
             FilePath directory,
-            bool includeSubFolders)
+            bool includeSubFolders = false,
+            string? searchFilter = null)
         {
             this.plugin = plugin ?? throw new ArgumentNullException(nameof(plugin));
             this.directory = directory ?? throw new ArgumentNullException(nameof(directory));
+            this.searchFilter = searchFilter ?? "*";
             this.includeSubFolders = includeSubFolders;
         }
 
@@ -26,14 +29,14 @@ namespace Drexel.Configurables.Example.Local
         {
             context.AddMenuBinding(
                 new MenuBinding(
-                    "List directories",
-                    "Lists the directories contained by the specified directory.",
+                    "List Directories",
+                    "Lists the subdirectories of the directory specified at startup.",
                     this.plugin,
                     (IMenuBinding self, ConsoleInstance console) =>
                     {
                         foreach (string directory in Directory.GetDirectories(
                             this.directory.Path,
-                            "*",
+                            this.searchFilter,
                             this.includeSubFolders
                                 ? SearchOption.AllDirectories
                                 : SearchOption.TopDirectoryOnly))
