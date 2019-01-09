@@ -29,11 +29,11 @@ namespace Drexel.Configurables.Example.Local
                     .Build());
 
             // TODO: IConfigurable can't use RequirementSet, because RequirementSet is checking that we don't supply
-            // any exclusive requirements - but plugins need to be able to declare such things! Maybe we need a
+            // any exclusive requirements - but plugins need to be able to declare such things!
             //
-            // RequirementSet that only verifies that the set is potentially valid, and then a RuntimeRequirementSet
-            // that verifies a specific set of requirements is valid? RuntimeRequirementSet would inherit from
-            // RequirementSet then.
+            // Maybe we need a RequirementSet that only verifies that the set is potentially valid, and then a
+            // RuntimeRequirementSet that verifies a specific set of requirements is valid? RuntimeRequirementSet
+            // would inherit from RequirementSet then.
             //
             // But what's the usecase for a RuntimeRequirementSet? Don't we really always instead want a
             // RuntimeRequirementBindingDictionary, which checks that (for each key/value pair added), the requirement
