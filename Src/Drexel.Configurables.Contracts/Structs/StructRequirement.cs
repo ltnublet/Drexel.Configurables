@@ -36,13 +36,10 @@ namespace Drexel.Configurables.Contracts.Structs
         /// <see cref="StructSetRestrictionInfo{T}"/>s describing constraints on the values this requirement is
         /// restricted to; otherwise, <see langword="null"/>.
         /// </param>
-        /// <param name="dependsOn">
-        /// If this requirement must be supplied alongside other requirements, then the set of
-        /// <see cref="Requirement"/>s alongside which it must appear; otherwise, <see langword="null"/>.
-        /// </param>
-        /// <param name="exclusiveWith">
-        /// If this requirement must not be supplied alongside other requirements, then the set of
-        /// <see cref="Requirement"/>s alongside which it cannot appear; otherwise, <see langword="null"/>.
+        /// <param name="relations">
+        /// If this requirement has defined relations with other requirements (such as this requirement depending on or
+        /// being exclusive with another), then a <see cref="RequirementRelations"/> describing these relations;
+        /// otherwise, <see langword="null"/>.
         /// </param>
         /// <param name="validationCallback">
         /// A callback that performs validation of possible bindings, if such logic exists.
@@ -56,16 +53,14 @@ namespace Drexel.Configurables.Contracts.Structs
             bool isOptional = false,
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<StructSetRestrictionInfo<T>>? restrictedToSet = null,
-            IReadOnlyCollection<Requirement>? dependsOn = null,
-            IReadOnlyCollection<Requirement>? exclusiveWith = null,
+            RequirementRelations? relations = null,
             Func<object?, Configuration, Task>? validationCallback = null)
             : base(
                 id,
                 isOptional,
                 type,
                 collectionInfo,
-                dependsOn,
-                exclusiveWith,
+                relations,
                 validationCallback)
         {
             this.Type = type ?? throw new ArgumentNullException(nameof(type));

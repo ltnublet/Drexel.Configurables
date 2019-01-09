@@ -25,8 +25,7 @@ namespace Drexel.Configurables
             bool isOptional = false,
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<StructSetRestrictionInfo<BigInteger>>? restrictedToSet = null,
-            IReadOnlyCollection<Requirement>? dependsOn = null,
-            IReadOnlyCollection<Requirement>? exclusiveWith = null,
+            RequirementRelations? relations = null,
             Func<object?, Configuration, Task>? validationCallback = null)
         {
             return new StructRequirement<BigInteger>(
@@ -35,8 +34,7 @@ namespace Drexel.Configurables
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
-                dependsOn,
-                exclusiveWith,
+                relations,
                 validationCallback);
         }
 
@@ -45,8 +43,7 @@ namespace Drexel.Configurables
             bool isOptional = false,
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<ClassSetRestrictionInfo<Uri>>? restrictedToSet = null,
-            IReadOnlyCollection<Requirement>? dependsOn = null,
-            IReadOnlyCollection<Requirement>? exclusiveWith = null,
+            RequirementRelations? relations = null,
             Func<object?, Configuration, Task>? validationCallback = null)
         {
             return new ClassRequirement<Uri>(
@@ -55,8 +52,7 @@ namespace Drexel.Configurables
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
-                dependsOn,
-                exclusiveWith,
+                relations,
                 validationCallback);
         }
     }

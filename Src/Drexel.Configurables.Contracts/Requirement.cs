@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Drexel.Configurables.Contracts
@@ -13,16 +15,17 @@ namespace Drexel.Configurables.Contracts
             bool isOptional,
             RequirementType type,
             CollectionInfo? collectionInfo = null,
-            IReadOnlyCollection<Requirement>? dependsOn = null,
-            IReadOnlyCollection<Requirement>? exclusiveWith = null,
+            RequirementRelations? relations = null,
             Func<object?, Configuration, Task>? validationCallback = null)
         {
             this.Id = id;
             this.IsOptional = isOptional;
             this.Type = type ?? throw new ArgumentNullException(nameof(type));
             this.CollectionInfo = collectionInfo;
-            this.DependsOn = dependsOn ?? Array.Empty<Requirement>();
-            this.ExclusiveWith = dependsOn ?? Array.Empty<Requirement>();
+            this.DependsOn = relations?.DependsOn
+                ?? new ReadOnlyCollection<Requirement>(Array.Empty<Requirement>().ToList());
+            this.ExclusiveWith = relations?.ExclusiveWith
+                ?? new ReadOnlyCollection<Requirement>(Array.Empty<Requirement>().ToList());
             this.validationCallback = validationCallback;
         }
 
