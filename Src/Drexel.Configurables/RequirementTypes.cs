@@ -28,6 +28,7 @@ namespace Drexel.Configurables
             RequirementTypes.Int64 = Int64RequirementType.Instance;
             RequirementTypes.SecureString = SecureStringRequirementType.Instance;
             RequirementTypes.Single = SingleRequirementType.Instance;
+            RequirementTypes.UInt16 = UInt16RequirementType.Instance;
             RequirementTypes.UInt64 = UInt64RequirementType.Instance;
             RequirementTypes.Uri = UriRequirementType.Instance;
 
@@ -44,6 +45,7 @@ namespace Drexel.Configurables
                     RequirementTypes.SecureString,
                     RequirementTypes.Single,
                     RequirementTypes.String,
+                    RequirementTypes.UInt16,
                     RequirementTypes.UInt64,
                     RequirementTypes.Uri
                 });
@@ -98,6 +100,11 @@ namespace Drexel.Configurables
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.String"/>.
         /// </summary>
         public static ClassRequirementType<String> String { get; }
+
+        /// <summary>
+        /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.UInt16"/>.
+        /// </summary>
+        public static StructRequirementType<UInt16> UInt16 { get; }
 
         /// <summary>
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.UInt64"/>.
