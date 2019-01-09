@@ -20,90 +20,10 @@ namespace Drexel.Configurables.Example.Local
             // TODO: replace these with real requirements
             LocalPlugin.DirectoryRequirement = new ClassRequirement<FilePath>(
                 Guid.NewGuid(),
-                false,
-                new ClassRequirementType<FilePath>(
-                    Guid.NewGuid(),
-                    (object? x, out FilePath? result) =>
-                    {
-                        if (x == null)
-                        {
-                            result = null;
-                            return true;
-                        }
-                        else if (x is FilePath asPath)
-                        {
-                            result = asPath;
-                            return true;
-                        }
-                        else
-                        {
-                            result = default;
-                            return false;
-                        }
-                    },
-                    (object? x, out IEnumerable<FilePath?>? result) =>
-                    {
-                        IEnumerable<FilePath?>? buffer = x as IEnumerable<FilePath?>?;
-
-                        if (x == null)
-                        {
-                            result = null;
-                            return true;
-                        }
-                        else if (buffer != null)
-                        {
-                            result = buffer;
-                            return true;
-                        }
-                        else
-                        {
-                            result = default;
-                            return false;
-                        }
-                    }));
+                RequirementTypes.FilePath);
             LocalPlugin.IncludeSubfoldersRequirement = new StructRequirement<bool>(
                 Guid.NewGuid(),
-                false,
-                new StructRequirementType<bool>(
-                    Guid.NewGuid(),
-                    (object? x, out bool result) =>
-                    {
-                        if (x == null)
-                        {
-                            result = false;
-                            return false;
-                        }
-                        else if (x is bool asBool)
-                        {
-                            result = asBool;
-                            return true;
-                        }
-                        else
-                        {
-                            result = false;
-                            return false;
-                        }
-                    },
-                    (object? x, out IEnumerable<bool>? result) =>
-                    {
-                        IEnumerable<bool>? buffer = x as IEnumerable<bool>?;
-
-                        if (x == null)
-                        {
-                            result = null;
-                            return true;
-                        }
-                        else if (buffer != null)
-                        {
-                            result = buffer;
-                            return true;
-                        }
-                        else
-                        {
-                            result = default;
-                            return false;
-                        }
-                    }));
+                RequirementTypes.Boolean);
 
             LocalPlugin.RequirementSet = new RequirementSet(
                 LocalPlugin.DirectoryRequirement,

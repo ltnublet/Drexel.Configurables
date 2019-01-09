@@ -31,7 +31,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<BigInteger>(
                 id,
-                Types.BigInteger,
+                RequirementTypes.BigInteger,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -51,7 +51,7 @@ namespace Drexel.Configurables
         {
             return new ClassRequirement<Uri>(
                 id,
-                Types.Uri,
+                RequirementTypes.Uri,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,

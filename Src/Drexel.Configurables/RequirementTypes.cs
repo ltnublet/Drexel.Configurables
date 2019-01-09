@@ -15,37 +15,37 @@ namespace Drexel.Configurables
     /// Provides access to the default set of <see cref="RequirementType"/>s. These requirement types are guaranteed
     /// to be supported in all related official libraries (ex. serialization/deserialization or UI frameworks).
     /// </summary>
-    public static class Types
+    public static class RequirementTypes
     {
-        static Types()
+        static RequirementTypes()
         {
-            Types.BigInteger = BigIntegerRequirementType.Instance;
-            Types.Boolean = BooleanRequirementType.Instance;
-            Types.Decimal = DecimalRequirementType.Instance;
-            Types.Double = DoubleRequirementType.Instance;
-            Types.FilePath = FilePathRequirementType.Instance;
-            Types.Int32 = Int32RequirementType.Instance;
-            Types.Int64 = Int64RequirementType.Instance;
-            Types.SecureString = SecureStringRequirementType.Instance;
-            Types.Single = SingleRequirementType.Instance;
-            Types.UInt64 = UInt64RequirementType.Instance;
-            Types.Uri = UriRequirementType.Instance;
+            RequirementTypes.BigInteger = BigIntegerRequirementType.Instance;
+            RequirementTypes.Boolean = BooleanRequirementType.Instance;
+            RequirementTypes.Decimal = DecimalRequirementType.Instance;
+            RequirementTypes.Double = DoubleRequirementType.Instance;
+            RequirementTypes.FilePath = FilePathRequirementType.Instance;
+            RequirementTypes.Int32 = Int32RequirementType.Instance;
+            RequirementTypes.Int64 = Int64RequirementType.Instance;
+            RequirementTypes.SecureString = SecureStringRequirementType.Instance;
+            RequirementTypes.Single = SingleRequirementType.Instance;
+            RequirementTypes.UInt64 = UInt64RequirementType.Instance;
+            RequirementTypes.Uri = UriRequirementType.Instance;
 
-            Types.DefaultSupported = new ReadOnlyCollection<RequirementType>(
+            RequirementTypes.DefaultSupported = new ReadOnlyCollection<RequirementType>(
                 new List<RequirementType>()
                 {
-                    Types.BigInteger,
-                    Types.Boolean,
-                    Types.Decimal,
-                    Types.Double,
-                    Types.FilePath,
-                    Types.Int32,
-                    Types.Int64,
-                    Types.SecureString,
-                    Types.Single,
-                    Types.String,
-                    Types.UInt64,
-                    Types.Uri
+                    RequirementTypes.BigInteger,
+                    RequirementTypes.Boolean,
+                    RequirementTypes.Decimal,
+                    RequirementTypes.Double,
+                    RequirementTypes.FilePath,
+                    RequirementTypes.Int32,
+                    RequirementTypes.Int64,
+                    RequirementTypes.SecureString,
+                    RequirementTypes.Single,
+                    RequirementTypes.String,
+                    RequirementTypes.UInt64,
+                    RequirementTypes.Uri
                 });
         }
 

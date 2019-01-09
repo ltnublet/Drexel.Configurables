@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Src\Drexel.Configurables\Drexel.Configurables.csproj" />
     <ProjectReference Include="..\Drexel.Configurables.Example.Contracts\Drexel.Configurables.Example.Contracts.csproj" />
     <ProjectReference Include="..\..\Src\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
   </ItemGroup>
