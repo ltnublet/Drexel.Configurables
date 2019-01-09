@@ -21,11 +21,11 @@ namespace Drexel.Configurables.Contracts.Classes
         /// <param name="id">
         /// The ID of this requirement.
         /// </param>
-        /// <param name="isOptional">
-        /// <see langword="true"/> if this requirement is optional; otherwise, <see langword="false"/>.
-        /// </param>
         /// <param name="type">
         /// The type of this requirement.
+        /// </param>
+        /// <param name="isOptional">
+        /// <see langword="true"/> if this requirement is optional; otherwise, <see langword="false"/>.
         /// </param>
         /// <param name="collectionInfo">
         /// If this requirement is a collection, then a <see cref="CollectionInfo"/> describing constraints on values
@@ -52,8 +52,8 @@ namespace Drexel.Configurables.Contracts.Classes
         /// </exception>
         public ClassRequirement(
             Guid id,
-            bool isOptional,
             ClassRequirementType<T> type,
+            bool isOptional = false,
             CollectionInfo? collectionInfo = null,
             IReadOnlyCollection<ClassSetRestrictionInfo<T>>? restrictedToSet = null,
             IReadOnlyCollection<Requirement>? dependsOn = null,

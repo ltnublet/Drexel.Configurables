@@ -24,10 +24,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Requirements\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
     <ProjectReference Include="..\Drexel.Configurables.External\Drexel.Configurables.External.csproj" />
   </ItemGroup>
