@@ -189,6 +189,15 @@ namespace Drexel.Configurables.Contracts
                 exceptions.Add(new SetContainsCircularReferenceException(nameof(Requirement.DependsOn)));
             }
 
+            // TODO: Re-using topological sort to detect circular ExclusiveWith references, but throwig away result.
+            if (!RequirementSet.TryTopologicalSort(
+                distinctRequirements,
+                out _,
+                (Requirement x) => x.ExclusiveWith))
+            {
+                exceptions.Add(new SetContainsCircularReferenceException(nameof(Requirement.ExclusiveWith)));
+            }
+
             if (exceptions.Count == 1)
             {
                 throw exceptions[0];
@@ -365,40 +374,40 @@ namespace Drexel.Configurables.Contracts
                         requirement =>
                         accessor
                             .Invoke(requirement)
-                            .Select(dependency => new Tuple<Requirement, Requirement>(requirement, dependency))));
+                            .Select(dependency => new Tuple<Requirement, Requirement>(dependency, requirement))));
 
-	        List<Requirement> resultBuffer = new List<Requirement>();
-	        HashSet<Requirement> buffer = new HashSet<Requirement>(requirements.Where(x => !accessor.Invoke(x).Any()));
+            List<Requirement> resultBuffer = new List<Requirement>();
+            HashSet<Requirement> buffer = new HashSet<Requirement>(requirements.Where(x => !accessor.Invoke(x).Any()));
 
-	        while (buffer.Count != 0)
-	        {
+            while (buffer.Count != 0)
+            {
                 Requirement next = buffer.First();
-		        buffer.Remove(next);
+                buffer.Remove(next);
 
                 resultBuffer.Add(next);
 
-		        foreach (Tuple<Requirement, Requirement> dependency in
+                foreach (Tuple<Requirement, Requirement> dependency in
                     dependencies.Where(x => x.Item1.Equals(next)).ToArray())
-		        {
-			        Requirement dependent = dependency.Item2;
+                {
+                    Requirement dependent = dependency.Item2;
                     dependencies.Remove(dependency);
 
-			        if (!dependencies.Any(x => x.Item2.Equals(dependent)))
-			        {
-				        buffer.Add(dependent);
-			        }
-		        }
-	        }
+                    if (!dependencies.Any(x => x.Item2.Equals(dependent)))
+                    {
+                        buffer.Add(dependent);
+                    }
+                }
+            }
 
             result = resultBuffer;
             if (dependencies.Any())
-	        {
+            {
                 return false;
             }
-	        else
-	        {
+            else
+            {
                 return true;
-	        }
+            }
         }
 
         /// <summary>

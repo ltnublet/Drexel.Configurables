@@ -29,16 +29,25 @@ namespace Drexel.Configurables.Example.Local
                 relations: new RequirementRelationsBuilder()
                     .AddExclusiveWith(LocalPlugin.IncludeSubfoldersRequirement)
                     .Build());
+            LocalPlugin.EmptyEvenIfHasDirectoriesRequirement = new StructRequirement<bool>(
+                Guid.NewGuid(),
+                RequirementTypes.Boolean,
+                isOptional: true,
+                relations: new RequirementRelationsBuilder()
+                    .AddDependsOn(LocalPlugin.DirectoryRequirement)
+                    .Build());
 
             LocalPlugin.RequirementSet = new RequirementSet(
                 LocalPlugin.DirectoryRequirement,
                 LocalPlugin.IncludeSubfoldersRequirement,
-                LocalPlugin.SearchFilterRequirement);
+                LocalPlugin.SearchFilterRequirement,
+                LocalPlugin.EmptyEvenIfHasDirectoriesRequirement);
         }
 
         private static readonly ClassRequirement<FilePath> DirectoryRequirement;
         private static readonly StructRequirement<bool> IncludeSubfoldersRequirement;
         private static readonly ClassRequirement<string> SearchFilterRequirement;
+        private static readonly StructRequirement<bool> EmptyEvenIfHasDirectoriesRequirement;
         private static readonly RequirementSet RequirementSet;
 
         public LocalPlugin()
@@ -80,11 +89,15 @@ namespace Drexel.Configurables.Example.Local
                 includeSubfolders = false;
             }
 
+            bool emptyEvenIfHasDirectories =
+                configuration.GetOrDefault(LocalPlugin.EmptyEvenIfHasDirectoriesRequirement, () => false);
+
             return new LocalStartup(
                 this,
                 directory,
                 includeSubfolders,
-                searchFilter);
+                searchFilter,
+                emptyEvenIfHasDirectories);
         }
     }
 }

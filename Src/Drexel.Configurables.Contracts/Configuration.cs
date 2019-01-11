@@ -83,6 +83,74 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
+        public object? GetOrDefault(Requirement requirement, Func<object?> defaultValueFactory)
+        {
+            if (requirement == null)
+            {
+                throw new ArgumentNullException(nameof(requirement));
+            }
+
+            if (defaultValueFactory == null)
+            {
+                throw new ArgumentNullException(nameof(defaultValueFactory));
+            }
+
+            if (this.TryGet(requirement, out object? buffer))
+            {
+                return buffer;
+            }
+            else
+            {
+                return defaultValueFactory.Invoke();
+            }
+        }
+
+        public T? GetOrDefault<T>(ClassRequirement<T> requirement, Func<T?> defaultValueFactory)
+            where T : class
+        {
+            if (requirement == null)
+            {
+                throw new ArgumentNullException(nameof(requirement));
+            }
+
+            if (defaultValueFactory == null)
+            {
+                throw new ArgumentNullException(nameof(defaultValueFactory));
+            }
+
+            if (this.TryGet<T>(requirement, out T? buffer))
+            {
+                return buffer;
+            }
+            else
+            {
+                return defaultValueFactory.Invoke();
+            }
+        }
+
+        public T GetOrDefault<T>(StructRequirement<T> requirement, Func<T> defaultValueFactory)
+            where T : struct
+        {
+            if (requirement == null)
+            {
+                throw new ArgumentNullException(nameof(requirement));
+            }
+
+            if (defaultValueFactory == null)
+            {
+                throw new ArgumentNullException(nameof(defaultValueFactory));
+            }
+
+            if (this.TryGet<T>(requirement, out T buffer))
+            {
+                return buffer;
+            }
+            else
+            {
+                return defaultValueFactory.Invoke();
+            }
+        }
+
         public bool TryGet(Requirement requirement, out object? value)
         {
             if (requirement == null)

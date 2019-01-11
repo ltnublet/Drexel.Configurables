@@ -12,17 +12,20 @@ namespace Drexel.Configurables.Example.Local
         private readonly FilePath directory;
         private readonly bool includeSubFolders;
         private readonly string searchFilter;
+        private readonly bool alwaysEmpty;
 
         public LocalStartup(
             IExamplePlugin plugin,
             FilePath directory,
             bool includeSubFolders = false,
-            string? searchFilter = null)
+            string? searchFilter = null,
+            bool alwaysEmpty = false)
         {
             this.plugin = plugin ?? throw new ArgumentNullException(nameof(plugin));
             this.directory = directory ?? throw new ArgumentNullException(nameof(directory));
             this.searchFilter = searchFilter ?? "*";
             this.includeSubFolders = includeSubFolders;
+            this.alwaysEmpty = alwaysEmpty;
         }
 
         public Task OnStartup(IApplicationContext context)
@@ -34,14 +37,19 @@ namespace Drexel.Configurables.Example.Local
                     this.plugin,
                     (IMenuBinding self, ConsoleInstance console) =>
                     {
-                        foreach (string directory in Directory.GetDirectories(
-                            this.directory.Path,
-                            this.searchFilter,
-                            this.includeSubFolders
-                                ? SearchOption.AllDirectories
-                                : SearchOption.TopDirectoryOnly))
+                        Console.WriteLine($"Subdirectories of directory '{this.directory.Path}' (subfolders included: {this.includeSubFolders}):");
+
+                        if (!this.alwaysEmpty)
                         {
-                            Console.WriteLine(directory);
+                            foreach (string directory in Directory.GetDirectories(
+                                this.directory.Path,
+                                this.searchFilter,
+                                this.includeSubFolders
+                                    ? SearchOption.AllDirectories
+                                    : SearchOption.TopDirectoryOnly))
+                            {
+                                Console.WriteLine(directory);
+                            }
                         }
 
                         return Task.CompletedTask;
