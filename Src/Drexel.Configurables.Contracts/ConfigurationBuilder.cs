@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using Drexel.Configurables.Contracts.Classes;
 using Drexel.Configurables.Contracts.Structs;
@@ -31,6 +32,12 @@ namespace Drexel.Configurables.Contracts
                     "Collection requirements must supply entire collection.",
                     nameof(requirement));
             }
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
+            }
             else if (!requirement.Type.TryCast(value, out object? result))
             {
                 throw new ArgumentException("Could not cast supplied value to requirement type.", nameof(value));
@@ -41,7 +48,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public void Add(Requirement requirement, IEnumerable<object?> value)
+        public void Add(Requirement requirement, IEnumerable value)
         {
             if (requirement == null)
             {
@@ -53,7 +60,13 @@ namespace Drexel.Configurables.Contracts
                     "Non-collection requirements must supply an individual value.",
                     nameof(requirement));
             }
-            else if (!requirement.Type.TryCast(value, out IEnumerable<object?>? result))
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
+            }
+            else if (!requirement.Type.TryCast(value, out IEnumerable? result))
             {
                 throw new ArgumentException(
                     "Could not cast supplied value to a collection of requirement type.",
@@ -80,6 +93,12 @@ namespace Drexel.Configurables.Contracts
             {
                 throw new ArgumentException("Non-collection requirements must supply an individual value.");
             }
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
+            }
 
             this.collectionMappings.Add(requirement, value);
         }
@@ -94,6 +113,12 @@ namespace Drexel.Configurables.Contracts
             else if (requirement.CollectionInfo.HasValue)
             {
                 throw new ArgumentException("Collection requirements must supply entire collection.");
+            }
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
             }
 
             this.singleMappings.Add(requirement, value);
@@ -110,6 +135,12 @@ namespace Drexel.Configurables.Contracts
             {
                 throw new ArgumentException("Non-collection requirements must supply an individual value.");
             }
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
+            }
 
             this.collectionMappings.Add(requirement, value);
         }
@@ -124,6 +155,12 @@ namespace Drexel.Configurables.Contracts
             else if (requirement.CollectionInfo.HasValue)
             {
                 throw new ArgumentException("Collection requirements must supply entire collection.");
+            }
+            else if (requirement.ExclusiveWith.Any(
+                x =>
+                this.singleMappings.ContainsKey(x) || this.collectionMappings.ContainsKey(x)))
+            {
+                throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
             }
 
             this.singleMappings.Add(requirement, value);

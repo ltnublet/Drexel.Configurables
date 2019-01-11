@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace Drexel.Configurables.Contracts
 {
@@ -26,6 +26,6 @@ namespace Drexel.Configurables.Contracts
 
         public abstract bool TryCast(object? value, out object? result);
 
-        public abstract bool TryCast(object? value, out IEnumerable<object?>? result);
+        public abstract bool TryCast(object? value, out IEnumerable? result);
     }
 }

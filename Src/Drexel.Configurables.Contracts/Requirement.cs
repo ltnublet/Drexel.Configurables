@@ -27,6 +27,13 @@ namespace Drexel.Configurables.Contracts
             this.ExclusiveWith = relations?.ExclusiveWith
                 ?? new ReadOnlyCollection<Requirement>(Array.Empty<Requirement>().ToList());
             this.validationCallback = validationCallback;
+
+            if (this.ExclusiveWith.Any(x => !x.IsOptional))
+            {
+                throw new ArgumentException(
+                    "A required argument cannot be exclusive with a required argument.",
+                    nameof(relations));
+            }
         }
 
         public Guid Id { get; }

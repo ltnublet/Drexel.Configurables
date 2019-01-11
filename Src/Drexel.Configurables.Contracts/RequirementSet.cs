@@ -8,7 +8,7 @@ using Drexel.Configurables.Contracts.Exceptions;
 namespace Drexel.Configurables.Contracts
 {
     /// <summary>
-    /// Represents a validated set of requirements.
+    /// Represents a set of requirements.
     /// </summary>
     public sealed class RequirementSet : IReadOnlyDictionary<Guid, Requirement>
     {
@@ -27,9 +27,6 @@ namespace Drexel.Configurables.Contracts
         /// <exception cref="ArgumentNullException">
         /// Thrown when a supplied argument is illegally <see langword="null"/>.
         /// </exception>
-        /// <exception cref="ConflictingRequirementsException">
-        /// Thrown when the <paramref name="requirements"/> contains conflicting <see cref="Requirement"/>s.
-        /// </exception>
         /// <exception cref="DependenciesNotSatisfiedException">
         /// Thrown when the <paramref name="requirements"/> contains an <see cref="Requirement"/> which does not
         /// have all dependencies met.
@@ -42,7 +39,7 @@ namespace Drexel.Configurables.Contracts
         /// is, when one <see cref="RequirementType"/> specifies an <see cref="RequirementType.Id"/> or
         /// <see cref="RequirementType.Type"/> that is incompatible with another.
         /// </exception>
-        /// <exception cref="SetContainsCircularDependency">
+        /// <exception cref="SetContainsCircularReferenceException">
         /// Thrown when the <paramref name="requirements"/> contains a cycle in either their
         /// <see cref="Requirement.DependsOn"/>s or <see cref="Requirement.ExclusiveWith"/>s.
         /// </exception>
@@ -65,9 +62,6 @@ namespace Drexel.Configurables.Contracts
         /// <exception cref="ArgumentNullException">
         /// Thrown when a supplied argument is illegally <see langword="null"/>.
         /// </exception>
-        /// <exception cref="ConflictingRequirementsException">
-        /// Thrown when the <paramref name="requirements"/> contains conflicting <see cref="Requirement"/>s.
-        /// </exception>
         /// <exception cref="DependenciesNotSatisfiedException">
         /// Thrown when the <paramref name="requirements"/> contains an <see cref="Requirement"/> which does not
         /// have all dependencies met.
@@ -80,7 +74,7 @@ namespace Drexel.Configurables.Contracts
         /// is, when one <see cref="RequirementType"/> specifies an <see cref="RequirementType.Id"/> or
         /// <see cref="RequirementType.Type"/> that is incompatible with another.
         /// </exception>
-        /// <exception cref="SetContainsCircularDependency">
+        /// <exception cref="SetContainsCircularReferenceException">
         /// Thrown when the <paramref name="requirements"/> contains a cycle in either their
         /// <see cref="Requirement.DependsOn"/>s or <see cref="Requirement.ExclusiveWith"/>s.
         /// </exception>
@@ -105,9 +99,6 @@ namespace Drexel.Configurables.Contracts
         /// <exception cref="ArgumentNullException">
         /// Thrown when a supplied argument is illegally <see langword="null"/>.
         /// </exception>
-        /// <exception cref="ConflictingRequirementsException">
-        /// Thrown when the <paramref name="requirements"/> contains conflicting <see cref="Requirement"/>s.
-        /// </exception>
         /// <exception cref="DependenciesNotSatisfiedException">
         /// Thrown when the <paramref name="requirements"/> contains an <see cref="Requirement"/> which does not
         /// have all dependencies met.
@@ -120,7 +111,7 @@ namespace Drexel.Configurables.Contracts
         /// is, when one <see cref="RequirementType"/> specifies an <see cref="RequirementType.Id"/> or
         /// <see cref="RequirementType.Type"/> that is incompatible with another.
         /// </exception>
-        /// <exception cref="SetContainsCircularDependency">
+        /// <exception cref="SetContainsCircularReferenceException">
         /// Thrown when the <paramref name="requirements"/> contains a cycle in either their
         /// <see cref="Requirement.DependsOn"/>s or <see cref="Requirement.ExclusiveWith"/>s.
         /// </exception>
@@ -156,16 +147,6 @@ namespace Drexel.Configurables.Contracts
                 else
                 {
                     distinctRequirements.Add(requirement);
-                }
-            }
-
-            ImmutableHashSet<Requirement> asImmutable = distinctRequirements.ToImmutableHashSet();
-            foreach (Requirement requirement in distinctRequirements)
-            {
-                ImmutableHashSet<Requirement> conflicting = asImmutable.Intersect(requirement.ExclusiveWith);
-                if (conflicting.Any())
-                {
-                    exceptions.Add(new ConflictingRequirementsException(requirement, conflicting));
                 }
             }
 
@@ -205,16 +186,7 @@ namespace Drexel.Configurables.Contracts
             }
             else
             {
-                exceptions.Add(new SetContainsCircularDependency(nameof(Requirement.DependsOn)));
-            }
-
-            // TODO: We're re-using the sorting algorithm to detect cycles, but then throwing away the resultant list.
-            if (!RequirementSet.TryTopologicalSort(
-                distinctRequirements,
-                out _,
-                (Requirement x) => x.ExclusiveWith))
-            {
-                exceptions.Add(new SetContainsCircularDependency(nameof(Requirement.ExclusiveWith)));
+                exceptions.Add(new SetContainsCircularReferenceException(nameof(Requirement.DependsOn)));
             }
 
             if (exceptions.Count == 1)
@@ -227,7 +199,7 @@ namespace Drexel.Configurables.Contracts
             }
 
             this.backingDictionary = distinctRequirements.ToDictionary(x => x.Id, x => x);
-            this.backingSet = asImmutable;
+            this.backingSet = distinctRequirements.ToImmutableHashSet();
         }
 
         /// <summary>

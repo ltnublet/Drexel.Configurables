@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Drexel.Configurables.Contracts.Classes
@@ -55,7 +56,7 @@ namespace Drexel.Configurables.Contracts.Classes
 
         public bool TryCast(object? value, out IEnumerable<T?>? result) => this.tryCastCollection(value, out result);
 
-        public override bool TryCast(object? value, out IEnumerable<object?>? result)
+        public override bool TryCast(object? value, out IEnumerable? result)
         {
             bool status = this.TryCast(value, out IEnumerable<T?>? buffer);
             result = buffer;

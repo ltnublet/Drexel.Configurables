@@ -31,7 +31,7 @@ namespace Drexel.Configurables.Example
             List<IPluginStartup> startups = new List<IPluginStartup>();
             foreach (IExamplePlugin plugin in loader.LoadedPlugins)
             {
-                Configuration pluginConfiguration = await Program.CreateConfigurationFromIConfigurable(plugin);
+                Configuration pluginConfiguration = await Program.CreateConfigurationFromPlugin(plugin);
                 startups.Add(plugin.CreateStartup(pluginConfiguration));
             }
 
@@ -99,8 +99,15 @@ namespace Drexel.Configurables.Example
 
                 if (context.Bindings.TryGetValue(token, out IMenuBinding binding))
                 {
-                    await binding.Callback(binding, console);
-                    Console.WriteLine();
+                    try
+                    {
+                        await binding.Callback(binding, console);
+                        Console.WriteLine();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Unhandled exception ({e.GetType()}): '{e.Message}'.");
+                    }
                 }
                 else
                 {
@@ -116,56 +123,61 @@ namespace Drexel.Configurables.Example
             Console.ReadLine();
         }
 
-        private static async Task<Configuration> CreateConfigurationFromIConfigurable(IConfigurable configurable)
+        private static async Task<Configuration> CreateConfigurationFromPlugin(IExamplePlugin plugin)
         {
             ConfigurationBuilder builder = new ConfigurationBuilder();
-            foreach (Requirement requirement in configurable.Requirements.Values)
+
+            if (plugin.Requirements.Any())
             {
-                // TODO: Make input libraries
-                object? value = null;
-                Type type = requirement.Type.Type;
-                if (type == typeof(FilePath))
+                Console.WriteLine($"Collecting requirements for plugin '{plugin.Name}'.");
+                foreach (Requirement requirement in plugin.Requirements.Values)
                 {
-                    Console.Write("Enter file path (press enter to skip): ");
-                    string input = Console.ReadLine();
-                    if (input == string.Empty)
+                    // TODO: Make input libraries
+                    object? value = null;
+                    Type type = requirement.Type.Type;
+                    if (type == typeof(FilePath))
                     {
-                        continue;
+                        Console.Write("Enter file path (press enter to skip): ");
+                        string input = Console.ReadLine();
+                        if (input == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        value = new FilePath(input, PathInteractor.Instance);
+                    }
+                    else if (type == typeof(bool))
+                    {
+                        Console.Write("Enter bool (press enter to skip): ");
+                        string input = Console.ReadLine();
+                        if (input == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        value = bool.Parse(input);
+                    }
+                    else if (type == typeof(string))
+                    {
+                        Console.Write("Enter string (press enter to skip): ");
+                        string input = Console.ReadLine();
+                        if (input == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        value = input;
+                    }
+                    else
+                    {
+                        throw new Exception("Unknown requirement type.");
                     }
 
-                    value = new FilePath(input, PathInteractor.Instance);
+                    builder.Add(requirement, value);
                 }
-                else if (type == typeof(bool))
-                {
-                    Console.Write("Enter bool (press enter to skip): ");
-                    string input = Console.ReadLine();
-                    if (input == string.Empty)
-                    {
-                        continue;
-                    }
-
-                    value = bool.Parse(input);
-                }
-                else if (type == typeof(string))
-                {
-                    Console.Write("Enter string (press enter to skip): ");
-                    string input = Console.ReadLine();
-                    if (input == string.Empty)
-                    {
-                        continue;
-                    }
-
-                    value = input;
-                }
-                else
-                {
-                    throw new Exception("Unknown requirement type.");
-                }
-
-                builder.Add(requirement, value);
             }
 
-            return await builder.Build(configurable.Requirements);
+            return await builder.Build(plugin.Requirements);
         }
 
         private static void WriteAvailableCommandsToConsole(ApplicationContext context)

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Drexel.Configurables.Contracts.Structs
 {
@@ -56,12 +56,10 @@ namespace Drexel.Configurables.Contracts.Structs
 
         public bool TryCast(object? value, out IEnumerable<T>? result) => this.tryCastCollection(value, out result);
 
-        public override bool TryCast(object? value, out IEnumerable<object?>? result)
+        public override bool TryCast(object? value, out IEnumerable? result)
         {
             bool status = this.TryCast(value, out IEnumerable<T>? buffer);
-
-            // TODO: Why is this .Cast necessary?
-            result = buffer.Cast<object?>();
+            result = buffer;
             return status;
         }
     }
