@@ -179,7 +179,8 @@ namespace Drexel.Configurables.Contracts
 
                 if (requirement.CollectionInfo == null)
                 {
-                    if (!this.singleMappings.TryGetValue(requirement, out dynamic? singleBuffer))
+                    if (!this.singleMappings.TryGetValue(requirement, out dynamic? singleBuffer)
+                        && requirement.DefaultValue.HasValue)
                     {
                         singleBuffer = requirement.DefaultValue.Value;
                     }
