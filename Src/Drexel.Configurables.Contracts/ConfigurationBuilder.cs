@@ -176,8 +176,14 @@ namespace Drexel.Configurables.Contracts
                 Configuration completed = new Configuration(
                     new RequirementSet(completedBindings.Keys, true),
                     completedBindings);
-                if (this.singleMappings.TryGetValue(requirement, out dynamic? singleBuffer))
+
+                if (requirement.CollectionInfo == null)
                 {
+                    if (!this.singleMappings.TryGetValue(requirement, out dynamic? singleBuffer))
+                    {
+                        singleBuffer = requirement.DefaultValue.Value;
+                    }
+
                     try
                     {
                         requirement.SetValidator.Validate(new[] { singleBuffer });

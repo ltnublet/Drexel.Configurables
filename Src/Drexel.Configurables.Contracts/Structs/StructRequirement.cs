@@ -40,8 +40,8 @@ namespace Drexel.Configurables.Contracts.Structs
         /// A callback that performs validation of possible bindings, if such logic exists.
         /// </param>
         /// <param name="defaultValue">
-        /// The default value of this requirement, if one exists. Note that, in the case of a non-optional requirement,
-        /// this value will only be used by external callers.
+        /// The default value of this requirement, if one exists. Note that if this is optional or collection
+        /// requirement, then this value is only used by external callers.
         /// </param>
         /// <param name="relations">
         /// If this requirement has defined relations with other requirements (such as this requirement depending on or

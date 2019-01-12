@@ -40,8 +40,8 @@ namespace Drexel.Configurables.Contracts.Classes
         /// A callback that performs validation of possible bindings, if such logic exists.
         /// </param>
         /// <param name="defaultValue">
-        /// The default value of this requirement, if one exists. Note that, in the case of a non-optional requirement,
-        /// this value will only be used by external callers.
+        /// The default value of this requirement, if one exists. Note that if this is optional or collection
+        /// requirement, then this value is only used by external callers.
         /// </param>
         /// <param name="restrictedToSet">
         /// If this requirement is restricted to a set of predefined values, then a collection of
