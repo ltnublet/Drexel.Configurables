@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Composition;
 using Drexel.Configurables.Contracts;
 using Drexel.Configurables.Contracts.Classes;
@@ -14,30 +13,25 @@ namespace Drexel.Configurables.Example.Local
     {
         static LocalPlugin()
         {
-            // TODO: replace these with real requirements
-            LocalPlugin.DirectoryRequirement = new ClassRequirement<FilePath>(
+            LocalPlugin.DirectoryRequirement = StandardRequirements.CreateFilePath(
                 Guid.NewGuid(),
-                RequirementTypes.FilePath,
                 restrictedToSet: new ClassSetRestrictionInfo<FilePath>[]
                     {
                         new ClassSetRestrictionInfo<FilePath>(new FilePath(@"C:\")),
                         new ClassSetRestrictionInfo<FilePath>(new FilePath(@"D:\")),
                         new ClassSetRestrictionInfo<FilePath>(new FilePath(@"E:\"))
                     });
-            LocalPlugin.IncludeSubfoldersRequirement = new StructRequirement<bool>(
+            LocalPlugin.IncludeSubfoldersRequirement = StandardRequirements.CreateBoolean(
                 Guid.NewGuid(),
-                RequirementTypes.Boolean,
                 isOptional: true);
-            LocalPlugin.SearchFilterRequirement = new ClassRequirement<string>(
+            LocalPlugin.SearchFilterRequirement = StandardRequirements.CreateString(
                 Guid.NewGuid(),
-                RequirementTypes.String,
                 isOptional: true,
                 relations: new RequirementRelationsBuilder()
                     .AddExclusiveWith(LocalPlugin.IncludeSubfoldersRequirement)
                     .Build());
-            LocalPlugin.EmptyEvenIfHasDirectoriesRequirement = new StructRequirement<bool>(
+            LocalPlugin.EmptyEvenIfHasDirectoriesRequirement = StandardRequirements.CreateBoolean(
                 Guid.NewGuid(),
-                RequirementTypes.Boolean,
                 isOptional: true,
                 relations: new RequirementRelationsBuilder()
                     .AddDependsOn(LocalPlugin.DirectoryRequirement)

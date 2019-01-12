@@ -10,7 +10,7 @@ using Drexel.Configurables.External;
 
 namespace Drexel.Configurables
 {
-    public static class Requirements
+    public static class StandardRequirements
     {
         public static StructRequirement<BigInteger> CreateBigInteger(
             Guid id,
@@ -22,7 +22,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<BigInteger>(
                 id,
-                RequirementTypes.BigInteger,
+                StandardRequirementTypes.BigInteger,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -40,7 +40,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Boolean>(
                 id,
-                RequirementTypes.Boolean,
+                StandardRequirementTypes.Boolean,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -58,7 +58,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Decimal>(
                 id,
-                RequirementTypes.Decimal,
+                StandardRequirementTypes.Decimal,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -76,7 +76,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Double>(
                 id,
-                RequirementTypes.Double,
+                StandardRequirementTypes.Double,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -94,7 +94,7 @@ namespace Drexel.Configurables
         {
             return new ClassRequirement<FilePath>(
                 id,
-                RequirementTypes.FilePath,
+                StandardRequirementTypes.FilePath,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -112,7 +112,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Int32>(
                 id,
-                RequirementTypes.Int32,
+                StandardRequirementTypes.Int32,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -129,7 +129,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Int64>(
                 id,
-                RequirementTypes.Int64,
+                StandardRequirementTypes.Int64,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -146,7 +146,7 @@ namespace Drexel.Configurables
         {
             return new ClassRequirement<SecureString>(
                 id,
-                RequirementTypes.SecureString,
+                StandardRequirementTypes.SecureString,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -163,7 +163,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<Single>(
                 id,
-                RequirementTypes.Single,
+                StandardRequirementTypes.Single,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -180,7 +180,7 @@ namespace Drexel.Configurables
         {
             return new ClassRequirement<String>(
                 id,
-                RequirementTypes.String,
+                StandardRequirementTypes.String,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -198,7 +198,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<UInt16>(
                 id,
-                RequirementTypes.UInt16,
+                StandardRequirementTypes.UInt16,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -216,7 +216,7 @@ namespace Drexel.Configurables
         {
             return new StructRequirement<UInt64>(
                 id,
-                RequirementTypes.UInt64,
+                StandardRequirementTypes.UInt64,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,
@@ -234,7 +234,7 @@ namespace Drexel.Configurables
         {
             return new ClassRequirement<Uri>(
                 id,
-                RequirementTypes.Uri,
+                StandardRequirementTypes.Uri,
                 isOptional,
                 collectionInfo,
                 restrictedToSet,

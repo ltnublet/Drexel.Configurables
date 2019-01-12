@@ -12,43 +12,43 @@ using Drexel.Configurables.Internals.Types;
 namespace Drexel.Configurables
 {
     /// <summary>
-    /// Provides access to the default set of <see cref="RequirementType"/>s. These requirement types are guaranteed
+    /// Provides access to the standard set of <see cref="RequirementType"/>s. These requirement types are guaranteed
     /// to be supported in all related official libraries (ex. serialization/deserialization or UI frameworks).
     /// </summary>
-    public static class RequirementTypes
+    public static class StandardRequirementTypes
     {
-        static RequirementTypes()
+        static StandardRequirementTypes()
         {
-            RequirementTypes.BigInteger = BigIntegerRequirementType.Instance;
-            RequirementTypes.Boolean = BooleanRequirementType.Instance;
-            RequirementTypes.Decimal = DecimalRequirementType.Instance;
-            RequirementTypes.Double = DoubleRequirementType.Instance;
-            RequirementTypes.FilePath = FilePathRequirementType.Instance;
-            RequirementTypes.Int32 = Int32RequirementType.Instance;
-            RequirementTypes.Int64 = Int64RequirementType.Instance;
-            RequirementTypes.SecureString = SecureStringRequirementType.Instance;
-            RequirementTypes.Single = SingleRequirementType.Instance;
-            RequirementTypes.String = StringRequirementType.Instance;
-            RequirementTypes.UInt16 = UInt16RequirementType.Instance;
-            RequirementTypes.UInt64 = UInt64RequirementType.Instance;
-            RequirementTypes.Uri = UriRequirementType.Instance;
+            StandardRequirementTypes.BigInteger = BigIntegerRequirementType.Instance;
+            StandardRequirementTypes.Boolean = BooleanRequirementType.Instance;
+            StandardRequirementTypes.Decimal = DecimalRequirementType.Instance;
+            StandardRequirementTypes.Double = DoubleRequirementType.Instance;
+            StandardRequirementTypes.FilePath = FilePathRequirementType.Instance;
+            StandardRequirementTypes.Int32 = Int32RequirementType.Instance;
+            StandardRequirementTypes.Int64 = Int64RequirementType.Instance;
+            StandardRequirementTypes.SecureString = SecureStringRequirementType.Instance;
+            StandardRequirementTypes.Single = SingleRequirementType.Instance;
+            StandardRequirementTypes.String = StringRequirementType.Instance;
+            StandardRequirementTypes.UInt16 = UInt16RequirementType.Instance;
+            StandardRequirementTypes.UInt64 = UInt64RequirementType.Instance;
+            StandardRequirementTypes.Uri = UriRequirementType.Instance;
 
-            RequirementTypes.DefaultSupported = new ReadOnlyCollection<RequirementType>(
+            StandardRequirementTypes.StandardTypes = new ReadOnlyCollection<RequirementType>(
                 new List<RequirementType>()
                 {
-                    RequirementTypes.BigInteger,
-                    RequirementTypes.Boolean,
-                    RequirementTypes.Decimal,
-                    RequirementTypes.Double,
-                    RequirementTypes.FilePath,
-                    RequirementTypes.Int32,
-                    RequirementTypes.Int64,
-                    RequirementTypes.SecureString,
-                    RequirementTypes.Single,
-                    RequirementTypes.String,
-                    RequirementTypes.UInt16,
-                    RequirementTypes.UInt64,
-                    RequirementTypes.Uri
+                    StandardRequirementTypes.BigInteger,
+                    StandardRequirementTypes.Boolean,
+                    StandardRequirementTypes.Decimal,
+                    StandardRequirementTypes.Double,
+                    StandardRequirementTypes.FilePath,
+                    StandardRequirementTypes.Int32,
+                    StandardRequirementTypes.Int64,
+                    StandardRequirementTypes.SecureString,
+                    StandardRequirementTypes.Single,
+                    StandardRequirementTypes.String,
+                    StandardRequirementTypes.UInt16,
+                    StandardRequirementTypes.UInt64,
+                    StandardRequirementTypes.Uri
                 });
         }
 
@@ -118,8 +118,8 @@ namespace Drexel.Configurables
         public static ClassRequirementType<Uri> Uri { get; }
 
         /// <summary>
-        /// Gets the set of default <see cref="RequirementType"/>s exposed by this class.
+        /// Gets the set of standard <see cref="RequirementType"/>s exposed by this class.
         /// </summary>
-        public static IReadOnlyCollection<RequirementType> DefaultSupported { get; }
+        public static IReadOnlyCollection<RequirementType> StandardTypes { get; }
     }
 }
