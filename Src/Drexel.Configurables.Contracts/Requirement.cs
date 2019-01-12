@@ -12,8 +12,8 @@ namespace Drexel.Configurables.Contracts
 
         private protected Requirement(
             Guid id,
-            bool isOptional,
             RequirementType type,
+            bool isOptional = false,
             CollectionInfo? collectionInfo = null,
             RequirementRelations? relations = null,
             Func<object?, Configuration, Task>? validationCallback = null)
@@ -31,7 +31,7 @@ namespace Drexel.Configurables.Contracts
             if (this.ExclusiveWith.Any(x => !x.IsOptional))
             {
                 throw new ArgumentException(
-                    "A required argument cannot be exclusive with a required argument.",
+                    "An argument cannot be exclusive with a required argument.",
                     nameof(relations));
             }
         }
@@ -50,7 +50,11 @@ namespace Drexel.Configurables.Contracts
 
         public SetValidator SetValidator => this.BackingSetValidator;
 
+        public DefaultValue DefaultValue => this.BackingDefaultValue;
+
         protected abstract SetValidator BackingSetValidator { get; }
+
+        protected abstract DefaultValue BackingDefaultValue { get; }
 
         public async Task Validate(object? value, Configuration dependencies)
         {

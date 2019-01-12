@@ -31,11 +31,6 @@ namespace Drexel.Configurables.Contracts.Classes
         /// If this requirement is a collection, then a <see cref="CollectionInfo"/> describing constraints on values
         /// supplied against this requirement; otherwise, <see langword="null"/>.
         /// </param>
-        /// <param name="restrictedToSet">
-        /// If this requirement is restricted to a set of predefined values, then a collection of
-        /// <see cref="ClassSetRestrictionInfo{T}"/>s describing constraints on the values this requirement is
-        /// restricted to; otherwise, <see langword="null"/>.
-        /// </param>
         /// <param name="relations">
         /// If this requirement has defined relations with other requirements (such as this requirement depending on or
         /// being exclusive with another), then a <see cref="RequirementRelations"/> describing these relations;
@@ -43,6 +38,15 @@ namespace Drexel.Configurables.Contracts.Classes
         /// </param>
         /// <param name="validationCallback">
         /// A callback that performs validation of possible bindings, if such logic exists.
+        /// </param>
+        /// <param name="defaultValue">
+        /// The default value of this requirement, if one exists. Note that, in the case of a non-optional requirement,
+        /// this value will only be used by external callers.
+        /// </param>
+        /// <param name="restrictedToSet">
+        /// If this requirement is restricted to a set of predefined values, then a collection of
+        /// <see cref="ClassSetRestrictionInfo{T}"/>s describing constraints on the values this requirement is
+        /// restricted to; otherwise, <see langword="null"/>.
         /// </param>
         /// <exception cref="Exceptions.DuplicateSetValueException">
         /// Thrown when <paramref name="restrictedToSet"/> contains duplicate values.
@@ -52,13 +56,14 @@ namespace Drexel.Configurables.Contracts.Classes
             ClassRequirementType<T> type,
             bool isOptional = false,
             CollectionInfo? collectionInfo = null,
-            IReadOnlyCollection<ClassSetRestrictionInfo<T>>? restrictedToSet = null,
             RequirementRelations? relations = null,
-            Func<object?, Configuration, Task>? validationCallback = null)
+            Func<object?, Configuration, Task>? validationCallback = null,
+            ClassDefaultValue<T>? defaultValue = null,
+            IReadOnlyCollection<ClassSetRestrictionInfo<T>>? restrictedToSet = null)
             : base(
                 id,
-                isOptional,
                 type,
+                isOptional,
                 collectionInfo,
                 relations,
                 validationCallback)
@@ -69,6 +74,7 @@ namespace Drexel.Configurables.Contracts.Classes
                     ? Array.Empty<ClassSetRestrictionInfo<T>>().ToList()
                     : restrictedToSet.ToList());
             this.SetValidator = new ClassSetValidator<T>(this.Type, this.RestrictedToSet, this.CollectionInfo);
+            this.DefaultValue = defaultValue ?? new ClassDefaultValue<T>();
         }
 
         /// <summary>
@@ -87,8 +93,18 @@ namespace Drexel.Configurables.Contracts.Classes
         public new ClassRequirementType<T> Type { get; }
 
         /// <summary>
+        /// Gets the default value of this requirement.
+        /// </summary>
+        public new ClassDefaultValue<T> DefaultValue { get; }
+
+        /// <summary>
         /// Gets the internal backing set validator.
         /// </summary>
         protected override SetValidator BackingSetValidator => this.SetValidator;
+
+        /// <summary>
+        /// Gets the internal backing default value.
+        /// </summary>
+        protected override DefaultValue BackingDefaultValue => this.DefaultValue;
     }
 }
