@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drexel.Configurables", "Src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Structures", "src\Drexel.Configurables.Structures\Drexel.Configurables.Structures.csproj", "{A15F2808-8849-4597-940A-54EC4DB6D653}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables.Serialization", "src\Drexel.Configurables.Serialization\Drexel.Configurables.Serialization.csproj", "{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{A15F2808-8849-4597-940A-54EC4DB6D653}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15F2808-8849-4597-940A-54EC4DB6D653}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A15F2808-8849-4597-940A-54EC4DB6D653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{E70157E3-5B49-4428-BB9E-A48DE448C038} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
 		{24C25D3C-9477-4E0C-9BFF-F1F1FC8B1F13} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
 		{A15F2808-8849-4597-940A-54EC4DB6D653} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
+		{74CC4B1A-F64D-4F65-BB58-BEE10B9AA347} = {27576382-1DB8-4118-BEEE-AAC7EAA66E4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F63AC9-AEB0-4744-A6BD-89BDF935BC78}
