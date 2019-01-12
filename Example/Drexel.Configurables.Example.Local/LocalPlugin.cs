@@ -17,7 +17,13 @@ namespace Drexel.Configurables.Example.Local
             // TODO: replace these with real requirements
             LocalPlugin.DirectoryRequirement = new ClassRequirement<FilePath>(
                 Guid.NewGuid(),
-                RequirementTypes.FilePath);
+                RequirementTypes.FilePath,
+                restrictedToSet: new ClassSetRestrictionInfo<FilePath>[]
+                    {
+                        new ClassSetRestrictionInfo<FilePath>(new FilePath(@"C:\")),
+                        new ClassSetRestrictionInfo<FilePath>(new FilePath(@"D:\")),
+                        new ClassSetRestrictionInfo<FilePath>(new FilePath(@"E:\"))
+                    });
             LocalPlugin.IncludeSubfoldersRequirement = new StructRequirement<bool>(
                 Guid.NewGuid(),
                 RequirementTypes.Boolean,
@@ -76,18 +82,8 @@ namespace Drexel.Configurables.Example.Local
                 throw new ArgumentNullException(nameof(LocalPlugin.DirectoryRequirement));
             }
 
-            string? searchFilter;
-            bool includeSubfolders;
-            if (configuration.TryGet(LocalPlugin.IncludeSubfoldersRequirement, out bool buffer))
-            {
-                searchFilter = null;
-                includeSubfolders = buffer;
-            }
-            else
-            {
-                searchFilter = configuration.Get(LocalPlugin.SearchFilterRequirement);
-                includeSubfolders = false;
-            }
+            bool includeSubfolders = configuration.GetOrDefault(LocalPlugin.IncludeSubfoldersRequirement, () => false);
+            string? searchFilter = configuration.GetOrDefault(LocalPlugin.SearchFilterRequirement, () => null);
 
             bool emptyEvenIfHasDirectories =
                 configuration.GetOrDefault(LocalPlugin.EmptyEvenIfHasDirectoriesRequirement, () => false);

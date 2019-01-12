@@ -19,6 +19,27 @@ namespace Drexel.Configurables.External
         /// <param name="path">
         /// The local file path, formatted as a <see langword="string"/>. Must be fully-qualified (not relative).
         /// </param>
+        /// <param name="caseSensitive">
+        /// Indicates whether the file path should be treated case-sensitively.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when a combination of arguments is illegal.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when an argument is illegally <see langword="null"/>.
+        /// </exception>
+        public FilePath(string path, bool caseSensitive = false)
+            : this(path, PathInteractor.Instance, caseSensitive)
+        {
+            // Nothing to do.
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilePath"/> class.
+        /// </summary>
+        /// <param name="path">
+        /// The local file path, formatted as a <see langword="string"/>. Must be fully-qualified (not relative).
+        /// </param>
         /// <param name="interactor">
         /// The path interactor.
         /// </param>
@@ -31,7 +52,7 @@ namespace Drexel.Configurables.External
         /// <exception cref="ArgumentNullException">
         /// Thrown when an argument is illegally <see langword="null"/>.
         /// </exception>
-        public FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
+        internal FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
         {
             if (path == null)
             {

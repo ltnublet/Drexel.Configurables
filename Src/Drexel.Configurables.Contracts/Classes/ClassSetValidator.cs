@@ -155,12 +155,14 @@ namespace Drexel.Configurables.Contracts.Classes
             int timesNullSeen = 0;
             List<SetValidatorException> exceptions = new List<SetValidatorException>();
             Dictionary<T, int> timesSeenDictionary = this.backingSet.ToDictionary(x => x.Key, x => 0);
-            bool @continue = true;
-            while (@continue)
+            while (true)
             {
                 try
                 {
-                    @continue = enumerator.MoveNext();
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
                 }
                 catch (ValueOfWrongTypeException e)
                 {

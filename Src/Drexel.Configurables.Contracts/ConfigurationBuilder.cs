@@ -180,6 +180,7 @@ namespace Drexel.Configurables.Contracts
                 {
                     try
                     {
+                        requirement.SetValidator.Validate(new[] { singleBuffer });
                         await requirement.Validate(singleBuffer, completed).ConfigureAwait(false);
                         completedBindings = completedBindings.Add(requirement, singleBuffer);
                     }

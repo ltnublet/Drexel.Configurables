@@ -144,7 +144,7 @@ namespace Drexel.Configurables.Example
                             continue;
                         }
 
-                        value = new FilePath(input, PathInteractor.Instance);
+                        value = new FilePath(input);
                     }
                     else if (type == typeof(bool))
                     {
