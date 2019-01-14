@@ -30,14 +30,14 @@ namespace Drexel.Configurables.Contracts
             return this.backingPairs.ContainsKey(requirement);
         }
 
-        public object? Get(Requirement requirement)
+        public object? GetValue(Requirement requirement)
         {
             if (requirement == null)
             {
                 throw new ArgumentNullException(nameof(requirement));
             }
 
-            if (this.TryGet(requirement, out object? buffer))
+            if (this.TryGetValue(requirement, out object? buffer))
             {
                 return buffer;
             }
@@ -47,7 +47,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public T? Get<T>(ClassRequirement<T> requirement)
+        public T? GetValue<T>(ClassRequirement<T> requirement)
             where T : class
         {
             if (requirement == null)
@@ -55,7 +55,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(requirement));
             }
 
-            if (this.TryGet(requirement, out T? buffer))
+            if (this.TryGetValue(requirement, out T? buffer))
             {
                 return buffer;
             }
@@ -65,7 +65,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public T Get<T>(StructRequirement<T> requirement)
+        public T GetValue<T>(StructRequirement<T> requirement)
             where T : struct
         {
             if (requirement == null)
@@ -73,7 +73,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(requirement));
             }
 
-            if (this.TryGet(requirement, out T buffer))
+            if (this.TryGetValue(requirement, out T buffer))
             {
                 return buffer;
             }
@@ -83,7 +83,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public object? GetOrDefault(Requirement requirement, Func<object?> defaultValueFactory)
+        public object? GetValueOrDefault(Requirement requirement, Func<object?> defaultValueFactory)
         {
             if (requirement == null)
             {
@@ -95,7 +95,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(defaultValueFactory));
             }
 
-            if (this.TryGet(requirement, out object? buffer))
+            if (this.TryGetValue(requirement, out object? buffer))
             {
                 return buffer;
             }
@@ -105,7 +105,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public T? GetOrDefault<T>(ClassRequirement<T> requirement, Func<T?> defaultValueFactory)
+        public T? GetValueOrDefault<T>(ClassRequirement<T> requirement, Func<T?> defaultValueFactory)
             where T : class
         {
             if (requirement == null)
@@ -118,7 +118,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(defaultValueFactory));
             }
 
-            if (this.TryGet<T>(requirement, out T? buffer))
+            if (this.TryGetValue<T>(requirement, out T? buffer))
             {
                 return buffer;
             }
@@ -128,7 +128,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public T GetOrDefault<T>(StructRequirement<T> requirement, Func<T> defaultValueFactory)
+        public T GetValueOrDefault<T>(StructRequirement<T> requirement, Func<T> defaultValueFactory)
             where T : struct
         {
             if (requirement == null)
@@ -141,7 +141,7 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentNullException(nameof(defaultValueFactory));
             }
 
-            if (this.TryGet<T>(requirement, out T buffer))
+            if (this.TryGetValue<T>(requirement, out T buffer))
             {
                 return buffer;
             }
@@ -151,7 +151,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public bool TryGet(Requirement requirement, out object? value)
+        public bool TryGetValue(Requirement requirement, out object? value)
         {
             if (requirement == null)
             {
@@ -170,7 +170,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public bool TryGet<T>(ClassRequirement<T> requirement, out T? value)
+        public bool TryGetValue<T>(ClassRequirement<T> requirement, out T? value)
             where T : class
         {
             if (requirement == null)
@@ -190,7 +190,7 @@ namespace Drexel.Configurables.Contracts
             }
         }
 
-        public bool TryGet<T>(StructRequirement<T> requirement, out T value)
+        public bool TryGetValue<T>(StructRequirement<T> requirement, out T value)
             where T : struct
         {
             if (requirement == null)

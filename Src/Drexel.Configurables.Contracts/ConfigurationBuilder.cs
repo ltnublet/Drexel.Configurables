@@ -11,16 +11,16 @@ namespace Drexel.Configurables.Contracts
 {
     public sealed class ConfigurationBuilder
     {
-        private readonly Dictionary<Requirement, IEnumerable> collectionMappings;
+        private readonly Dictionary<Requirement, IEnumerable?> collectionMappings;
         private readonly Dictionary<Requirement, dynamic?> singleMappings;
 
         public ConfigurationBuilder()
         {
-            this.collectionMappings = new Dictionary<Requirement, IEnumerable>();
+            this.collectionMappings = new Dictionary<Requirement, IEnumerable?>();
             this.singleMappings = new Dictionary<Requirement, dynamic?>();
         }
 
-        public void Add(Requirement requirement, object? value)
+        public ConfigurationBuilder Add(Requirement requirement, object? value)
         {
             if (requirement == null)
             {
@@ -46,9 +46,11 @@ namespace Drexel.Configurables.Contracts
             {
                 this.singleMappings.Add(requirement, result);
             }
+
+            return this;
         }
 
-        public void Add(Requirement requirement, IEnumerable value)
+        public ConfigurationBuilder Add(Requirement requirement, IEnumerable? values)
         {
             if (requirement == null)
             {
@@ -66,23 +68,21 @@ namespace Drexel.Configurables.Contracts
             {
                 throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
             }
-            else if (!requirement.Type.TryCast(value, out IEnumerable? result))
+            else if (!requirement.Type.TryCast(values, out IEnumerable? result))
             {
                 throw new ArgumentException(
-                    "Could not cast supplied value to a collection of requirement type.",
-                    nameof(value));
-            }
-            else if (result == null)
-            {
-                throw new InvalidOperationException("Cast resulted in a null enumerable.");
+                    "Could not cast supplied values to a collection of requirement type.",
+                    nameof(values));
             }
             else
             {
                 this.collectionMappings.Add(requirement, result);
             }
+
+            return this;
         }
 
-        public void Add<T>(ClassRequirement<T> requirement, IEnumerable<T?> value)
+        public ConfigurationBuilder Add<T>(ClassRequirement<T> requirement, IEnumerable<T?>? values)
             where T : class
         {
             if (requirement == null)
@@ -100,10 +100,12 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
             }
 
-            this.collectionMappings.Add(requirement, value);
+            this.collectionMappings.Add(requirement, values);
+
+            return this;
         }
 
-        public void Add<T>(ClassRequirement<T> requirement, T? value)
+        public ConfigurationBuilder Add<T>(ClassRequirement<T> requirement, T? value)
             where T : class
         {
             if (requirement == null)
@@ -122,9 +124,11 @@ namespace Drexel.Configurables.Contracts
             }
 
             this.singleMappings.Add(requirement, value);
+
+            return this;
         }
 
-        public void Add<T>(StructRequirement<T> requirement, IEnumerable<T> value)
+        public ConfigurationBuilder Add<T>(StructRequirement<T> requirement, IEnumerable<T>? values)
             where T : struct
         {
             if (requirement == null)
@@ -142,10 +146,12 @@ namespace Drexel.Configurables.Contracts
                 throw new ArgumentException("Specified requirement is exclusive with an already added requirement.");
             }
 
-            this.collectionMappings.Add(requirement, value);
+            this.collectionMappings.Add(requirement, values);
+
+            return this;
         }
 
-        public void Add<T>(StructRequirement<T> requirement, T value)
+        public ConfigurationBuilder Add<T>(StructRequirement<T> requirement, T value)
             where T : struct
         {
             if (requirement == null)
@@ -164,6 +170,8 @@ namespace Drexel.Configurables.Contracts
             }
 
             this.singleMappings.Add(requirement, value);
+
+            return this;
         }
 
         public async Task<Configuration> Build(RequirementSet requirements)
@@ -196,26 +204,29 @@ namespace Drexel.Configurables.Contracts
                         exceptions.Add(e);
                     }
                 }
-                else if (this.collectionMappings.TryGetValue(requirement, out IEnumerable collectionBuffer))
+                else if (this.collectionMappings.TryGetValue(requirement, out IEnumerable? collectionBuffer))
                 {
-                    try
-                    {
-                        requirement.SetValidator.Validate(collectionBuffer);
-                    }
-                    catch (Exception e)
-                    {
-                        exceptions.Add(e);
-                    }
-
-                    foreach (object? value in collectionBuffer)
+                    if (collectionBuffer != null)
                     {
                         try
                         {
-                            await requirement.Validate(value, completed).ConfigureAwait(false);
+                            requirement.SetValidator.Validate(collectionBuffer);
                         }
                         catch (Exception e)
                         {
                             exceptions.Add(e);
+                        }
+
+                        foreach (object? value in collectionBuffer)
+                        {
+                            try
+                            {
+                                await requirement.Validate(value, completed).ConfigureAwait(false);
+                            }
+                            catch (Exception e)
+                            {
+                                exceptions.Add(e);
+                            }
                         }
                     }
 

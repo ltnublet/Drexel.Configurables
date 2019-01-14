@@ -73,7 +73,7 @@ namespace Drexel.Configurables.Contracts.Classes
                 restrictedToSet == null
                     ? Array.Empty<ClassSetRestrictionInfo<T>>().ToList()
                     : restrictedToSet.ToList());
-            this.SetValidator = new ClassSetValidator<T>(this.Type, this.RestrictedToSet, this.CollectionInfo);
+            this.SetValidator = new ClassSetValidator<T>(this.Type, restrictedToSet, this.CollectionInfo);
             this.DefaultValue = defaultValue ?? new ClassDefaultValue<T>();
         }
 

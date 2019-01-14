@@ -6,16 +6,18 @@ using Drexel.Configurables.Contracts.Structs;
 
 namespace Drexel.Configurables.Serialization
 {
-    public sealed class TypeSerializerDictionaryBuilder
+    public sealed class TypeSerializerDictionaryBuilder<TIntermediary>
     {
-        private Dictionary<RequirementType, ITypeSerializer> backingDictionary;
+        private readonly Dictionary<RequirementType, ITypeSerializer<TIntermediary>> backingDictionary;
 
         public TypeSerializerDictionaryBuilder()
         {
-            this.backingDictionary = new Dictionary<RequirementType, ITypeSerializer>();
+            this.backingDictionary = new Dictionary<RequirementType, ITypeSerializer<TIntermediary>>();
         }
 
-        public void Add<T>(ClassRequirementType<T> type, IClassTypeSerializer<T> serializer)
+        public TypeSerializerDictionaryBuilder<TIntermediary> Add<T>(
+            ClassRequirementType<T> type,
+            IClassTypeSerializer<T, TIntermediary> serializer)
             where T : class
         {
             if (this.backingDictionary.ContainsKey(type))
@@ -24,9 +26,13 @@ namespace Drexel.Configurables.Serialization
             }
 
             this.backingDictionary.Add(type, serializer);
+
+            return this;
         }
 
-        public void Add<T>(StructRequirementType<T> type, IStructTypeSerializer<T> serializer)
+        public TypeSerializerDictionaryBuilder<TIntermediary> Add<T>(
+            StructRequirementType<T> type,
+            IStructTypeSerializer<T, TIntermediary> serializer)
             where T : struct
         {
             if (this.backingDictionary.ContainsKey(type))
@@ -35,11 +41,13 @@ namespace Drexel.Configurables.Serialization
             }
 
             this.backingDictionary.Add(type, serializer);
+
+            return this;
         }
 
-        public void Add(TypeSerializerDictionary existing)
+        public TypeSerializerDictionaryBuilder<TIntermediary> Add(TypeSerializerDictionary<TIntermediary> existing)
         {
-            foreach (KeyValuePair<RequirementType, ITypeSerializer> pair in existing)
+            foreach (KeyValuePair<RequirementType, ITypeSerializer<TIntermediary>> pair in existing)
             {
                 if (this.backingDictionary.ContainsKey(pair.Key))
                 {
@@ -48,11 +56,13 @@ namespace Drexel.Configurables.Serialization
 
                 this.backingDictionary.Add(pair.Key, pair.Value);
             }
+
+            return this;
         }
 
-        public TypeSerializerDictionary Build()
+        public TypeSerializerDictionary<TIntermediary> Build()
         {
-            return new TypeSerializerDictionary(this.backingDictionary);
+            return new TypeSerializerDictionary<TIntermediary>(this.backingDictionary);
         }
     }
 }

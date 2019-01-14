@@ -35,7 +35,9 @@ namespace Drexel.Configurables.External
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilePath"/> class.
+        /// Initializes a new instance of the <see cref="FilePath"/> class, allowing for control of the
+        /// <see cref="IPathInteractor"/> used to validate the path. It is recommended to use this constructor only for
+        /// unit tests.
         /// </summary>
         /// <param name="path">
         /// The local file path, formatted as a <see langword="string"/>. Must be fully-qualified (not relative).
@@ -52,7 +54,7 @@ namespace Drexel.Configurables.External
         /// <exception cref="ArgumentNullException">
         /// Thrown when an argument is illegally <see langword="null"/>.
         /// </exception>
-        internal FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
+        public FilePath(string path, IPathInteractor interactor, bool caseSensitive = false)
         {
             if (path == null)
             {

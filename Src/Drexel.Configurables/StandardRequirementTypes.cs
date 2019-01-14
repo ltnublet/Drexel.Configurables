@@ -21,6 +21,7 @@ namespace Drexel.Configurables
         {
             StandardRequirementTypes.BigInteger = BigIntegerRequirementType.Instance;
             StandardRequirementTypes.Boolean = BooleanRequirementType.Instance;
+            StandardRequirementTypes.DateTime = DateTimeRequirementType.Instance;
             StandardRequirementTypes.Decimal = DecimalRequirementType.Instance;
             StandardRequirementTypes.Double = DoubleRequirementType.Instance;
             StandardRequirementTypes.FilePath = FilePathRequirementType.Instance;
@@ -29,6 +30,7 @@ namespace Drexel.Configurables
             StandardRequirementTypes.SecureString = SecureStringRequirementType.Instance;
             StandardRequirementTypes.Single = SingleRequirementType.Instance;
             StandardRequirementTypes.String = StringRequirementType.Instance;
+            StandardRequirementTypes.TimeSpan = TimeSpanRequirementType.Instance;
             StandardRequirementTypes.UInt16 = UInt16RequirementType.Instance;
             StandardRequirementTypes.UInt64 = UInt64RequirementType.Instance;
             StandardRequirementTypes.Uri = UriRequirementType.Instance;
@@ -38,6 +40,7 @@ namespace Drexel.Configurables
                 {
                     StandardRequirementTypes.BigInteger,
                     StandardRequirementTypes.Boolean,
+                    StandardRequirementTypes.DateTime,
                     StandardRequirementTypes.Decimal,
                     StandardRequirementTypes.Double,
                     StandardRequirementTypes.FilePath,
@@ -46,6 +49,7 @@ namespace Drexel.Configurables
                     StandardRequirementTypes.SecureString,
                     StandardRequirementTypes.Single,
                     StandardRequirementTypes.String,
+                    StandardRequirementTypes.TimeSpan,
                     StandardRequirementTypes.UInt16,
                     StandardRequirementTypes.UInt64,
                     StandardRequirementTypes.Uri
@@ -61,6 +65,11 @@ namespace Drexel.Configurables
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.Boolean"/>.
         /// </summary>
         public static StructRequirementType<Boolean> Boolean { get; }
+
+        /// <summary>
+        /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.DateTime"/>.
+        /// </summary>
+        public static StructRequirementType<DateTime> DateTime { get; }
 
         /// <summary>
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.Decimal"/>.
@@ -101,6 +110,11 @@ namespace Drexel.Configurables
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.String"/>.
         /// </summary>
         public static ClassRequirementType<String> String { get; }
+
+        /// <summary>
+        /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.TimeSpan"/>.
+        /// </summary>
+        public static StructRequirementType<TimeSpan> TimeSpan { get; }
 
         /// <summary>
         /// Gets the default <see cref="RequirementType"/> for an inner type of <see cref="System.UInt16"/>.

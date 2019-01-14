@@ -72,6 +72,26 @@ namespace Drexel.Configurables
                 restrictedToSet);
         }
 
+        public static StructRequirement<DateTime> CreateDateTime(
+            Guid id,
+            bool isOptional = false,
+            CollectionInfo? collectionInfo = null,
+            RequirementRelations? relations = null,
+            Func<object?, Configuration, Task>? validationCallback = null,
+            StructDefaultValue<DateTime>? defaultValue = null,
+            IReadOnlyCollection<StructSetRestrictionInfo<DateTime>>? restrictedToSet = null)
+        {
+            return new StructRequirement<DateTime>(
+                id,
+                StandardRequirementTypes.DateTime,
+                isOptional,
+                collectionInfo,
+                relations,
+                validationCallback,
+                defaultValue,
+                restrictedToSet);
+        }
+
         public static StructRequirement<Double> CreateDouble(
             Guid id,
             bool isOptional = false,
@@ -204,6 +224,26 @@ namespace Drexel.Configurables
             return new ClassRequirement<String>(
                 id,
                 StandardRequirementTypes.String,
+                isOptional,
+                collectionInfo,
+                relations,
+                validationCallback,
+                defaultValue,
+                restrictedToSet);
+        }
+
+        public static StructRequirement<TimeSpan> CreateTimeSpan(
+            Guid id,
+            bool isOptional = false,
+            CollectionInfo? collectionInfo = null,
+            RequirementRelations? relations = null,
+            Func<object?, Configuration, Task>? validationCallback = null,
+            StructDefaultValue<TimeSpan>? defaultValue = null,
+            IReadOnlyCollection<StructSetRestrictionInfo<TimeSpan>>? restrictedToSet = null)
+        {
+            return new StructRequirement<TimeSpan>(
+                id,
+                StandardRequirementTypes.TimeSpan,
                 isOptional,
                 collectionInfo,
                 relations,

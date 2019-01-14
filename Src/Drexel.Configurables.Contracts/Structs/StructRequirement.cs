@@ -73,7 +73,7 @@ namespace Drexel.Configurables.Contracts.Structs
                  restrictedToSet == null
                      ? Array.Empty<StructSetRestrictionInfo<T>>().ToList()
                      : restrictedToSet.ToList());
-            this.SetValidator = new StructSetValidator<T>(this.Type, this.RestrictedToSet, this.CollectionInfo);
+            this.SetValidator = new StructSetValidator<T>(this.Type, restrictedToSet, this.CollectionInfo);
             this.DefaultValue = defaultValue ?? new StructDefaultValue<T>();
         }
 
