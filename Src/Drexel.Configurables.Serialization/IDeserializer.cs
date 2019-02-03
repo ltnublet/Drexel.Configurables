@@ -5,8 +5,8 @@ using Drexel.Configurables.Contracts.Configurations;
 
 namespace Drexel.Configurables.Serialization
 {
-    public interface ISerializer : IDisposable
+    public interface IDeserializer : IDisposable
     {
-        Task SerializeAsync(Configuration configuration, CancellationToken cancellationToken = default);
+        Task<Configuration> DeserializeAsync(CancellationToken cancellationToken = default);
     }
 }

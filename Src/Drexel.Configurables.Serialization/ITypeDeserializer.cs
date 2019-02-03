@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Drexel.Configurables.Serialization
 {
-    interface ITypeSerializer
+    interface ITypeDeserializer
     {
     }
 }

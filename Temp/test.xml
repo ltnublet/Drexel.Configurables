@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<groups>
+  <group id="1">
+    <requirements>
+      <requirement id="a">
+        foo
+      </requirement>
+      <requirement id="b">
+        bar
+      </requirement>
+    </requirements>
+    <groups>
+      <group id="1-1">
+        ...
+      </group>
+      <group id="1-2">
+        ...
+      </group>
+    </groups>
+  </group>
+  <group id="2">
+    <requirements>
+      <requirement id="c">
+        bang
+      </requirement>
+      <requirement id="d">
+        banana
+      </requirement>
+    </requirements>
+  </group>
+</groups>

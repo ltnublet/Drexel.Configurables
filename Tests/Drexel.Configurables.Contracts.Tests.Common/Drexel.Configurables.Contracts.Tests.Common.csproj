@@ -4,11 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <NullableReferenceTypes>true</NullableReferenceTypes>
-    <!--<DocumentationFile>bin\Debug\netstandard2.0\Drexel.Configurables.Serialization.Json.Newtonsoft.xml</DocumentationFile>-->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Drexel.Configurables.Serialization\Drexel.Configurables.Serialization.csproj" />
+    <ProjectReference Include="..\..\Src\Drexel.Configurables.Contracts\Drexel.Configurables.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
