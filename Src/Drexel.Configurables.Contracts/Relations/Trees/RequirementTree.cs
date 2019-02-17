@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Drexel.Configurables.Contracts.Relations
 {
-    public sealed class RequirementTree : IReadOnlyList<RequirementTree>
+    public sealed class RequirementTree : IReadOnlyCollection<RequirementTree>
     {
         internal RequirementTree(RequirementTreeNode root)
         {
@@ -14,19 +14,6 @@ namespace Drexel.Configurables.Contracts.Relations
         }
 
         public RequirementTreeNode Root { get; }
-
-        public RequirementTree this[int index]
-        {
-            get
-            {
-                if (index < 0 || index > this.Root.MutableChildren.Count)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-
-                return new RequirementTree(this.Root.MutableChildren[index]);
-            }
-        }
 
         public int Count => this.Root.Children.Count;
 

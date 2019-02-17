@@ -216,6 +216,11 @@ namespace Drexel.Configurables.Contracts.Relations
                     return;
             }
 
+            // If treeNodes contains a tree that contains the parent,
+            //   If the same tree contains the child,
+            // Else,
+            //   
+
             foreach (KeyValuePair<RequirementTree, Dictionary<Requirement, RequirementTreeNode>> trees in treeNodes)
             {
                 if (trees.Value.TryGetValue(parent, out RequirementTreeNode parentNode))

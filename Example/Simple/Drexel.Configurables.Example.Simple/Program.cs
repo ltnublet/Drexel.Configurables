@@ -95,8 +95,8 @@ namespace Drexel.Configurables.Example.Simple
             // Create a configuration given the supplied requirements.
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder(relations);
             foreach (Requirement requirement in relations
-                .GetForest()
-                .SelectMany(x => x.TopologicalSort())
+                .Forest
+                .SelectMany(x => x.BreadthFirstSort())
                 .Select(x => x.Value))
             {
                 Console.WriteLine(
