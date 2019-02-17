@@ -1,6 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using static System.FormattableString;
 
@@ -10,11 +12,13 @@ namespace Drexel.Configurables.Contracts.Relations
     {
         private readonly object operationLock;
         private Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> mappings;
+        private Dictionary<RequirementTree, Dictionary<Requirement, RequirementTreeNode>> treeNodes;
 
         public RequirementRelationsBuilder()
         {
             this.operationLock = new object();
             this.mappings = new Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>>();
+            this.treeNodes = new Dictionary<RequirementTree, Dictionary<Requirement, RequirementTreeNode>>();
         }
 
         public int Count => this.mappings.Count;
@@ -40,6 +44,7 @@ namespace Drexel.Configurables.Contracts.Relations
             {
                 RequirementRelationsBuilder.AddInternal(
                     ref this.mappings,
+                    ref this.treeNodes,
                     primary,
                     secondary,
                     relation);
@@ -77,6 +82,7 @@ namespace Drexel.Configurables.Contracts.Relations
 
                     RequirementRelationsBuilder.AddInternal(
                         ref this.mappings,
+                        ref this.treeNodes,
                         primary,
                         relation.Key,
                         relation.Value);
@@ -103,6 +109,7 @@ namespace Drexel.Configurables.Contracts.Relations
                     {
                         RequirementRelationsBuilder.AddInternal(
                             ref this.mappings,
+                            ref this.treeNodes,
                             primary.Key,
                             secondary.Key,
                             secondary.Value);
@@ -117,7 +124,7 @@ namespace Drexel.Configurables.Contracts.Relations
         {
             lock (this.operationLock)
             {
-                return new RequirementRelations(this.mappings);
+                return new RequirementRelations(this.mappings, this.treeNodes.Keys.ToList());
             }
         }
 
@@ -126,10 +133,31 @@ namespace Drexel.Configurables.Contracts.Relations
             lock (this.operationLock)
             {
                 this.mappings.Clear();
+                this.treeNodes.Clear();
             }
         }
 
         internal static void AddInternal(
+            ref Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> mappings,
+            ref Dictionary<RequirementTree, Dictionary<Requirement, RequirementTreeNode>> treeNodes,
+            Requirement primary,
+            Requirement secondary,
+            RequirementRelation relation)
+        {
+            RequirementRelationsBuilder.AddMappingsInternal(
+                ref mappings,
+                primary,
+                secondary,
+                relation);
+
+            RequirementRelationsBuilder.AddTreesInternal(
+                ref treeNodes,
+                primary,
+                secondary,
+                relation);
+        }
+
+        internal static void AddMappingsInternal(
             ref Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> mappings,
             Requirement primary,
             Requirement secondary,
@@ -163,6 +191,51 @@ namespace Drexel.Configurables.Contracts.Relations
             }
 
             inverseRelations.Add(primary, relation.Inverse());
+        }
+
+        internal static void AddTreesInternal(
+            ref Dictionary<RequirementTree, Dictionary<Requirement, RequirementTreeNode>> treeNodes,
+            Requirement primary,
+            Requirement secondary,
+            RequirementRelation relation)
+        {
+            Requirement parent;
+            Requirement child;
+            switch (relation)
+            {
+                case RequirementRelation.DependedUpon:
+                    parent = primary;
+                    child = secondary;
+                    break;
+                case RequirementRelation.DependsOn:
+                    parent = secondary;
+                    child = primary;
+                    break;
+                default:
+                    // The dependency trees consist only of dependencies, and don't include exclusiveness.
+                    return;
+            }
+
+            foreach (KeyValuePair<RequirementTree, Dictionary<Requirement, RequirementTreeNode>> trees in treeNodes)
+            {
+                if (trees.Value.TryGetValue(parent, out RequirementTreeNode parentNode))
+                {
+                    if (!trees.Value.TryGetValue(child, out RequirementTreeNode childNode))
+                    {
+                        childNode = new RequirementTreeNode(child);
+                        trees.Value.Add(child, childNode);
+                    }
+
+                    childNode.MutableParents.Add(parentNode);
+                    parentNode.MutableChildren.Add(childNode);
+
+                    break;
+                }
+                else
+                {
+
+                }
+            }
         }
 
         [DebuggerHidden]

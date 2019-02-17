@@ -22,7 +22,8 @@ namespace Drexel.Configurables.Contracts.Relations
             mappings;
 
         internal RequirementRelations(
-            Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> primaryToSecondary)
+            Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> primaryToSecondary,
+            List<RequirementTree> trees)
         {
             Dictionary<Requirement, ReadOnlyDictionary<Requirement, RequirementRelation>> primaryToSecondaryBuffer =
                 new Dictionary<Requirement, ReadOnlyDictionary<Requirement, RequirementRelation>>(
@@ -39,6 +40,8 @@ namespace Drexel.Configurables.Contracts.Relations
             this.mappings =
                 new ReadOnlyDictionary<Requirement, ReadOnlyDictionary<Requirement, RequirementRelation>>(
                     primaryToSecondaryBuffer);
+
+            this.Forest = new RequirementForest(trees);
         }
 
         public MyValueType this[Requirement key]
@@ -67,6 +70,8 @@ namespace Drexel.Configurables.Contracts.Relations
 
         public int Count => this.mappings.Count;
 
+        public RequirementForest Forest { get; }
+
         public bool ContainsKey(Requirement key)
         {
             if (key == null)
@@ -83,11 +88,6 @@ namespace Drexel.Configurables.Contracts.Relations
                 .mappings
                 .Select(x => new KeyValuePair<Requirement, MyValueType>(x.Key, x.Value))
                 .GetEnumerator();
-        }
-
-        public RequirementForest GetForest()
-        {
-            return new RequirementForest(this);
         }
 
         public RequirementRelation GetRelation(Requirement primary, Requirement secondary)

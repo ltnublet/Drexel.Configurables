@@ -1,56 +1,36 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 
 namespace Drexel.Configurables.Contracts.Relations
 {
     public sealed class RequirementForest : IReadOnlyList<RequirementTree>
     {
-        internal RequirementForest(RequirementRelations relations)
+        internal RequirementForest(List<RequirementTree> trees)
         {
-            Dictionary<Requirement, RequirementTree> trees =
-                new Dictionary<Requirement, RequirementTree>();
+            this.Trees = trees;
+        }
 
-            // 1. For all requirements which have no dependencies, create a new tree with them as the root.
-            foreach (Requirement key in relations
-                .Where(
-                    x =>
-                    {
-                        if (x.Value.Count == 0)
-                        {
-                            return true;
-                        }
-                        else if (x.Value.All(y => !y.Value.IsDependency()))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    })
-                .Select(x => x.Key))
+        public RequirementTree this[int index]
+        {
+            get
             {
-                RequirementTreeNode asNode = new RequirementTreeNode(key);
-                trees[key] = new RequirementTree(asNode);
+                if (index < 0 || index > this.Trees.Count)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                return this.Trees[index];
             }
         }
 
-        public RequirementTree this[int index] => throw new NotImplementedException();
+        public int Count => this.Trees.Count;
 
-        public int Count => throw new NotImplementedException();
+        internal List<RequirementTree> Trees { get; }
 
-        public IEnumerator<RequirementTree> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerator<RequirementTree> GetEnumerator() => this.Trees.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

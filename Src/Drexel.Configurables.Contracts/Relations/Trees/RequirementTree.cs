@@ -1,7 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Drexel.Configurables.Contracts.Relations
 {
@@ -14,23 +15,55 @@ namespace Drexel.Configurables.Contracts.Relations
 
         public RequirementTreeNode Root { get; }
 
-        public RequirementTree this[int index] => throw new NotImplementedException();
-
-        public int Count => throw new NotImplementedException();
-
-        public IReadOnlyList<RequirementTreeNode> TopologicalSort()
+        public RequirementTree this[int index]
         {
-            throw new NotImplementedException();
+            get
+            {
+                if (index < 0 || index > this.Root.MutableChildren.Count)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                return new RequirementTree(this.Root.MutableChildren[index]);
+            }
         }
 
-        public IEnumerator<RequirementTree> GetEnumerator()
+        public int Count => this.Root.Children.Count;
+
+        public IReadOnlyList<RequirementTreeNode> BreadthFirstSort()
         {
-            throw new NotImplementedException();
+            HashSet<RequirementTreeNode> visited = new HashSet<RequirementTreeNode>();
+            List<RequirementTreeNode> returnValue = new List<RequirementTreeNode>();
+
+            Queue<RequirementTreeNode> queue = new Queue<RequirementTreeNode>();
+            queue.Enqueue(this.Root);
+
+            while (queue.Any())
+            {
+                RequirementTreeNode currentNode = queue.Dequeue();
+
+                if (visited.Contains(currentNode))
+                {
+                    throw new InvalidOperationException("Circular dependency");
+                }
+                else
+                {
+                    returnValue.Add(currentNode);
+                    visited.Add(currentNode);
+                }
+
+                foreach (RequirementTreeNode child in currentNode.Children)
+                {
+                    queue.Enqueue(child);
+                }
+            }
+
+            return returnValue;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerator<RequirementTree> GetEnumerator() =>
+            this.Root.Children.Select(x => new RequirementTree(x)).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
