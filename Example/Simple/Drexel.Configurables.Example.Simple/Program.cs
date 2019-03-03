@@ -94,10 +94,7 @@ namespace Drexel.Configurables.Example.Simple
 
             // Create a configuration given the supplied requirements.
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder(relations);
-            foreach (Requirement requirement in relations
-                .Forest
-                .SelectMany(x => x.BreadthFirstSort())
-                .Select(x => x.Value))
+            foreach (Requirement requirement in relations.BreadthFirstSort())
             {
                 Console.WriteLine(
                     $"Please enter value for requirement '{localization[requirement].Name}' ('{localization[requirement].Description}'):");
