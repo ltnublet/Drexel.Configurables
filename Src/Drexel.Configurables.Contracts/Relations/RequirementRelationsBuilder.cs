@@ -7,15 +7,15 @@ namespace Drexel.Configurables.Contracts.Relations
     public sealed class RequirementRelationsBuilder
     {
         private readonly object operationLock;
-        private readonly Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>> rawRelations;
-        private readonly Dictionary<Requirement, HashSet<Requirement>> dependencies;
+        private readonly Dictionary<Requirement, TreeNode<Requirement>> treeRoots;
+        private readonly Dictionary<Requirement, TreeNode<Requirement>> treeNodes;
         private readonly Dictionary<Requirement, HashSet<Requirement>> exclusivities;
 
         public RequirementRelationsBuilder()
         {
             this.operationLock = new object();
-            this.rawRelations = new Dictionary<Requirement, Dictionary<Requirement, RequirementRelation>>();
-            this.dependencies = new Dictionary<Requirement, HashSet<Requirement>>();
+            this.treeRoots = new Dictionary<Requirement, TreeNode<Requirement>>();
+            this.treeNodes = new Dictionary<Requirement, TreeNode<Requirement>>();
             this.exclusivities = new Dictionary<Requirement, HashSet<Requirement>>();
         }
 
@@ -38,21 +38,10 @@ namespace Drexel.Configurables.Contracts.Relations
             {
                 lock (this.operationLock)
                 {
-                    if (!this.rawRelations.TryGetValue(primary, out Dictionary<Requirement, RequirementRelation> raw))
+                    if (!treeNodes.TryGetValue(primary, out TreeNode<Requirement> primaryNode))
                     {
-                        raw = new Dictionary<Requirement, RequirementRelation>();
-                        this.rawRelations.Add(primary, raw);
-                    }
-                    else
-                    {
-                        if (raw.ContainsKey(secondary))
-                        {
-                            throw new InvalidOperationException(
-                                "A relationship already exists between the specified requirements.");
-                        }
-                    }
 
-                    raw.Add(secondary, relation);
+                    }
 
                     Requirement parent = primary;
                     Requirement child = secondary;
@@ -64,13 +53,7 @@ namespace Drexel.Configurables.Contracts.Relations
                             relation = RequirementRelation.DependedUpon;
                             goto case RequirementRelation.DependedUpon;
                         case RequirementRelation.DependedUpon:
-                            if (!this.dependencies.TryGetValue(parent, out HashSet<Requirement> parentDependents))
-                            {
-                                parentDependents = new HashSet<Requirement>();
-                                this.dependencies.Add(parent, parentDependents);
-                            }
 
-                            parentDependents.Add(child);
                             break;
                         case RequirementRelation.ExclusiveWith:
                             if (!this.exclusivities.TryGetValue(parent, out HashSet<Requirement> parentExclusives))
@@ -110,9 +93,7 @@ namespace Drexel.Configurables.Contracts.Relations
         {
             lock (this.operationLock)
             {
-                this.rawRelations.Clear();
-                this.dependencies.Clear();
-                this.exclusivities.Clear();
+
             }
         }
     }
