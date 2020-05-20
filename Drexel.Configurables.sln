@@ -3,9 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECB23FA2-0EF8-4AD3-A561-00A3E64638E0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{66172AFA-94F4-4B7C-BF32-4085EA356F6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drexel.Configurables", "src\Drexel.Configurables\Drexel.Configurables.csproj", "{CC736CF1-B951-47FF-89AC-4AC321E4D26D}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC736CF1-B951-47FF-89AC-4AC321E4D26D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC736CF1-B951-47FF-89AC-4AC321E4D26D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC736CF1-B951-47FF-89AC-4AC321E4D26D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC736CF1-B951-47FF-89AC-4AC321E4D26D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CC736CF1-B951-47FF-89AC-4AC321E4D26D} = {66172AFA-94F4-4B7C-BF32-4085EA356F6C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F97C8AE-6784-437D-8711-FA45C71BDA59}
